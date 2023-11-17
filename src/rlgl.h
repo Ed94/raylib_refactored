@@ -109,6 +109,7 @@
 
 #define RLGL_VERSION  "4.5"
 
+#ifndef RAYLIB_H
 // Function specifiers in case library is build/used as a shared library (Windows)
 // NOTE: Microsoft specifiers to tell compiler that symbols are imported/exported from a .dll
 #if defined(_WIN32)
@@ -122,6 +123,7 @@
 // Function specifiers definition
 #ifndef RLAPI
     #define RLAPI       // Functions defined as 'extern' by default (implicit specifiers)
+#endif
 #endif
 
 // Support TRACELOG macros
