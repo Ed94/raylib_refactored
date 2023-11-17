@@ -503,7 +503,6 @@ typedef enum {
     RL_SHADER_ATTRIB_VEC3,              // Shader attribute type: vec3 (3 float)
     RL_SHADER_ATTRIB_VEC4               // Shader attribute type: vec4 (4 float)
 } rlShaderAttributeDataType;
-#endif //ifndef RAYLIB_H
 
 // Color blending modes (pre-defined)
 typedef enum {
@@ -516,6 +515,7 @@ typedef enum {
     RL_BLEND_CUSTOM,                    // Blend textures using custom src/dst factors (use rlSetBlendFactors())
     RL_BLEND_CUSTOM_SEPARATE            // Blend textures using custom src/dst factors (use rlSetBlendFactorsSeparate())
 } rlBlendMode;
+#endif //ifndef RAYLIB_H
 
 // Framebuffer attachment type
 // NOTE: By default up to 8 color channels defined, but it can be more
