@@ -252,3 +252,11 @@
 #define MAX_TRACELOG_MSG_LENGTH       256       // Max length of one trace-log message
 
 #endif // CONFIG_H
+
+#if defined(__cplusplus)
+    #define RL_NS_BEGIN namespace raylib {
+    #define RL_NS_END }
+#else
+    #define RL_NS_BEGIN
+    #define RL_NS_END
+#endif

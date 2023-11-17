@@ -1,0 +1,21 @@
+// rlgl.h
+
+namespace rlgl, RL_
+namespace rl,   RL_
+namespace RL_,  RLGL_
+
+not include rlgl.h
+
+word TRACELOG, RL_TRACELOG
+
+not word RL_TEXTURE_MIN_FILTER
+not word RL_TEXTURE_MAG_FILTER
+not word RL_TEXTURE_FILTER_LINEAR
+not word RL_PROJECTION
+not word RL_MODELVIEW
+not word RL_LINES
+not word RL_TRIANGLES
+not word RL_QUADS
+not word RL_FLOAT
+not word RL_UNSIGNED_BYTE
+not word RL_MATRIX

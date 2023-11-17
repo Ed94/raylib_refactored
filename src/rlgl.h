@@ -394,6 +394,7 @@ typedef enum {
     RL_OPENGL_ES_30             // OpenGL ES 3.0 (GLSL 300 es)
 } rlGlVersion;
 
+#ifndef RAYLIB_H
 // Trace log level
 // NOTE: Organized by priority level
 typedef enum {
@@ -448,17 +449,6 @@ typedef enum {
     RL_TEXTURE_FILTER_ANISOTROPIC_16X,  // Anisotropic filtering 16x
 } rlTextureFilter;
 
-// Color blending modes (pre-defined)
-typedef enum {
-    RL_BLEND_ALPHA = 0,                 // Blend textures considering alpha (default)
-    RL_BLEND_ADDITIVE,                  // Blend textures adding colors
-    RL_BLEND_MULTIPLIED,                // Blend textures multiplying colors
-    RL_BLEND_ADD_COLORS,                // Blend textures adding colors (alternative)
-    RL_BLEND_SUBTRACT_COLORS,           // Blend textures subtracting colors (alternative)
-    RL_BLEND_ALPHA_PREMULTIPLY,         // Blend premultiplied textures considering alpha
-    RL_BLEND_CUSTOM,                    // Blend textures using custom src/dst factors (use rlSetBlendFactors())
-    RL_BLEND_CUSTOM_SEPARATE            // Blend textures using custom src/dst factors (use rlSetBlendFactorsSeparate())
-} rlBlendMode;
 
 // Shader location point type
 typedef enum {
@@ -513,6 +503,19 @@ typedef enum {
     RL_SHADER_ATTRIB_VEC3,              // Shader attribute type: vec3 (3 float)
     RL_SHADER_ATTRIB_VEC4               // Shader attribute type: vec4 (4 float)
 } rlShaderAttributeDataType;
+#endif //ifndef RAYLIB_H
+
+// Color blending modes (pre-defined)
+typedef enum {
+    RL_BLEND_ALPHA = 0,                 // Blend textures considering alpha (default)
+    RL_BLEND_ADDITIVE,                  // Blend textures adding colors
+    RL_BLEND_MULTIPLIED,                // Blend textures multiplying colors
+    RL_BLEND_ADD_COLORS,                // Blend textures adding colors (alternative)
+    RL_BLEND_SUBTRACT_COLORS,           // Blend textures subtracting colors (alternative)
+    RL_BLEND_ALPHA_PREMULTIPLY,         // Blend premultiplied textures considering alpha
+    RL_BLEND_CUSTOM,                    // Blend textures using custom src/dst factors (use rlSetBlendFactors())
+    RL_BLEND_CUSTOM_SEPARATE            // Blend textures using custom src/dst factors (use rlSetBlendFactorsSeparate())
+} rlBlendMode;
 
 // Framebuffer attachment type
 // NOTE: By default up to 8 color channels defined, but it can be more
