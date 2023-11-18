@@ -1,5 +1,15 @@
 <img align="left" style="width:260px" src="https://github.com/raysan5/raylib/blob/master/logo/raylib_logo_animation.gif" width="288px">
 
+---
+
+# Refactor Fork
+
+This uses this simple program: [refactor](https://github.com/Ed94/refactor) to change all public identifiers to symbols defined within projects/scripts/*.refactor scripts. It uses refactor.ps1
+
+Goal is to offer a C refactor and a C++ refactor. The C++ will wrap the library in just the `raylib` namespace and remove any prefixed namespaces provided.
+
+The repo will also soon provide refactor scripts for alternative naming conventions from pascal case to lower snake case for functions.
+
 **raylib is a simple and easy-to-use library to enjoy videogames programming.**
 
 raylib is highly inspired by Borland BGI graphics lib and by XNA framework and it's especially well suited for prototyping, tooling, graphical applications, embedded systems and education.
