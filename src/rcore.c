@@ -240,12 +240,6 @@ __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigne
     #define _POSIX_C_SOURCE 199309L // Required for: CLOCK_MONOTONIC if compiled with c99 without gnu ext.
 #endif
 
-#if __cplusplus
-#define CAST(type) type
-#else
-#define CAST(type) (type)
-#endif
-
 RL_NS_BEGIN
 
 //----------------------------------------------------------------------------------

@@ -140,6 +140,14 @@
     #define CLITERAL(type)      (type)
 #endif
 
+// Used for initializer nonsense on cpp.
+#if __cplusplus
+#define CAST(type) type
+#else
+#define CAST(type) (type)
+#endif
+
+
 // Some compilers (mostly macos clang) default to C++98,
 // where aggregate initialization can't be used
 // So, give a more clear error stating how to fix this

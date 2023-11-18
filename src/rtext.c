@@ -102,12 +102,6 @@
     #define MAX_TEXTSPLIT_COUNT                  128        // Maximum number of substrings to split: TextSplit()
 #endif
 
-#if __cplusplus
-#define CAST(type) type
-#else
-#define CAST(type) (type)
-#endif
-
 RL_NS_BEGIN
 
 //----------------------------------------------------------------------------------
