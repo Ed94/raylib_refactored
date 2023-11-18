@@ -361,7 +361,7 @@ GLFWbool _glfwRefreshContextAttribs(_GLFWwindow* window,
     window->context.source = ctxconfig->source;
     window->context.client = GLFW_OPENGL_API;
 
-    previous = _glfwPlatformGetTls(&_glfw.contextSlot);
+    previous = (_GLFWwindow*)_glfwPlatformGetTls(&_glfw.contextSlot);
     glfwMakeContextCurrent((GLFWwindow*) window);
 
     window->context.GetIntegerv = (PFNGLGETINTEGERVPROC)
@@ -620,7 +620,7 @@ GLFWAPI void glfwMakeContextCurrent(GLFWwindow* handle)
 
     _GLFW_REQUIRE_INIT();
 
-    previous = _glfwPlatformGetTls(&_glfw.contextSlot);
+    previous = (_GLFWwindow*)_glfwPlatformGetTls(&_glfw.contextSlot);
 
     if (window && window->context.client == GLFW_NO_API)
     {

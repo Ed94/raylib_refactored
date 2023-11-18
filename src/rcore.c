@@ -240,6 +240,12 @@ __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigne
     #define _POSIX_C_SOURCE 199309L // Required for: CLOCK_MONOTONIC if compiled with c99 without gnu ext.
 #endif
 
+#if __cplusplus
+#define CAST(type) type
+#else
+#define CAST(type) (type)
+#endif
+
 RL_NS_BEGIN
 
 //----------------------------------------------------------------------------------
@@ -606,7 +612,11 @@ void InitWindow(int width, int height, const char *title)
     // Initialize global input state
     memset(&CORE.Input, 0, sizeof(CORE.Input));     // Reset CORE.Input structure to 0
     CORE.Input.Keyboard.exitKey = KEY_ESCAPE;
+#if __cplusplus
+    CORE.Input.Mouse.scale = Vector2{ 1.0f, 1.0f };
+#else
     CORE.Input.Mouse.scale = (Vector2){ 1.0f, 1.0f };
+#endif
     CORE.Input.Mouse.cursor = MOUSE_CURSOR_ARROW;
     CORE.Input.Gamepad.lastButtonPressed = GAMEPAD_BUTTON_UNKNOWN;
 
@@ -630,15 +640,16 @@ void InitWindow(int width, int height, const char *title)
     // Set font white rectangle for shapes drawing, so shapes and text can be batched together
     // WARNING: rshapes module is required, if not available, default internal white rectangle is used
     Rectangle rec = GetFontDefault().recs[95];
+
     if (CORE.Window.flags & FLAG_MSAA_4X_HINT)
     {
         // NOTE: We try to maxime rec padding to avoid pixel bleeding on MSAA filtering
-        SetShapesTexture(GetFontDefault().texture, (Rectangle){ rec.x + 2, rec.y + 2, 1, 1 });
+        SetShapesTexture(GetFontDefault().texture, CAST(Rectangle){ rec.x + 2, rec.y + 2, 1, 1 });
     }
     else
     {
         // NOTE: We set up a 1px padding on char rectangle to avoid pixel bleeding
-        SetShapesTexture(GetFontDefault().texture, (Rectangle){ rec.x + 1, rec.y + 1, rec.width - 2, rec.height - 2 });
+        SetShapesTexture(GetFontDefault().texture, CAST(Rectangle){ rec.x + 1, rec.y + 1, rec.width - 2, rec.height - 2 });
     }
     #endif
 #else
@@ -1429,13 +1440,13 @@ Ray GetMouseRay(Vector2 mouse, Camera camera)
     }
 
     // Unproject far/near points
-    Vector3 nearPoint = Vector3Unproject((Vector3){ deviceCoords.x, deviceCoords.y, 0.0f }, matProj, matView);
-    Vector3 farPoint = Vector3Unproject((Vector3){ deviceCoords.x, deviceCoords.y, 1.0f }, matProj, matView);
+    Vector3 nearPoint = Vector3Unproject(CAST(Vector3){ deviceCoords.x, deviceCoords.y, 0.0f }, matProj, matView);
+    Vector3 farPoint = Vector3Unproject(CAST(Vector3){ deviceCoords.x, deviceCoords.y, 1.0f }, matProj, matView);
 
     // Unproject the mouse cursor in the near plane.
     // We need this as the source position because orthographic projects, compared to perspective doesn't have a
     // convergence point, meaning that the "eye" of the camera is more like a plane than a point.
-    Vector3 cameraPlanePointerPos = Vector3Unproject((Vector3){ deviceCoords.x, deviceCoords.y, -1.0f }, matProj, matView);
+    Vector3 cameraPlanePointerPos = Vector3Unproject(CAST(Vector3){ deviceCoords.x, deviceCoords.y, -1.0f }, matProj, matView);
 
     // Calculate normalized direction vector
     Vector3 direction = Vector3Normalize(Vector3Subtract(farPoint, nearPoint));
@@ -1474,7 +1485,7 @@ Matrix GetCameraMatrix2D(Camera2D camera)
     //   2. Rotate and Scale
     //   3. Move by -target
     Matrix matOrigin = MatrixTranslate(-camera.target.x, -camera.target.y, 0.0f);
-    Matrix matRotation = MatrixRotate((Vector3){ 0.0f, 0.0f, 1.0f }, camera.rotation*DEG2RAD);
+    Matrix matRotation = MatrixRotate(CAST(Vector3){ 0.0f, 0.0f, 1.0f }, camera.rotation*DEG2RAD);
     Matrix matScale = MatrixScale(camera.zoom, camera.zoom, 1.0f);
     Matrix matTranslation = MatrixTranslate(camera.offset.x, camera.offset.y, 0.0f);
 
@@ -1539,18 +1550,18 @@ Vector2 GetWorldToScreenEx(Vector3 position, Camera camera, int width, int heigh
 Vector2 GetWorldToScreen2D(Vector2 position, Camera2D camera)
 {
     Matrix matCamera = GetCameraMatrix2D(camera);
-    Vector3 transform = Vector3Transform((Vector3){ position.x, position.y, 0 }, matCamera);
+    Vector3 transform = Vector3Transform(CAST(Vector3){ position.x, position.y, 0 }, matCamera);
 
-    return (Vector2){ transform.x, transform.y };
+    return CAST(Vector2){ transform.x, transform.y };
 }
 
 // Get the world space position for a 2d camera screen space position
 Vector2 GetScreenToWorld2D(Vector2 position, Camera2D camera)
 {
     Matrix invMatCamera = MatrixInvert(GetCameraMatrix2D(camera));
-    Vector3 transform = Vector3Transform((Vector3){ position.x, position.y, 0 }, invMatCamera);
+    Vector3 transform = Vector3Transform( CAST(Vector3){ position.x, position.y, 0 }, invMatCamera);
 
-    return (Vector2){ transform.x, transform.y };
+    return CAST(Vector2){ transform.x, transform.y };
 }
 
 //----------------------------------------------------------------------------------
@@ -2265,7 +2276,7 @@ unsigned char *CompressData(const unsigned char *data, int dataSize, int *compDa
 
 #if defined(SUPPORT_COMPRESSION_API)
     // Compress data and generate a valid DEFLATE stream
-    struct sdefl *sdefl = RL_CALLOC(1, sizeof(struct sdefl));   // WARNING: Possible stack overflow, struct sdefl is almost 1MB
+    struct sdefl *sdefl = (struct sdefl*)RL_CALLOC(1, sizeof(struct sdefl));   // WARNING: Possible stack overflow, struct sdefl is almost 1MB
     int bounds = sdefl_bound(dataSize);
     compData = (unsigned char *)RL_CALLOC(bounds, 1);
 
@@ -2955,14 +2966,14 @@ Vector2 GetMouseDelta(void)
 // NOTE: Useful when rendering to different size targets
 void SetMouseOffset(int offsetX, int offsetY)
 {
-    CORE.Input.Mouse.offset = (Vector2){ (float)offsetX, (float)offsetY };
+    CORE.Input.Mouse.offset = CAST(Vector2){ (float)offsetX, (float)offsetY };
 }
 
 // Set mouse scaling
 // NOTE: Useful when rendering to different size targets
 void SetMouseScale(float scaleX, float scaleY)
 {
-    CORE.Input.Mouse.scale = (Vector2){ scaleX, scaleY };
+    CORE.Input.Mouse.scale = CAST(Vector2){ scaleX, scaleY };
 }
 
 // Get mouse wheel movement Y
