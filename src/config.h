@@ -257,6 +257,7 @@
 #define RL_USE_CPP_MANGLING  1
 
 #if RL_USE_CPP_NAMESPACE && defined(__cplusplus)
+    #error "USING CPP NAMESPACE"
     #define RL_NS_BEGIN namespace raylib {
     #define RL_NS_END }
 #else
@@ -265,11 +266,15 @@
 #endif
 
 #if RL_USE_CPP_MANGLING && defined(__cplusplus)
+    #error "USING CPP MANGLING"
     #define RL_EXTERN_C_BEGIN
     #define RL_EXTERN_C_END
 #else
-    // Prevents cpp name mangling
-    #define RL_EXTERN_C_BEGIN extern "C" {
-    // Prevents cpp name mangling
-    #define RL_EXTERN_C_END   }
+    #ifdef __cplusplus
+        #define RL_EXTERN_C_BEGIN extern "C" {
+        #define RL_EXTERN_C_END   }
+    #else
+        #define RL_EXTERN_C_BEGIN
+        #define RL_EXTERN_C_END
+    #endif
 #endif

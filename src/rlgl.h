@@ -138,13 +138,17 @@
 #endif
 
 #if RLGL_USE_CPP_MANGLING && defined(__cplusplus)
+    #error "USING CPP MANGLING"
     #define RLGL_EXTERN_C_BEGIN
     #define RLGL_EXTERN_C_END
 #else
-    // Prevents cpp name mangling
-    #define RLGL_EXTERN_C_BEGIN extern "C" {
-    // Prevents cpp name mangling
-    #define RLGL_EXTERN_C_END   }
+    #ifdef __cplusplus
+        #define RLGL_EXTERN_C_BEGIN extern "C" {
+        #define RLGL_EXTERN_C_END   }
+    #else
+        #define RLGL_EXTERN_C_BEGIN
+        #define RLGL_EXTERN_C_END
+    #endif
 #endif
 
 

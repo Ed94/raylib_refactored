@@ -1,8 +1,6 @@
  __VERSION 1
 
 // Config.h
-word CONFIG_H, rlCONFIG_H
-
 namespace SUPPORT_, RL_SUPPORT_
 namespace MAX_,     RL_MAX_
 namespace AUDIO_,   RL_AUDIO_

@@ -15,6 +15,7 @@ $debug 	          = $null
 $analysis	      = $false
 $dev              = $false
 $verbose          = $null
+$force_cpp        = $false
 
 [array] $vendors = @( "clang", "msvc" )
 
@@ -28,6 +29,7 @@ switch ($_){
  "analysis"            { $analysis  = $true }
  "dev"                 { $dev       = $true }
  "verbose"             { $verbose   = $true }
+ "cpp"                 { $force_cpp = $true }
 }
 }}
 #endregion Argument
@@ -75,6 +77,10 @@ $linker_args   = @(
 	$lib_user32,
 	$lib_winmm
 )
+
+if ($force_cpp) {
+	$compiler_args += $flag_all_cpp
+}
 
 $raylib_headers  = Get-ChildItem -Path $path_raylib_src -Filter '*.h' -File
 $raylib_modules  = get-childitem -path $path_raylib_src -filter '*.c' -file
