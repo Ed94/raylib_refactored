@@ -102,6 +102,12 @@
     #define MAX_TEXTSPLIT_COUNT                  128        // Maximum number of substrings to split: TextSplit()
 #endif
 
+#if __cplusplus
+#define CAST(type) type
+#else
+#define CAST(type) (type)
+#endif
+
 RL_NS_BEGIN
 
 //----------------------------------------------------------------------------------
@@ -213,11 +219,19 @@ extern void LoadFontDefault(void)
     // Re-construct image from defaultFontData and generate OpenGL texture
     //----------------------------------------------------------------------
     Image imFont = {
+    #if __cplusplus
+        RL_CALLOC(128*128, 2),  // 2 bytes per pixel (gray + alpha)
+        128,
+        128,
+        1,
+        PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA
+    #else
         .data = RL_CALLOC(128*128, 2),  // 2 bytes per pixel (gray + alpha)
         .width = 128,
         .height = 128,
         .mipmaps = 1,
         .format = PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA
+    #endif
     };
 
     // Fill image.data with defaultFontData (convert from bit to pixel!)
@@ -465,11 +479,19 @@ Font LoadFontFromImage(Image image, Color key, int firstChar)
 
     // Create a new image with the processed color data (key color replaced by BLANK)
     Image fontClear = {
+    #if __cplusplus
+        pixels,
+        image.width,
+        image.height,
+        1,
+        PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
+    #else
         .data = pixels,
         .width = image.width,
         .height = image.height,
         .mipmaps = 1,
         .format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
+    #endif
     };
 
     // Set font with all data parsed from image
@@ -647,11 +669,19 @@ GlyphInfo *LoadFontData(const unsigned char *fileData, int dataSize, int fontSiz
                 if (ch == 32)
                 {
                     Image imSpace = {
+                    #if __cplusplus
+                        RL_CALLOC(chars[i].advanceX*fontSize, 2),
+                        chars[i].advanceX,
+                        fontSize,
+                        1,
+                        PIXELFORMAT_UNCOMPRESSED_GRAYSCALE
+                    #else
                         .data = RL_CALLOC(chars[i].advanceX*fontSize, 2),
                         .width = chars[i].advanceX,
                         .height = fontSize,
                         .mipmaps = 1,
                         .format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE
+                    #endif
                     };
 
                     chars[i].image = imSpace;
@@ -1128,7 +1158,7 @@ void DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, f
         {
             if ((codepoint != ' ') && (codepoint != '\t'))
             {
-                DrawTextCodepoint(font, codepoint, (Vector2){ position.x + textOffsetX, position.y + textOffsetY }, fontSize, tint);
+                DrawTextCodepoint(font, codepoint, CAST(Vector2){ position.x + textOffsetX, position.y + textOffsetY }, fontSize, tint);
             }
 
             if (font.glyphs[index].advanceX == 0) textOffsetX += ((float)font.recs[index].width*scaleFactor + spacing);
@@ -1148,7 +1178,7 @@ void DrawTextPro(Font font, const char *text, Vector2 position, Vector2 origin, 
         rlRotatef(rotation, 0.0f, 0.0f, 1.0f);
         rlTranslatef(-origin.x, -origin.y, 0.0f);
 
-        DrawTextEx(font, text, (Vector2){ 0.0f, 0.0f }, fontSize, spacing, tint);
+        DrawTextEx(font, text, CAST(Vector2){ 0.0f, 0.0f }, fontSize, spacing, tint);
 
     rlPopMatrix();
 }
@@ -1174,7 +1204,7 @@ void DrawTextCodepoint(Font font, int codepoint, Vector2 position, float fontSiz
                          font.recs[index].width + 2.0f*font.glyphPadding, font.recs[index].height + 2.0f*font.glyphPadding };
 
     // Draw the character texture on the screen
-    DrawTexturePro(font.texture, srcRec, dstRec, (Vector2){ 0, 0 }, 0.0f, tint);
+    DrawTexturePro(font.texture, srcRec, dstRec, CAST(Vector2){ 0, 0 }, 0.0f, tint);
 }
 
 // Draw multiple character (codepoints)
@@ -1199,7 +1229,7 @@ void DrawTextCodepoints(Font font, const int *codepoints, int codepointCount, Ve
         {
             if ((codepoints[i] != ' ') && (codepoints[i] != '\t'))
             {
-                DrawTextCodepoint(font, codepoints[i], (Vector2){ position.x + textOffsetX, position.y + textOffsetY }, fontSize, tint);
+                DrawTextCodepoint(font, codepoints[i], CAST(Vector2){ position.x + textOffsetX, position.y + textOffsetY }, fontSize, tint);
             }
 
             if (font.glyphs[index].advanceX == 0) textOffsetX += ((float)font.recs[index].width*scaleFactor + spacing);
@@ -1636,7 +1666,7 @@ int TextFindIndex(const char *text, const char *find)
 {
     int position = -1;
 
-    char *ptr = strstr(text, find);
+    char *ptr = (char*)strstr(text, find);
 
     if (ptr != NULL) position = (int)(ptr - text);
 
@@ -2073,8 +2103,8 @@ static Font LoadBMFont(const char *fileName)
     char *imPath = NULL;
     char *lastSlash = NULL;
 
-    lastSlash = strrchr(fileName, '/');
-    if (lastSlash == NULL) lastSlash = strrchr(fileName, '\\');
+    lastSlash = (char*)strrchr(fileName, '/');
+    if (lastSlash == NULL) lastSlash = (char*)strrchr(fileName, '\\');
 
     if (lastSlash != NULL)
     {
@@ -2093,11 +2123,19 @@ static Font LoadBMFont(const char *fileName)
     {
         // Convert image to GRAYSCALE + ALPHA, using the mask as the alpha channel
         Image imFontAlpha = {
+        #if __cplusplus
+            RL_CALLOC(imFont.width*imFont.height, 2),
+            imFont.width,
+            imFont.height,
+            1,
+            PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA
+        #else
             .data = RL_CALLOC(imFont.width*imFont.height, 2),
             .width = imFont.width,
             .height = imFont.height,
             .mipmaps = 1,
             .format = PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA
+        #endif
         };
 
         for (int p = 0, i = 0; p < (imFont.width*imFont.height*2); p += 2, i++)
@@ -2133,7 +2171,7 @@ static Font LoadBMFont(const char *fileName)
         if (readVars == 8)  // Make sure all char data has been properly read
         {
             // Get character rectangle in the font atlas texture
-            font.recs[i] = (Rectangle){ (float)charX, (float)charY, (float)charWidth, (float)charHeight };
+            font.recs[i] = CAST(Rectangle){ (float)charX, (float)charY, (float)charWidth, (float)charHeight };
 
             // Save data properly in sprite font
             font.glyphs[i].value = charId;
