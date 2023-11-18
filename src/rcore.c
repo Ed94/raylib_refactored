@@ -145,11 +145,15 @@
     #ifndef MAX_PATH
         #define MAX_PATH 1025
     #endif
+    #ifdef __cplusplus
     extern "C" {
+    #endif
     __declspec(dllimport) unsigned long __stdcall GetModuleFileNameA(void *hModule, void *lpFilename, unsigned long nSize);
     __declspec(dllimport) unsigned long __stdcall GetModuleFileNameW(void *hModule, void *lpFilename, unsigned long nSize);
     __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigned long flags, void *widestr, int cchwide, void *str, int cbmb, void *defchar, int *used_default);
+    #ifdef __cplusplus
     }
+    #endif
 #elif defined(__linux__)
     #include <unistd.h>
 #elif defined(__APPLE__)
@@ -476,10 +480,14 @@ static void RecordAutomationEvent(void); // Record frame events (to internal eve
 #endif
 
 #if defined(_WIN32)
-extern "C" {
-// NOTE: We declare Sleep() function symbol to avoid including windows.h (kernel32.lib linkage required)
-void __stdcall Sleep(unsigned long msTimeout);              // Required for: WaitTime()
-}
+    #ifdef __cplusplus
+    extern "C" {
+    #endif
+        // NOTE: We declare Sleep() function symbol to avoid including windows.h (kernel32.lib linkage required)
+        void __stdcall Sleep(unsigned long msTimeout);              // Required for: WaitTime()
+    #ifdef __cplusplus
+    }
+    #endif
 #endif
 
 #if !defined(SUPPORT_MODULE_RTEXT)

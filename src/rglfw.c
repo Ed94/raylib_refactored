@@ -59,7 +59,10 @@
 
 #include "config.h"
 
+#if __cplusplus
 extern "C" {
+#endif
+
 
 // Common modules to all platforms
 #include "external/glfw/src/init.c"
@@ -139,4 +142,7 @@ extern "C" {
     #include "external/glfw/src/osmesa_context.c"
 #endif
 
+#if __cplusplus
 }
+#endif
+

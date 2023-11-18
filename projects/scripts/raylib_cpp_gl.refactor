@@ -1,6 +1,6 @@
 // rlgl.h
 
-word RL_NOT_REFACTORED, RL_REFACTORED
+word RL_NOT_REFACTORED, RL_REFACTORED_CPP
 
 namespace rl_,
 namespace rl,

@@ -431,7 +431,7 @@ typedef enum {
 } rlGlVersion;
 
 // Will not define these if not built standalone OR RLAPI is defined which means this file was not refactored
-#if !defined(RL_REFACTORED)
+#if !defined(RL_REFACTORED_C) && !defined(RL_REFACTORED_CPP)
 // Trace log level
 // NOTE: Organized by priority level
 typedef enum {
@@ -4857,7 +4857,7 @@ static int rlGetPixelDataSize(int width, int height, int format)
 
 // Auxiliar math functions
 
-#if !defined(RAYMATH_H) && !defined(RL_REFACTORED)
+#if !defined(RAYMATH_H) && !defined(RL_REFACTORED_CPP)
 // Get identity matrix
 static Matrix rlMatrixIdentity(void)
 {

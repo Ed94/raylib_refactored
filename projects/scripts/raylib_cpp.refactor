@@ -6,7 +6,7 @@ namespace SUPPORT_, RL_SUPPORT_
 namespace MAX_,     RL_MAX_
 namespace AUDIO_,   RL_AUDIO_
 
-word RL_NOT_REFACTORED, RL_REFACTORED
+word RL_NOT_REFACTORED, RL_REFACTORED_CPP
 
 // raylib.h
 
