@@ -130,6 +130,7 @@
 #define RLGL_USE_CPP_MANGLING  1
 
 #if RLGL_USE_CPP_NAMESPACE && defined(__cplusplus)
+    #pragma message("USING CPP NAMESPACE")
     #define RLGL_NS_BEGIN namespace rlgl {
     #define RLGL_NS_END }
 #else
@@ -138,7 +139,7 @@
 #endif
 
 #if RLGL_USE_CPP_MANGLING && defined(__cplusplus)
-    #error "USING CPP MANGLING"
+    #pragma message("USING CPP MANGALING")
     #define RLGL_EXTERN_C_BEGIN
     #define RLGL_EXTERN_C_END
 #else
