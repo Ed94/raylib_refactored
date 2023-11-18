@@ -258,7 +258,7 @@
 
 #if RL_USE_CPP_NAMESPACE && defined(__cplusplus)
     #error "USING CPP NAMESPACE"
-    #define RL_NS_BEGIN namespace raylib {
+    #define RL_NS_BEGIN namespace rl {
     #define RL_NS_END }
 #else
     #define RL_NS_BEGIN

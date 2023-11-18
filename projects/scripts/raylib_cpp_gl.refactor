@@ -1,7 +1,10 @@
 // rlgl.h
 
+namespace rl_, 
 namespace rl, 
 namespace rlgl, 
+not word  rl
+not word  rlgl
 
 not include rlgl.h
 
