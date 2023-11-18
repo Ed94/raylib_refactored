@@ -424,7 +424,8 @@ typedef enum {
     RL_OPENGL_ES_30             // OpenGL ES 3.0 (GLSL 300 es)
 } rlGlVersion;
 
-#ifndef RAYLIB_H
+// Will not define these if not built standalone OR RLAPI is defined which means this file was not refactored
+#if !defined(RAYLIB_H) || defined(RLAPI)
 // Trace log level
 // NOTE: Organized by priority level
 typedef enum {
