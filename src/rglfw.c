@@ -57,6 +57,10 @@
     #define _WIN32_WINNT_WINXP      0x0501
 #endif
 
+#include "config.h"
+
+RL_EXTERN_C_BEGIN
+
 // Common modules to all platforms
 #include "external/glfw/src/init.c"
 #include "external/glfw/src/platform.c"
@@ -134,3 +138,5 @@
     #include "external/glfw/src/egl_context.c"
     #include "external/glfw/src/osmesa_context.c"
 #endif
+
+RL_EXTERN_C_END
