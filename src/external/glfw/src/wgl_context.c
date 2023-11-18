@@ -117,7 +117,7 @@ static int choosePixelFormatWGL(_GLFWwindow* window,
         }
     }
 
-    usableConfigs = _glfw_calloc(nativeCount, sizeof(_GLFWfbconfig));
+    usableConfigs = (_GLFWfbconfig*)_glfw_calloc(nativeCount, sizeof(_GLFWfbconfig));
 
     for (i = 0;  i < nativeCount;  i++)
     {
@@ -329,7 +329,7 @@ static void swapBuffersWGL(_GLFWwindow* window)
 
 static void swapIntervalWGL(int interval)
 {
-    _GLFWwindow* window = _glfwPlatformGetTls(&_glfw.contextSlot);
+    _GLFWwindow* window = (_GLFWwindow*)_glfwPlatformGetTls(&_glfw.contextSlot);
 
     window->context.wgl.interval = interval;
 
@@ -394,7 +394,7 @@ GLFWbool _glfwInitWGL(void)
     if (_glfw.wgl.instance)
         return GLFW_TRUE;
 
-    _glfw.wgl.instance = _glfwPlatformLoadModule("opengl32.dll");
+    _glfw.wgl.instance = (HINSTANCE)_glfwPlatformLoadModule("opengl32.dll");
     if (!_glfw.wgl.instance)
     {
         _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,

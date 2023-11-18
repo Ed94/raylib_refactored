@@ -41,8 +41,8 @@
 //
 static int compareVideoModes(const void* fp, const void* sp)
 {
-    const GLFWvidmode* fm = fp;
-    const GLFWvidmode* sm = sp;
+    const GLFWvidmode* fm = (GLFWvidmode*)fp;
+    const GLFWvidmode* sm = (GLFWvidmode*)sp;
     const int fbpp = fm->redBits + fm->greenBits + fm->blueBits;
     const int sbpp = sm->redBits + sm->greenBits + sm->blueBits;
     const int farea = fm->width * fm->height;
@@ -103,7 +103,7 @@ void _glfwInputMonitor(_GLFWmonitor* monitor, int action, int placement)
     if (action == GLFW_CONNECTED)
     {
         _glfw.monitorCount++;
-        _glfw.monitors =
+        _glfw.monitors = (_GLFWmonitor**)
             _glfw_realloc(_glfw.monitors,
                           sizeof(_GLFWmonitor*) * _glfw.monitorCount);
 
@@ -172,7 +172,7 @@ void _glfwInputMonitorWindow(_GLFWmonitor* monitor, _GLFWwindow* window)
 //
 _GLFWmonitor* _glfwAllocMonitor(const char* name, int widthMM, int heightMM)
 {
-    _GLFWmonitor* monitor = _glfw_calloc(1, sizeof(_GLFWmonitor));
+    _GLFWmonitor* monitor = (_GLFWmonitor*)_glfw_calloc(1, sizeof(_GLFWmonitor));
     monitor->widthMM = widthMM;
     monitor->heightMM = heightMM;
 
@@ -201,9 +201,9 @@ void _glfwFreeMonitor(_GLFWmonitor* monitor)
 //
 void _glfwAllocGammaArrays(GLFWgammaramp* ramp, unsigned int size)
 {
-    ramp->red = _glfw_calloc(size, sizeof(unsigned short));
-    ramp->green = _glfw_calloc(size, sizeof(unsigned short));
-    ramp->blue = _glfw_calloc(size, sizeof(unsigned short));
+    ramp->red = (unsigned short*)_glfw_calloc(size, sizeof(unsigned short));
+    ramp->green = (unsigned short*)_glfw_calloc(size, sizeof(unsigned short));
+    ramp->blue = (unsigned short*)_glfw_calloc(size, sizeof(unsigned short));
     ramp->size = size;
 }
 
@@ -478,7 +478,7 @@ GLFWAPI void glfwSetGamma(GLFWmonitor* handle, float gamma)
     if (!original)
         return;
 
-    values = _glfw_calloc(original->size, sizeof(unsigned short));
+    values = (unsigned short*)_glfw_calloc(original->size, sizeof(unsigned short));
 
     for (i = 0;  i < original->size;  i++)
     {

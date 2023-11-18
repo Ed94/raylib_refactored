@@ -488,7 +488,7 @@ void _glfwInitGamepadMappings(void)
 {
     size_t i;
     const size_t count = sizeof(_glfwDefaultMappings) / sizeof(char*);
-    _glfw.mappings = _glfw_calloc(count, sizeof(_GLFWmapping));
+    _glfw.mappings = (_GLFWmapping*)_glfw_calloc(count, sizeof(_GLFWmapping));
 
     for (i = 0;  i < count;  i++)
     {
@@ -519,9 +519,9 @@ _GLFWjoystick* _glfwAllocJoystick(const char* name,
 
     js = _glfw.joysticks + jid;
     js->allocated   = GLFW_TRUE;
-    js->axes        = _glfw_calloc(axisCount, sizeof(float));
-    js->buttons     = _glfw_calloc(buttonCount + (size_t) hatCount * 4, 1);
-    js->hats        = _glfw_calloc(hatCount, 1);
+    js->axes        = (float*)_glfw_calloc(axisCount, sizeof(float));
+    js->buttons     = (unsigned char*)_glfw_calloc(buttonCount + (size_t) hatCount * 4, 1);
+    js->hats        = (unsigned char*)_glfw_calloc(hatCount, 1);
     js->axisCount   = axisCount;
     js->buttonCount = buttonCount;
     js->hatCount    = hatCount;
@@ -843,7 +843,7 @@ GLFWAPI GLFWcursor* glfwCreateCursor(const GLFWimage* image, int xhot, int yhot)
         return NULL;
     }
 
-    cursor = _glfw_calloc(1, sizeof(_GLFWcursor));
+    cursor = (_GLFWcursor*)_glfw_calloc(1, sizeof(_GLFWcursor));
     cursor->next = _glfw.cursorListHead;
     _glfw.cursorListHead = cursor;
 
@@ -877,7 +877,7 @@ GLFWAPI GLFWcursor* glfwCreateStandardCursor(int shape)
         return NULL;
     }
 
-    cursor = _glfw_calloc(1, sizeof(_GLFWcursor));
+    cursor = (_GLFWcursor*)_glfw_calloc(1, sizeof(_GLFWcursor));
     cursor->next = _glfw.cursorListHead;
     _glfw.cursorListHead = cursor;
 
@@ -1279,7 +1279,7 @@ GLFWAPI int glfwUpdateGamepadMappings(const char* string)
                     else
                     {
                         _glfw.mappingCount++;
-                        _glfw.mappings =
+                        _glfw.mappings = (_GLFWmapping*)
                             _glfw_realloc(_glfw.mappings,
                                           sizeof(_GLFWmapping) * _glfw.mappingCount);
                         _glfw.mappings[_glfw.mappingCount - 1] = mapping;

@@ -178,8 +178,8 @@ static const char* getDeviceDescription(const XINPUT_CAPABILITIES* xic)
 //
 static int compareJoystickObjects(const void* first, const void* second)
 {
-    const _GLFWjoyobjectWin32* fo = first;
-    const _GLFWjoyobjectWin32* so = second;
+    const _GLFWjoyobjectWin32* fo = (const _GLFWjoyobjectWin32*)first;
+    const _GLFWjoyobjectWin32* so = (const _GLFWjoyobjectWin32*)second;
 
     if (fo->type != so->type)
         return fo->type - so->type;
@@ -199,7 +199,7 @@ static GLFWbool supportsXInput(const GUID* guid)
     if (GetRawInputDeviceList(NULL, &count, sizeof(RAWINPUTDEVICELIST)) != 0)
         return GLFW_FALSE;
 
-    ridl = _glfw_calloc(count, sizeof(RAWINPUTDEVICELIST));
+    ridl = (RAWINPUTDEVICELIST*)_glfw_calloc(count, sizeof(RAWINPUTDEVICELIST));
 
     if (GetRawInputDeviceList(ridl, &count, sizeof(RAWINPUTDEVICELIST)) == (UINT) -1)
     {
@@ -274,7 +274,7 @@ static void closeJoystick(_GLFWjoystick* js)
 static BOOL CALLBACK deviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi,
                                           void* user)
 {
-    _GLFWobjenumWin32* data = user;
+    _GLFWobjenumWin32* data = (_GLFWobjenumWin32*)user;
     _GLFWjoyobjectWin32* object = data->objects + data->objectCount;
 
     if (DIDFT_GETTYPE(doi->dwType) & DIDFT_AXIS)
@@ -367,10 +367,17 @@ static BOOL CALLBACK deviceCallback(const DIDEVICEINSTANCE* di, void* user)
     if (supportsXInput(&di->guidProduct))
         return DIENUM_CONTINUE;
 
+#ifdef __cplusplus
+    if (FAILED(_glfw.win32.dinput8.api->CreateDevice(
+                                        di->guidInstance,
+                                        &device,
+                                        NULL)))
+#else
     if (FAILED(IDirectInput8_CreateDevice(_glfw.win32.dinput8.api,
-                                          &di->guidInstance,
-                                          &device,
-                                          NULL)))
+                                        &di->guidInstance,
+                                        &device,
+                                        NULL)))
+#endif
     {
         _glfwInputError(GLFW_PLATFORM_ERROR, "Win32: Failed to create device");
         return DIENUM_CONTINUE;
@@ -416,7 +423,7 @@ static BOOL CALLBACK deviceCallback(const DIDEVICEINSTANCE* di, void* user)
 
     memset(&data, 0, sizeof(data));
     data.device = device;
-    data.objects = _glfw_calloc(dc.dwAxes + (size_t) dc.dwButtons + dc.dwPOVs,
+    data.objects = (_GLFWjoyobjectWin32*)_glfw_calloc(dc.dwAxes + (size_t) dc.dwButtons + dc.dwPOVs,
                                 sizeof(_GLFWjoyobjectWin32));
 
     if (FAILED(IDirectInputDevice8_EnumObjects(device,
@@ -574,11 +581,19 @@ GLFWbool _glfwInitJoysticksWin32(void)
 {
     if (_glfw.win32.dinput8.instance)
     {
+    #if __cplusplus
         if (FAILED(DirectInput8Create(_glfw.win32.instance,
                                       DIRECTINPUT_VERSION,
-                                      &IID_IDirectInput8W,
+                                      IID_IDirectInput8W,
                                       (void**) &_glfw.win32.dinput8.api,
                                       NULL)))
+    #else
+        if (FAILED(DirectInput8Create(_glfw.win32.instance,
+                                      DIRECTINPUT_VERSION,
+                                      (const IID *const)&IID_IDirectInput8W,
+                                      (void**) &_glfw.win32.dinput8.api,
+                                      NULL)))
+    #endif
         {
             _glfwInputError(GLFW_PLATFORM_ERROR,
                             "Win32: Failed to create interface");
