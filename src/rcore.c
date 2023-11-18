@@ -145,11 +145,11 @@
     #ifndef MAX_PATH
         #define MAX_PATH 1025
     #endif
-    RL_EXTERN_C_BEGIN
+    extern "C" {
     __declspec(dllimport) unsigned long __stdcall GetModuleFileNameA(void *hModule, void *lpFilename, unsigned long nSize);
     __declspec(dllimport) unsigned long __stdcall GetModuleFileNameW(void *hModule, void *lpFilename, unsigned long nSize);
     __declspec(dllimport) int __stdcall WideCharToMultiByte(unsigned int cp, unsigned long flags, void *widestr, int cchwide, void *str, int cbmb, void *defchar, int *used_default);
-    RL_EXTERN_C_END
+    }
 #elif defined(__linux__)
     #include <unistd.h>
 #elif defined(__APPLE__)
@@ -476,10 +476,10 @@ static void RecordAutomationEvent(void); // Record frame events (to internal eve
 #endif
 
 #if defined(_WIN32)
-RL_EXTERN_C_BEGIN
+extern "C" {
 // NOTE: We declare Sleep() function symbol to avoid including windows.h (kernel32.lib linkage required)
 void __stdcall Sleep(unsigned long msTimeout);              // Required for: WaitTime()
-RL_EXTERN_C_END
+}
 #endif
 
 #if !defined(SUPPORT_MODULE_RTEXT)

@@ -5,6 +5,8 @@ namespace SUPPORT_, RL_SUPPORT_
 namespace MAX_,     RL_MAX_
 namespace AUDIO_,   RL_AUDIO_
 
+word RL_NOT_REFACTORED, RL_REFACTORED
+
 // raylib.h
 
 word BUILD_LIBTYPE_SHARED, RL_BUILD_LIBTYPE_SHARED

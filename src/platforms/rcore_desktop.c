@@ -65,10 +65,10 @@
 
     #if defined(SUPPORT_WINMM_HIGHRES_TIMER) && !defined(SUPPORT_BUSY_WAIT_LOOP)
         // NOTE: Those functions require linking with winmm library
-        RL_EXTERN_C_BEGIN
+        extern "C" {
         unsigned int __stdcall timeBeginPeriod(unsigned int uPeriod);
         unsigned int __stdcall timeEndPeriod(unsigned int uPeriod);
-        RL_EXTERN_C_END
+        }
     #endif
 #endif
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__)

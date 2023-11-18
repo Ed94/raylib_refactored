@@ -59,7 +59,7 @@
 
 #include "config.h"
 
-RL_EXTERN_C_BEGIN
+extern "C" {
 
 // Common modules to all platforms
 #include "external/glfw/src/init.c"
@@ -139,4 +139,4 @@ RL_EXTERN_C_BEGIN
     #include "external/glfw/src/osmesa_context.c"
 #endif
 
-RL_EXTERN_C_END
+}

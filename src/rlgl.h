@@ -126,8 +126,13 @@
 #endif
 #endif
 
+// Indicates of raylib has been refactored
+#ifndef RL_NOT_REFACTORED
+#define RL_NOT_REFACTORED
+#endif
+
 #define RLGL_USE_CPP_NAMESPACE 0
-#define RLGL_USE_CPP_MANGLING  0
+#define RLGL_USE_CPP_MANGLING  1
 
 #if RLGL_USE_CPP_NAMESPACE && defined(__cplusplus)
     #pragma message("USING CPP ")
@@ -426,7 +431,7 @@ typedef enum {
 } rlGlVersion;
 
 // Will not define these if not built standalone OR RLAPI is defined which means this file was not refactored
-#if !defined(RAYLIB_H) || defined(RLAPI)
+#if !defined(RL_REFACTORED)
 // Trace log level
 // NOTE: Organized by priority level
 typedef enum {
@@ -4852,6 +4857,7 @@ static int rlGetPixelDataSize(int width, int height, int format)
 
 // Auxiliar math functions
 
+#if !defined(RAYMATH_H) && !defined(RL_REFACTORED)
 // Get identity matrix
 static Matrix rlMatrixIdentity(void)
 {
@@ -4890,6 +4896,7 @@ static Matrix rlMatrixMultiply(Matrix left, Matrix right)
 
     return result;
 }
+#endif
 
 RLGL_EXTERN_C_END
 

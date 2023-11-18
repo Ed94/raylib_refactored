@@ -253,8 +253,13 @@
 
 #endif // CONFIG_H
 
+// Indicates of raylib has been refactored
+#ifndef RL_NOT_REFACTORED
+#define RL_NOT_REFACTORED
+#endif
+
 #define RL_USE_CPP_NAMESPACE 0
-#define RL_USE_CPP_MANGLING  0
+#define RL_USE_CPP_MANGLING  1
 
 #if RL_USE_CPP_NAMESPACE && defined(__cplusplus)
     #pragma message("USING CPP NAMESPACE")

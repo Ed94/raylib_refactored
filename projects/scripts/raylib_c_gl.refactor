@@ -1,6 +1,8 @@
 // rlgl.h
 not include rlgl.h
 
+word RL_NOT_REFACTORED, RL_REFACTORED
+
     namespace rl, rlgl
 not namespace rlgl
 
