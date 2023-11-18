@@ -3,35 +3,35 @@
 *   rtextures - Basic functions to load and draw textures
 *
 *   CONFIGURATION:
-*       #define SUPPORT_MODULE_RTEXTURES
+*       #define RL_SUPPORT_MODULE_RTEXTURES
 *           rtextures module is included in the build
 *
-*       #define SUPPORT_FILEFORMAT_BMP
-*       #define SUPPORT_FILEFORMAT_PNG
-*       #define SUPPORT_FILEFORMAT_TGA
-*       #define SUPPORT_FILEFORMAT_JPG
-*       #define SUPPORT_FILEFORMAT_GIF
-*       #define SUPPORT_FILEFORMAT_QOI
-*       #define SUPPORT_FILEFORMAT_PSD
-*       #define SUPPORT_FILEFORMAT_HDR
-*       #define SUPPORT_FILEFORMAT_PIC
-*       #define SUPPORT_FILEFORMAT_PNM
-*       #define SUPPORT_FILEFORMAT_DDS
-*       #define SUPPORT_FILEFORMAT_PKM
-*       #define SUPPORT_FILEFORMAT_KTX
-*       #define SUPPORT_FILEFORMAT_PVR
-*       #define SUPPORT_FILEFORMAT_ASTC
+*       #define RL_SUPPORT_FILEFORMAT_BMP
+*       #define RL_SUPPORT_FILEFORMAT_PNG
+*       #define RL_SUPPORT_FILEFORMAT_TGA
+*       #define RL_SUPPORT_FILEFORMAT_JPG
+*       #define RL_SUPPORT_FILEFORMAT_GIF
+*       #define RL_SUPPORT_FILEFORMAT_QOI
+*       #define RL_SUPPORT_FILEFORMAT_PSD
+*       #define RL_SUPPORT_FILEFORMAT_HDR
+*       #define RL_SUPPORT_FILEFORMAT_PIC
+*       #define RL_SUPPORT_FILEFORMAT_PNM
+*       #define RL_SUPPORT_FILEFORMAT_DDS
+*       #define RL_SUPPORT_FILEFORMAT_PKM
+*       #define RL_SUPPORT_FILEFORMAT_KTX
+*       #define RL_SUPPORT_FILEFORMAT_PVR
+*       #define RL_SUPPORT_FILEFORMAT_ASTC
 *           Select desired fileformats to be supported for image data loading. Some of those formats are
 *           supported by default, to remove support, just comment unrequired #define in this module
 *
-*       #define SUPPORT_IMAGE_EXPORT
+*       #define RL_SUPPORT_IMAGE_EXPORT
 *           Support image export in multiple file formats
 *
-*       #define SUPPORT_IMAGE_MANIPULATION
+*       #define RL_SUPPORT_IMAGE_MANIPULATION
 *           Support multiple image editing functions to scale, adjust colors, flip, draw on images, crop...
 *           If not defined only some image editing functions supported: ImageFormat(), ImageAlphaMask(), ImageResize*()
 *
-*       #define SUPPORT_IMAGE_GENERATION
+*       #define RL_SUPPORT_IMAGE_GENERATION
 *           Support procedural image generation functionality (gradient, spot, perlin-noise, cellular)
 *
 *   DEPENDENCIES:
@@ -68,9 +68,9 @@
     #include "config.h"         // Defines module configuration flags
 #endif
 
-#if defined(SUPPORT_MODULE_RTEXTURES)
+#if defined(RL_SUPPORT_MODULE_RTEXTURES)
 
-#include "utils.h"              // Required for: TRACELOG()
+#include "utils.h"              // Required for: RL_TRACELOG()
 #include "rlgl.h"               // OpenGL abstraction layer to OpenGL 1.1, 3.3 or ES2
 
 #include <stdlib.h>             // Required for: malloc(), free()
@@ -79,47 +79,47 @@
 #include <stdio.h>              // Required for: sprintf() [Used in ExportImageAsCode()]
 
 // Support only desired texture formats on stb_image
-#if !defined(SUPPORT_FILEFORMAT_BMP)
+#if !defined(RL_SUPPORT_FILEFORMAT_BMP)
     #define STBI_NO_BMP
 #endif
-#if !defined(SUPPORT_FILEFORMAT_PNG)
+#if !defined(RL_SUPPORT_FILEFORMAT_PNG)
     #define STBI_NO_PNG
 #endif
-#if !defined(SUPPORT_FILEFORMAT_TGA)
+#if !defined(RL_SUPPORT_FILEFORMAT_TGA)
     #define STBI_NO_TGA
 #endif
-#if !defined(SUPPORT_FILEFORMAT_JPG)
+#if !defined(RL_SUPPORT_FILEFORMAT_JPG)
     #define STBI_NO_JPEG        // Image format .jpg and .jpeg
 #endif
-#if !defined(SUPPORT_FILEFORMAT_PSD)
+#if !defined(RL_SUPPORT_FILEFORMAT_PSD)
     #define STBI_NO_PSD
 #endif
-#if !defined(SUPPORT_FILEFORMAT_GIF)
+#if !defined(RL_SUPPORT_FILEFORMAT_GIF)
     #define STBI_NO_GIF
 #endif
-#if !defined(SUPPORT_FILEFORMAT_PIC)
+#if !defined(RL_SUPPORT_FILEFORMAT_PIC)
     #define STBI_NO_PIC
 #endif
-#if !defined(SUPPORT_FILEFORMAT_HDR)
+#if !defined(RL_SUPPORT_FILEFORMAT_HDR)
     #define STBI_NO_HDR
 #endif
-#if !defined(SUPPORT_FILEFORMAT_PNM)
+#if !defined(RL_SUPPORT_FILEFORMAT_PNM)
     #define STBI_NO_PNM
 #endif
 
-#if defined(SUPPORT_FILEFORMAT_DDS)
+#if defined(RL_SUPPORT_FILEFORMAT_DDS)
     #define RL_GPUTEX_SUPPORT_DDS
 #endif
-#if defined(SUPPORT_FILEFORMAT_PKM)
+#if defined(RL_SUPPORT_FILEFORMAT_PKM)
     #define RL_GPUTEX_SUPPORT_PKM
 #endif
-#if defined(SUPPORT_FILEFORMAT_KTX)
+#if defined(RL_SUPPORT_FILEFORMAT_KTX)
     #define RL_GPUTEX_SUPPORT_KTX
 #endif
-#if defined(SUPPORT_FILEFORMAT_PVR)
+#if defined(RL_SUPPORT_FILEFORMAT_PVR)
     #define RL_GPUTEX_SUPPORT_PVR
 #endif
-#if defined(SUPPORT_FILEFORMAT_ASTC)
+#if defined(RL_SUPPORT_FILEFORMAT_ASTC)
     #define RL_GPUTEX_SUPPORT_ASTC
 #endif
 
@@ -128,15 +128,15 @@
     #define STBI_NO_SIMD
 #endif
 
-#if (defined(SUPPORT_FILEFORMAT_BMP) || \
-     defined(SUPPORT_FILEFORMAT_PNG) || \
-     defined(SUPPORT_FILEFORMAT_TGA) || \
-     defined(SUPPORT_FILEFORMAT_JPG) || \
-     defined(SUPPORT_FILEFORMAT_PSD) || \
-     defined(SUPPORT_FILEFORMAT_GIF) || \
-     defined(SUPPORT_FILEFORMAT_HDR) || \
-     defined(SUPPORT_FILEFORMAT_PIC) || \
-     defined(SUPPORT_FILEFORMAT_PNM))
+#if (defined(RL_SUPPORT_FILEFORMAT_BMP) || \
+     defined(RL_SUPPORT_FILEFORMAT_PNG) || \
+     defined(RL_SUPPORT_FILEFORMAT_TGA) || \
+     defined(RL_SUPPORT_FILEFORMAT_JPG) || \
+     defined(RL_SUPPORT_FILEFORMAT_PSD) || \
+     defined(RL_SUPPORT_FILEFORMAT_GIF) || \
+     defined(RL_SUPPORT_FILEFORMAT_HDR) || \
+     defined(RL_SUPPORT_FILEFORMAT_PIC) || \
+     defined(RL_SUPPORT_FILEFORMAT_PNM))
 
     #if defined(__GNUC__) // GCC and Clang
         #pragma GCC diagnostic push
@@ -158,11 +158,11 @@
     #endif
 #endif
 
-#if (defined(SUPPORT_FILEFORMAT_DDS) || \
-     defined(SUPPORT_FILEFORMAT_PKM) || \
-     defined(SUPPORT_FILEFORMAT_KTX) || \
-     defined(SUPPORT_FILEFORMAT_PVR) || \
-     defined(SUPPORT_FILEFORMAT_ASTC))
+#if (defined(RL_SUPPORT_FILEFORMAT_DDS) || \
+     defined(RL_SUPPORT_FILEFORMAT_PKM) || \
+     defined(RL_SUPPORT_FILEFORMAT_KTX) || \
+     defined(RL_SUPPORT_FILEFORMAT_PVR) || \
+     defined(RL_SUPPORT_FILEFORMAT_ASTC))
 
     #if defined(__GNUC__) // GCC and Clang
         #pragma GCC diagnostic push
@@ -178,7 +178,7 @@
     #endif
 #endif
 
-#if defined(SUPPORT_FILEFORMAT_QOI)
+#if defined(RL_SUPPORT_FILEFORMAT_QOI)
     #define QOI_MALLOC RL_MALLOC
     #define QOI_FREE RL_FREE
 
@@ -196,7 +196,7 @@
 
 #endif
 
-#if defined(SUPPORT_IMAGE_EXPORT)
+#if defined(RL_SUPPORT_IMAGE_EXPORT)
     #define STBIW_MALLOC RL_MALLOC
     #define STBIW_FREE RL_FREE
     #define STBIW_REALLOC RL_REALLOC
@@ -205,7 +205,7 @@
     #include "external/stb_image_write.h"   // Required for: stbi_write_*()
 #endif
 
-#if defined(SUPPORT_IMAGE_GENERATION)
+#if defined(RL_SUPPORT_IMAGE_GENERATION)
     #define STB_PERLIN_IMPLEMENTATION
     #include "external/stb_perlin.h"        // Required for: stb_perlin_fbm_noise3
 #endif
@@ -215,7 +215,7 @@
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "external/stb_image_resize2.h"  // Required for: stbir_resize_uint8_linear() [ImageResize()]
 
-#if defined(SUPPORT_FILEFORMAT_SVG)
+#if defined(RL_SUPPORT_FILEFORMAT_SVG)
 	#define NANOSVG_IMPLEMENTATION	// Expands implementation
 	#include "external/nanosvg.h"
 
@@ -267,15 +267,15 @@ Image LoadImage(const char *fileName)
 {
     Image image = { 0 };
 
-#if defined(SUPPORT_FILEFORMAT_PNG) || \
-    defined(SUPPORT_FILEFORMAT_BMP) || \
-    defined(SUPPORT_FILEFORMAT_TGA) || \
-    defined(SUPPORT_FILEFORMAT_JPG) || \
-    defined(SUPPORT_FILEFORMAT_GIF) || \
-    defined(SUPPORT_FILEFORMAT_PIC) || \
-    defined(SUPPORT_FILEFORMAT_HDR) || \
-    defined(SUPPORT_FILEFORMAT_PNM) || \
-    defined(SUPPORT_FILEFORMAT_PSD)
+#if defined(RL_SUPPORT_FILEFORMAT_PNG) || \
+    defined(RL_SUPPORT_FILEFORMAT_BMP) || \
+    defined(RL_SUPPORT_FILEFORMAT_TGA) || \
+    defined(RL_SUPPORT_FILEFORMAT_JPG) || \
+    defined(RL_SUPPORT_FILEFORMAT_GIF) || \
+    defined(RL_SUPPORT_FILEFORMAT_PIC) || \
+    defined(RL_SUPPORT_FILEFORMAT_HDR) || \
+    defined(RL_SUPPORT_FILEFORMAT_PNM) || \
+    defined(RL_SUPPORT_FILEFORMAT_PSD)
 
     #define STBI_REQUIRED
 #endif
@@ -325,7 +325,7 @@ Image LoadImageSvg(const char *fileNameOrString, int width, int height)
 {
     Image image = { 0 };
 
-#if defined(SUPPORT_FILEFORMAT_SVG)
+#if defined(RL_SUPPORT_FILEFORMAT_SVG)
     bool isSvgStringValid = false;
 
     // Validate fileName or string
@@ -392,7 +392,7 @@ Image LoadImageSvg(const char *fileNameOrString, int width, int height)
         if (isSvgStringValid && (fileData != fileNameOrString)) UnloadFileData(fileData);
     }
 #else
-    TRACELOG(LOG_WARNING, "SVG image support not enabled, image can not be loaded");
+    RL_TRACELOG(LOG_WARNING, "SVG image support not enabled, image can not be loaded");
 #endif
 
     return image;
@@ -408,7 +408,7 @@ Image LoadImageAnim(const char *fileName, int *frames)
     Image image = { 0 };
     int frameCount = 0;
 
-#if defined(SUPPORT_FILEFORMAT_GIF)
+#if defined(RL_SUPPORT_FILEFORMAT_GIF)
     if (IsFileExtension(fileName, ".gif"))
     {
         int dataSize = 0;
@@ -447,30 +447,30 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
     Image image = { 0 };
 
     if ((false)
-#if defined(SUPPORT_FILEFORMAT_PNG)
+#if defined(RL_SUPPORT_FILEFORMAT_PNG)
         || (strcmp(fileType, ".png") == 0) || (strcmp(fileType, ".PNG") == 0)
 #endif
-#if defined(SUPPORT_FILEFORMAT_BMP)
+#if defined(RL_SUPPORT_FILEFORMAT_BMP)
         || (strcmp(fileType, ".bmp") == 0) || (strcmp(fileType, ".BMP") == 0)
 #endif
-#if defined(SUPPORT_FILEFORMAT_TGA)
+#if defined(RL_SUPPORT_FILEFORMAT_TGA)
         || (strcmp(fileType, ".tga") == 0) || (strcmp(fileType, ".TGA") == 0)
 #endif
-#if defined(SUPPORT_FILEFORMAT_JPG)
+#if defined(RL_SUPPORT_FILEFORMAT_JPG)
         || (strcmp(fileType, ".jpg") == 0) || (strcmp(fileType, ".jpeg") == 0)
         || (strcmp(fileType, ".JPG") == 0) || (strcmp(fileType, ".JPEG") == 0)
 #endif
-#if defined(SUPPORT_FILEFORMAT_GIF)
+#if defined(RL_SUPPORT_FILEFORMAT_GIF)
         || (strcmp(fileType, ".gif") == 0) || (strcmp(fileType, ".GIF") == 0)
 #endif
-#if defined(SUPPORT_FILEFORMAT_PIC)
+#if defined(RL_SUPPORT_FILEFORMAT_PIC)
         || (strcmp(fileType, ".pic") == 0) || (strcmp(fileType, ".PIC") == 0)
 #endif
-#if defined(SUPPORT_FILEFORMAT_PNM)
+#if defined(RL_SUPPORT_FILEFORMAT_PNM)
         || (strcmp(fileType, ".ppm") == 0) || (strcmp(fileType, ".pgm") == 0)
         || (strcmp(fileType, ".PPM") == 0) || (strcmp(fileType, ".PGM") == 0)
 #endif
-#if defined(SUPPORT_FILEFORMAT_PSD)
+#if defined(RL_SUPPORT_FILEFORMAT_PSD)
         || (strcmp(fileType, ".psd") == 0) || (strcmp(fileType, ".PSD") == 0)
 #endif
         )
@@ -495,7 +495,7 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
         }
 #endif
     }
-#if defined(SUPPORT_FILEFORMAT_HDR)
+#if defined(RL_SUPPORT_FILEFORMAT_HDR)
     else if ((strcmp(fileType, ".hdr") == 0) || (strcmp(fileType, ".HDR") == 0))
     {
 #if defined(STBI_REQUIRED)
@@ -511,14 +511,14 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
             else if (comp == 4) image.format = PIXELFORMAT_UNCOMPRESSED_R32G32B32A32;
             else
             {
-                TRACELOG(LOG_WARNING, "IMAGE: HDR file format not supported");
+                RL_TRACELOG(LOG_WARNING, "IMAGE: HDR file format not supported");
                 UnloadImage(image);
             }
         }
 #endif
     }
 #endif
-#if defined(SUPPORT_FILEFORMAT_QOI)
+#if defined(RL_SUPPORT_FILEFORMAT_QOI)
     else if ((strcmp(fileType, ".qoi") == 0) || (strcmp(fileType, ".QOI") == 0))
     {
         if (fileData != NULL)
@@ -532,7 +532,7 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
         }
     }
 #endif
-#if defined(SUPPORT_FILEFORMAT_SVG)
+#if defined(RL_SUPPORT_FILEFORMAT_SVG)
     else if ((strcmp(fileType, ".svg") == 0) || (strcmp(fileType, ".SVG") == 0))
     {
         // Validate fileData as valid SVG string data
@@ -562,40 +562,40 @@ Image LoadImageFromMemory(const char *fileType, const unsigned char *fileData, i
         }
     }
 #endif
-#if defined(SUPPORT_FILEFORMAT_DDS)
+#if defined(RL_SUPPORT_FILEFORMAT_DDS)
     else if ((strcmp(fileType, ".dds") == 0) || (strcmp(fileType, ".DDS") == 0))
     {
-        image.data = rl_load_dds_from_memory(fileData, dataSize, &image.width, &image.height, &image.format, &image.mipmaps);
+        image.data = load_dds_from_memory(fileData, dataSize, &image.width, &image.height, &image.format, &image.mipmaps);
     }
 #endif
-#if defined(SUPPORT_FILEFORMAT_PKM)
+#if defined(RL_SUPPORT_FILEFORMAT_PKM)
     else if ((strcmp(fileType, ".pkm") == 0) || (strcmp(fileType, ".PKM") == 0))
     {
-        image.data = rl_load_pkm_from_memory(fileData, dataSize, &image.width, &image.height, &image.format, &image.mipmaps);
+        image.data = load_pkm_from_memory(fileData, dataSize, &image.width, &image.height, &image.format, &image.mipmaps);
     }
 #endif
-#if defined(SUPPORT_FILEFORMAT_KTX)
+#if defined(RL_SUPPORT_FILEFORMAT_KTX)
     else if ((strcmp(fileType, ".ktx") == 0) || (strcmp(fileType, ".KTX") == 0))
     {
-        image.data = rl_load_ktx_from_memory(fileData, dataSize, &image.width, &image.height, &image.format, &image.mipmaps);
+        image.data = load_ktx_from_memory(fileData, dataSize, &image.width, &image.height, &image.format, &image.mipmaps);
     }
 #endif
-#if defined(SUPPORT_FILEFORMAT_PVR)
+#if defined(RL_SUPPORT_FILEFORMAT_PVR)
     else if ((strcmp(fileType, ".pvr") == 0) || (strcmp(fileType, ".PVR") == 0))
     {
-        image.data = rl_load_pvr_from_memory(fileData, dataSize, &image.width, &image.height, &image.format, &image.mipmaps);
+        image.data = load_pvr_from_memory(fileData, dataSize, &image.width, &image.height, &image.format, &image.mipmaps);
     }
 #endif
-#if defined(SUPPORT_FILEFORMAT_ASTC)
+#if defined(RL_SUPPORT_FILEFORMAT_ASTC)
     else if ((strcmp(fileType, ".astc") == 0) || (strcmp(fileType, ".ASTC") == 0))
     {
-        image.data = rl_load_astc_from_memory(fileData, dataSize, &image.width, &image.height, &image.format, &image.mipmaps);
+        image.data = load_astc_from_memory(fileData, dataSize, &image.width, &image.height, &image.format, &image.mipmaps);
     }
 #endif
-    else TRACELOG(LOG_WARNING, "IMAGE: Data format not supported");
+    else RL_TRACELOG(LOG_WARNING, "IMAGE: Data format not supported");
 
-    if (image.data != NULL) TRACELOG(LOG_INFO, "IMAGE: Data loaded successfully (%ix%i | %s | %i mipmaps)", image.width, image.height, rlGetPixelFormatName(image.format), image.mipmaps);
-    else TRACELOG(LOG_WARNING, "IMAGE: Failed to load image data");
+    if (image.data != NULL) RL_TRACELOG(LOG_INFO, "IMAGE: Data loaded successfully (%ix%i | %s | %i mipmaps)", image.width, image.height, GetPixelFormatName(image.format), image.mipmaps);
+    else RL_TRACELOG(LOG_WARNING, "IMAGE: Failed to load image data");
 
     return image;
 }
@@ -608,7 +608,7 @@ Image LoadImageFromTexture(Texture2D texture)
 
     if (texture.format < PIXELFORMAT_COMPRESSED_DXT1_RGB)
     {
-        image.data = rlReadTexturePixels(texture.id, texture.width, texture.height, texture.format);
+        image.data = ReadTexturePixels(texture.id, texture.width, texture.height, texture.format);
 
         if (image.data != NULL)
         {
@@ -623,11 +623,11 @@ Image LoadImageFromTexture(Texture2D texture)
             // original texture format is retrieved on RPI...
             image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
 #endif
-            TRACELOG(LOG_INFO, "TEXTURE: [ID %i] Pixel data retrieved successfully", texture.id);
+            RL_TRACELOG(LOG_INFO, "TEXTURE: [ID %i] Pixel data retrieved successfully", texture.id);
         }
-        else TRACELOG(LOG_WARNING, "TEXTURE: [ID %i] Failed to retrieve pixel data", texture.id);
+        else RL_TRACELOG(LOG_WARNING, "TEXTURE: [ID %i] Failed to retrieve pixel data", texture.id);
     }
-    else TRACELOG(LOG_WARNING, "TEXTURE: [ID %i] Failed to retrieve compressed pixel data", texture.id);
+    else RL_TRACELOG(LOG_WARNING, "TEXTURE: [ID %i] Failed to retrieve compressed pixel data", texture.id);
 
     return image;
 }
@@ -641,7 +641,7 @@ Image LoadImageFromScreen(void)
     image.height = GetScreenHeight();
     image.mipmaps = 1;
     image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
-    image.data = rlReadScreenPixels(image.width, image.height);
+    image.data = ReadScreenPixels(image.width, image.height);
 
     return image;
 }
@@ -670,7 +670,7 @@ bool ExportImage(Image image, const char *fileName)
 
     if ((image.width == 0) || (image.height == 0) || (image.data == NULL)) return result;
 
-#if defined(SUPPORT_IMAGE_EXPORT)
+#if defined(RL_SUPPORT_IMAGE_EXPORT)
     int channels = 4;
     bool allocatedData = false;
     unsigned char *imgData = (unsigned char *)image.data;
@@ -686,7 +686,7 @@ bool ExportImage(Image image, const char *fileName)
         allocatedData = true;
     }
 
-#if defined(SUPPORT_FILEFORMAT_PNG)
+#if defined(RL_SUPPORT_FILEFORMAT_PNG)
     if (IsFileExtension(fileName, ".png"))
     {
         int dataSize = 0;
@@ -697,23 +697,23 @@ bool ExportImage(Image image, const char *fileName)
 #else
     if (false) { }
 #endif
-#if defined(SUPPORT_FILEFORMAT_BMP)
+#if defined(RL_SUPPORT_FILEFORMAT_BMP)
     else if (IsFileExtension(fileName, ".bmp")) result = stbi_write_bmp(fileName, image.width, image.height, channels, imgData);
 #endif
-#if defined(SUPPORT_FILEFORMAT_TGA)
+#if defined(RL_SUPPORT_FILEFORMAT_TGA)
     else if (IsFileExtension(fileName, ".tga")) result = stbi_write_tga(fileName, image.width, image.height, channels, imgData);
 #endif
-#if defined(SUPPORT_FILEFORMAT_JPG)
+#if defined(RL_SUPPORT_FILEFORMAT_JPG)
     else if (IsFileExtension(fileName, ".jpg") ||
              IsFileExtension(fileName, ".jpeg")) result = stbi_write_jpg(fileName, image.width, image.height, channels, imgData, 90);  // JPG quality: between 1 and 100
 #endif
-#if defined(SUPPORT_FILEFORMAT_QOI)
+#if defined(RL_SUPPORT_FILEFORMAT_QOI)
     else if (IsFileExtension(fileName, ".qoi"))
     {
         channels = 0;
         if (image.format == PIXELFORMAT_UNCOMPRESSED_R8G8B8) channels = 3;
         else if (image.format == PIXELFORMAT_UNCOMPRESSED_R8G8B8A8) channels = 4;
-        else TRACELOG(LOG_WARNING, "IMAGE: Image pixel format must be R8G8B8 or R8G8B8A8");
+        else RL_TRACELOG(LOG_WARNING, "IMAGE: Image pixel format must be R8G8B8 or R8G8B8A8");
 
         if ((channels == 3) || (channels == 4))
         {
@@ -727,10 +727,10 @@ bool ExportImage(Image image, const char *fileName)
         }
     }
 #endif
-#if defined(SUPPORT_FILEFORMAT_KTX)
+#if defined(RL_SUPPORT_FILEFORMAT_KTX)
     else if (IsFileExtension(fileName, ".ktx"))
     {
-        result = rl_save_ktx(fileName, image.data, image.width, image.height, image.format, image.mipmaps);
+        result = save_ktx(fileName, image.data, image.width, image.height, image.format, image.mipmaps);
     }
 #endif
     else if (IsFileExtension(fileName, ".raw"))
@@ -741,10 +741,10 @@ bool ExportImage(Image image, const char *fileName)
     }
 
     if (allocatedData) RL_FREE(imgData);
-#endif      // SUPPORT_IMAGE_EXPORT
+#endif      // RL_SUPPORT_IMAGE_EXPORT
 
-    if (result != 0) TRACELOG(LOG_INFO, "FILEIO: [%s] Image exported successfully", fileName);
-    else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to export image", fileName);
+    if (result != 0) RL_TRACELOG(LOG_INFO, "FILEIO: [%s] Image exported successfully", fileName);
+    else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to export image", fileName);
 
     return result;
 }
@@ -757,7 +757,7 @@ unsigned char *ExportImageToMemory(Image image, const char *fileType, int *dataS
 
     if ((image.width == 0) || (image.height == 0) || (image.data == NULL)) return NULL;
 
-#if defined(SUPPORT_IMAGE_EXPORT)
+#if defined(RL_SUPPORT_IMAGE_EXPORT)
     int channels = 4;
 
     if (image.format == PIXELFORMAT_UNCOMPRESSED_GRAYSCALE) channels = 1;
@@ -765,7 +765,7 @@ unsigned char *ExportImageToMemory(Image image, const char *fileType, int *dataS
     else if (image.format == PIXELFORMAT_UNCOMPRESSED_R8G8B8) channels = 3;
     else if (image.format == PIXELFORMAT_UNCOMPRESSED_R8G8B8A8) channels = 4;
 
-#if defined(SUPPORT_FILEFORMAT_PNG)
+#if defined(RL_SUPPORT_FILEFORMAT_PNG)
     if ((strcmp(fileType, ".png") == 0) || (strcmp(fileType, ".PNG") == 0))
     {
         fileData = stbi_write_png_to_mem((const unsigned char *)image.data, image.width*channels, image.width, image.height, channels, dataSize);
@@ -782,7 +782,7 @@ bool ExportImageAsCode(Image image, const char *fileName)
 {
     bool success = false;
 
-#if defined(SUPPORT_IMAGE_EXPORT)
+#if defined(RL_SUPPORT_IMAGE_EXPORT)
 
 #ifndef TEXT_BYTES_PER_LINE
     #define TEXT_BYTES_PER_LINE     20
@@ -826,10 +826,10 @@ bool ExportImageAsCode(Image image, const char *fileName)
 
     RL_FREE(txtData);
 
-#endif      // SUPPORT_IMAGE_EXPORT
+#endif      // RL_SUPPORT_IMAGE_EXPORT
 
-    if (success != 0) TRACELOG(LOG_INFO, "FILEIO: [%s] Image as code exported successfully", fileName);
-    else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to export image as code", fileName);
+    if (success != 0) RL_TRACELOG(LOG_INFO, "FILEIO: [%s] Image as code exported successfully", fileName);
+    else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to export image as code", fileName);
 
     return success;
 }
@@ -863,7 +863,7 @@ Image GenImageColor(int width, int height, Color color)
     return image;
 }
 
-#if defined(SUPPORT_IMAGE_GENERATION)
+#if defined(RL_SUPPORT_IMAGE_GENERATION)
 // Generate image: linear gradient
 // The direction value specifies the direction of the gradient (in degrees)
 // with 0 being vertical (from top to bottom), 90 being horizontal (from left to right).
@@ -1056,8 +1056,8 @@ Image GenImageWhiteNoise(int width, int height, float factor)
 
     for (int i = 0; i < width*height; i++)
     {
-        if (GetRandomValue(0, 99) < (int)(factor*100.0f)) pixels[i] = WHITE;
-        else pixels[i] = BLACK;
+        if (GetRandomValue(0, 99) < (int)(factor*100.0f)) pixels[i] = RL_WHITE;
+        else pixels[i] = RL_BLACK;
     }
 
     Image image = {
@@ -1223,7 +1223,7 @@ Image GenImageText(int width, int height, const char *text)
 
     return image;
 }
-#endif      // SUPPORT_IMAGE_GENERATION
+#endif      // RL_SUPPORT_IMAGE_GENERATION
 
 //------------------------------------------------------------------------------------
 // Image manipulation functions
@@ -1300,12 +1300,12 @@ void ImageCrop(Image *image, Rectangle crop)
     if ((crop.y + crop.height) > image->height) crop.height = image->height - crop.y;
     if ((crop.x > image->width) || (crop.y > image->height))
     {
-        TRACELOG(LOG_WARNING, "IMAGE: Failed to crop, rectangle out of bounds");
+        RL_TRACELOG(LOG_WARNING, "IMAGE: Failed to crop, rectangle out of bounds");
         return;
     }
 
-    if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
-    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
+    if (image->mipmaps > 1) RL_TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
+    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
     else
     {
         int bytesPerPixel = GetPixelDataSize(1, 1, image->format);
@@ -1537,12 +1537,12 @@ void ImageFormat(Image *image, int newFormat)
             if (image->mipmaps > 1)
             {
                 image->mipmaps = 1;
-            #if defined(SUPPORT_IMAGE_MANIPULATION)
+            #if defined(RL_SUPPORT_IMAGE_MANIPULATION)
                 if (image->data != NULL) ImageMipmaps(image);
             #endif
             }
         }
-        else TRACELOG(LOG_WARNING, "IMAGE: Data format is compressed, can not be converted");
+        else RL_TRACELOG(LOG_WARNING, "IMAGE: Data format is compressed, can not be converted");
     }
 }
 
@@ -1550,14 +1550,14 @@ void ImageFormat(Image *image, int newFormat)
 Image ImageText(const char *text, int fontSize, Color color)
 {
     Image imText = { 0 };
-#if defined(SUPPORT_MODULE_RTEXT)
+#if defined(RL_SUPPORT_MODULE_RTEXT)
     int defaultFontSize = 10;   // Default Font chars height in pixel
     if (fontSize < defaultFontSize) fontSize = defaultFontSize;
     int spacing = fontSize/defaultFontSize;
     imText = ImageTextEx(GetFontDefault(), text, (float)fontSize, (float)spacing, color);   // WARNING: Module required: rtext
 #else
-    imText = GenImageColor(200, 60, BLACK);     // Generating placeholder black image rectangle
-    TRACELOG(LOG_WARNING, "IMAGE: ImageTextEx() requires module: rtext");
+    imText = GenImageColor(200, 60, RL_BLACK);     // Generating placeholder black image rectangle
+    RL_TRACELOG(LOG_WARNING, "IMAGE: ImageTextEx() requires module: rtext");
 #endif
     return imText;
 }
@@ -1567,7 +1567,7 @@ Image ImageText(const char *text, int fontSize, Color color)
 Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Color tint)
 {
     Image imText = { 0 };
-#if defined(SUPPORT_MODULE_RTEXT)
+#if defined(RL_SUPPORT_MODULE_RTEXT)
     int size = (int)strlen(text);   // Get size in bytes of text
 
     int textOffsetX = 0;            // Image drawing position X
@@ -1578,7 +1578,7 @@ Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Co
     Vector2 textSize = MeasureTextEx(font, text, fontSize, spacing);
 
     // Create image to store text
-    imText = GenImageColor((int)imSize.x, (int)imSize.y, BLANK);
+    imText = GenImageColor((int)imSize.x, (int)imSize.y, RL_BLANK);
 
     for (int i = 0; i < size;)
     {
@@ -1613,7 +1613,7 @@ Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Co
     if (textSize.y != imSize.y)
     {
         float scaleFactor = textSize.y / imSize.y;
-        TRACELOG(LOG_INFO, "IMAGE: Text scaled by factor: %f", scaleFactor);
+        RL_TRACELOG(LOG_INFO, "IMAGE: Text scaled by factor: %f", scaleFactor);
 
         // Using nearest-neighbor scaling algorithm for default font
         // TODO: Allow defining the preferred scaling mechanism externally
@@ -1621,8 +1621,8 @@ Image ImageTextEx(Font font, const char *text, float fontSize, float spacing, Co
         else ImageResize(&imText, (int)(imSize.x*scaleFactor), (int)(imSize.y*scaleFactor));
     }
 #else
-    imText = GenImageColor(200, 60, BLACK);     // Generating placeholder black image rectangle
-    TRACELOG(LOG_WARNING, "IMAGE: ImageTextEx() requires module: rtext");
+    imText = GenImageColor(200, 60, RL_BLACK);     // Generating placeholder black image rectangle
+    RL_TRACELOG(LOG_WARNING, "IMAGE: ImageTextEx() requires module: rtext");
 #endif
     return imText;
 }
@@ -1730,8 +1730,8 @@ void ImageResizeCanvas(Image *image, int newWidth, int newHeight, int offsetX, i
     // Security check to avoid program crash
     if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
 
-    if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
-    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
+    if (image->mipmaps > 1) RL_TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
+    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
     else if ((newWidth != image->width) || (newHeight != image->height))
     {
         Rectangle srcRec = { 0, 0, (float)image->width, (float)image->height };
@@ -1776,7 +1776,7 @@ void ImageResizeCanvas(Image *image, int newWidth, int newHeight, int offsetX, i
     }
 }
 
-#if defined(SUPPORT_IMAGE_MANIPULATION)
+#if defined(RL_SUPPORT_IMAGE_MANIPULATION)
 // Convert image to POT (power-of-two)
 // NOTE: It could be useful on OpenGL ES 2.0 (RPI, HTML5)
 void ImageToPOT(Image *image, Color fill)
@@ -1813,8 +1813,8 @@ void ImageAlphaClear(Image *image, Color color, float threshold)
     // Security check to avoid program crash
     if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
 
-    if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
-    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
+    if (image->mipmaps > 1) RL_TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
+    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
     else
     {
         switch (image->format)
@@ -1917,11 +1917,11 @@ void ImageAlphaMask(Image *image, Image alphaMask)
 {
     if ((image->width != alphaMask.width) || (image->height != alphaMask.height))
     {
-        TRACELOG(LOG_WARNING, "IMAGE: Alpha mask must be same size as image");
+        RL_TRACELOG(LOG_WARNING, "IMAGE: Alpha mask must be same size as image");
     }
     else if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB)
     {
-        TRACELOG(LOG_WARNING, "IMAGE: Alpha mask can not be applied to compressed data formats");
+        RL_TRACELOG(LOG_WARNING, "IMAGE: Alpha mask can not be applied to compressed data formats");
     }
     else
     {
@@ -2183,7 +2183,7 @@ void ImageMipmaps(Image *image)
         void *temp = RL_REALLOC(image->data, mipSize);
 
         if (temp != NULL) image->data = temp;      // Assign new pointer (new size) to store mipmaps data
-        else TRACELOG(LOG_WARNING, "IMAGE: Mipmaps required memory could not be allocated");
+        else RL_TRACELOG(LOG_WARNING, "IMAGE: Mipmaps required memory could not be allocated");
 
         // Pointer to allocated memory point where store next mipmap level data
         unsigned char *nextmip = (unsigned char *)image->data + GetPixelDataSize(image->width, image->height, image->format);
@@ -2215,7 +2215,7 @@ void ImageMipmaps(Image *image)
 
         UnloadImage(imCopy);
     }
-    else TRACELOG(LOG_WARNING, "IMAGE: Mipmaps already available");
+    else RL_TRACELOG(LOG_WARNING, "IMAGE: Mipmaps already available");
 }
 
 // Dither image data to 16bpp or lower (Floyd-Steinberg dithering)
@@ -2228,13 +2228,13 @@ void ImageDither(Image *image, int rBpp, int gBpp, int bBpp, int aBpp)
 
     if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB)
     {
-        TRACELOG(LOG_WARNING, "IMAGE: Compressed data formats can not be dithered");
+        RL_TRACELOG(LOG_WARNING, "IMAGE: Compressed data formats can not be dithered");
         return;
     }
 
     if ((rBpp + gBpp + bBpp + aBpp) > 16)
     {
-        TRACELOG(LOG_WARNING, "IMAGE: Unsupported dithering bpps (%ibpp), only 16bpp or lower modes supported", (rBpp+gBpp+bBpp+aBpp));
+        RL_TRACELOG(LOG_WARNING, "IMAGE: Unsupported dithering bpps (%ibpp), only 16bpp or lower modes supported", (rBpp+gBpp+bBpp+aBpp));
     }
     else
     {
@@ -2244,7 +2244,7 @@ void ImageDither(Image *image, int rBpp, int gBpp, int bBpp, int aBpp)
 
         if ((image->format != PIXELFORMAT_UNCOMPRESSED_R8G8B8) && (image->format != PIXELFORMAT_UNCOMPRESSED_R8G8B8A8))
         {
-            TRACELOG(LOG_WARNING, "IMAGE: Format is already 16bpp or lower, dithering could have no effect");
+            RL_TRACELOG(LOG_WARNING, "IMAGE: Format is already 16bpp or lower, dithering could have no effect");
         }
 
         // Define new image format, check if desired bpp match internal known format
@@ -2254,14 +2254,14 @@ void ImageDither(Image *image, int rBpp, int gBpp, int bBpp, int aBpp)
         else
         {
             image->format = 0;
-            TRACELOG(LOG_WARNING, "IMAGE: Unsupported dithered OpenGL internal format: %ibpp (R%iG%iB%iA%i)", (rBpp+gBpp+bBpp+aBpp), rBpp, gBpp, bBpp, aBpp);
+            RL_TRACELOG(LOG_WARNING, "IMAGE: Unsupported dithered OpenGL internal format: %ibpp (R%iG%iB%iA%i)", (rBpp+gBpp+bBpp+aBpp), rBpp, gBpp, bBpp, aBpp);
         }
 
         // NOTE: We will store the dithered data as unsigned short (16bpp)
         image->data = (unsigned short *)RL_MALLOC(image->width*image->height*sizeof(unsigned short));
 
-        Color oldPixel = WHITE;
-        Color newPixel = WHITE;
+        Color oldPixel = RL_WHITE;
+        Color newPixel = RL_WHITE;
 
         int rError, gError, bError;
         unsigned short rPixel, gPixel, bPixel, aPixel;   // Used for 16bit pixel composition
@@ -2336,8 +2336,8 @@ void ImageFlipVertical(Image *image)
     // Security check to avoid program crash
     if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
 
-    if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
-    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
+    if (image->mipmaps > 1) RL_TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
+    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
     else
     {
         int bytesPerPixel = GetPixelDataSize(1, 1, image->format);
@@ -2360,8 +2360,8 @@ void ImageFlipHorizontal(Image *image)
     // Security check to avoid program crash
     if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
 
-    if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
-    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
+    if (image->mipmaps > 1) RL_TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
+    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
     else
     {
         int bytesPerPixel = GetPixelDataSize(1, 1, image->format);
@@ -2405,11 +2405,11 @@ void ImageRotate(Image *image, int degrees)
     // Security check to avoid program crash
     if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
 
-    if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
-    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
+    if (image->mipmaps > 1) RL_TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
+    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
     else
     {
-        float rad = degrees*PI/180.0f;
+        float rad = degrees*RL_PI/180.0f;
         float sinRadius = sinf(rad);
         float cosRadius = cosf(rad);
 
@@ -2464,8 +2464,8 @@ void ImageRotateCW(Image *image)
     // Security check to avoid program crash
     if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
 
-    if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
-    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
+    if (image->mipmaps > 1) RL_TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
+    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
     else
     {
         int bytesPerPixel = GetPixelDataSize(1, 1, image->format);
@@ -2496,8 +2496,8 @@ void ImageRotateCCW(Image *image)
     // Security check to avoid program crash
     if ((image->data == NULL) || (image->width == 0) || (image->height == 0)) return;
 
-    if (image->mipmaps > 1) TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
-    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
+    if (image->mipmaps > 1) RL_TRACELOG(LOG_WARNING, "Image manipulation only applied to base mipmap level");
+    if (image->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "Image manipulation not supported for compressed formats");
     else
     {
         int bytesPerPixel = GetPixelDataSize(1, 1, image->format);
@@ -2729,7 +2729,7 @@ void ImageColorReplace(Image *image, Color color, Color replace)
 
     ImageFormat(image, format);
 }
-#endif      // SUPPORT_IMAGE_MANIPULATION
+#endif      // RL_SUPPORT_IMAGE_MANIPULATION
 
 // Load color data from image as a Color array (RGBA - 32bit)
 // NOTE: Memory allocated should be freed using UnloadImageColors();
@@ -2739,16 +2739,16 @@ Color *LoadImageColors(Image image)
 
     Color *pixels = (Color *)RL_MALLOC(image.width*image.height*sizeof(Color));
 
-    if (image.format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "IMAGE: Pixel data retrieval not supported for compressed image formats");
+    if (image.format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "IMAGE: Pixel data retrieval not supported for compressed image formats");
     else
     {
         if ((image.format == PIXELFORMAT_UNCOMPRESSED_R32) ||
             (image.format == PIXELFORMAT_UNCOMPRESSED_R32G32B32) ||
-            (image.format == PIXELFORMAT_UNCOMPRESSED_R32G32B32A32)) TRACELOG(LOG_WARNING, "IMAGE: Pixel format converted from 32bit to 8bit per channel");
+            (image.format == PIXELFORMAT_UNCOMPRESSED_R32G32B32A32)) RL_TRACELOG(LOG_WARNING, "IMAGE: Pixel format converted from 32bit to 8bit per channel");
 
         if ((image.format == PIXELFORMAT_UNCOMPRESSED_R16) ||
             (image.format == PIXELFORMAT_UNCOMPRESSED_R16G16B16) ||
-            (image.format == PIXELFORMAT_UNCOMPRESSED_R16G16B16A16)) TRACELOG(LOG_WARNING, "IMAGE: Pixel format converted from 16bit to 8bit per channel");
+            (image.format == PIXELFORMAT_UNCOMPRESSED_R16G16B16A16)) RL_TRACELOG(LOG_WARNING, "IMAGE: Pixel format converted from 16bit to 8bit per channel");
 
         for (int i = 0, k = 0; i < image.width*image.height; i++)
         {
@@ -2893,7 +2893,7 @@ Color *LoadImagePalette(Image image, int maxPaletteSize, int *colorCount)
     {
         palette = (Color *)RL_MALLOC(maxPaletteSize*sizeof(Color));
 
-        for (int i = 0; i < maxPaletteSize; i++) palette[i] = BLANK;   // Set all colors to BLANK
+        for (int i = 0; i < maxPaletteSize; i++) palette[i] = RL_BLANK;   // Set all colors to RL_BLANK
 
         for (int i = 0; i < image.width*image.height; i++)
         {
@@ -2921,7 +2921,7 @@ Color *LoadImagePalette(Image image, int maxPaletteSize, int *colorCount)
                     if (palCount >= maxPaletteSize)
                     {
                         i = image.width*image.height;   // Finish palette get
-                        TRACELOG(LOG_WARNING, "IMAGE: Palette is greater than %i colors", maxPaletteSize);
+                        RL_TRACELOG(LOG_WARNING, "IMAGE: Palette is greater than %i colors", maxPaletteSize);
                     }
                 }
             }
@@ -3107,10 +3107,10 @@ Color GetImageColor(Image image, int x, int y)
                 color.a = (unsigned char)(HalfToFloat(((unsigned short *)image.data)[(y*image.width + x)*4])*255.0f);
 
             } break;
-            default: TRACELOG(LOG_WARNING, "Compressed image format does not support color reading"); break;
+            default: RL_TRACELOG(LOG_WARNING, "Compressed image format does not support color reading"); break;
         }
     }
-    else TRACELOG(LOG_WARNING, "Requested image pixel (%i, %i) out of bounds", x, y);
+    else RL_TRACELOG(LOG_WARNING, "Requested image pixel (%i, %i) out of bounds", x, y);
 
     return color;
 }
@@ -3519,8 +3519,8 @@ void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color 
     if ((dst->data == NULL) || (dst->width == 0) || (dst->height == 0) ||
         (src.data == NULL) || (src.width == 0) || (src.height == 0)) return;
 
-    if (dst->mipmaps > 1) TRACELOG(LOG_WARNING, "Image drawing only applied to base mipmap level");
-    if (dst->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "Image drawing not supported for compressed formats");
+    if (dst->mipmaps > 1) RL_TRACELOG(LOG_WARNING, "Image drawing only applied to base mipmap level");
+    if (dst->format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "Image drawing not supported for compressed formats");
     else
     {
         Image srcMod = { 0 };       // Source copy (in case it was required)
@@ -3630,14 +3630,14 @@ void ImageDraw(Image *dst, Image src, Rectangle srcRec, Rectangle dstRec, Color 
 // Draw text (default font) within an image (destination)
 void ImageDrawText(Image *dst, const char *text, int posX, int posY, int fontSize, Color color)
 {
-#if defined(SUPPORT_MODULE_RTEXT)
+#if defined(RL_SUPPORT_MODULE_RTEXT)
     // Make sure default font is loaded to be used on image text drawing
     if (GetFontDefault().texture.id == 0) LoadFontDefault();
 
     Vector2 position = { (float)posX, (float)posY };
     ImageDrawTextEx(dst, GetFontDefault(), text, position, (float)fontSize, 1.0f, color);   // WARNING: Module required: rtext
 #else
-    TRACELOG(LOG_WARNING, "IMAGE: ImageDrawText() requires module: rtext");
+    RL_TRACELOG(LOG_WARNING, "IMAGE: ImageDrawText() requires module: rtext");
 #endif
 }
 
@@ -3649,7 +3649,7 @@ void ImageDrawTextEx(Image *dst, Font font, const char *text, Vector2 position, 
     Rectangle srcRec = { 0.0f, 0.0f, (float)imText.width, (float)imText.height };
     Rectangle dstRec = { position.x, position.y, (float)imText.width, (float)imText.height };
 
-    ImageDraw(dst, imText, srcRec, dstRec, WHITE);
+    ImageDraw(dst, imText, srcRec, dstRec, RL_WHITE);
 
     UnloadImage(imText);
 }
@@ -3681,9 +3681,9 @@ Texture2D LoadTextureFromImage(Image image)
 
     if ((image.width != 0) && (image.height != 0))
     {
-        texture.id = rlLoadTexture(image.data, image.width, image.height, image.format, image.mipmaps);
+        texture.id = LoadTexture(image.data, image.width, image.height, image.format, image.mipmaps);
     }
-    else TRACELOG(LOG_WARNING, "IMAGE: Data is not valid to load texture");
+    else RL_TRACELOG(LOG_WARNING, "IMAGE: Data is not valid to load texture");
 
     texture.width = image.width;
     texture.height = image.height;
@@ -3763,22 +3763,22 @@ TextureCubemap LoadTextureCubemap(Image image, int layout)
             }
 
             // Convert image data to 6 faces in a vertical column, that's the optimum layout for loading
-            faces = GenImageColor(size, size*6, MAGENTA);
+            faces = GenImageColor(size, size*6, RL_MAGENTA);
             ImageFormat(&faces, image.format);
 
             // NOTE: Image formatting does not work with compressed textures
 
-            for (int i = 0; i < 6; i++) ImageDraw(&faces, image, faceRecs[i], CAST(Rectangle){ 0, (float)size*i, (float)size, (float)size }, WHITE);
+            for (int i = 0; i < 6; i++) ImageDraw(&faces, image, faceRecs[i], CAST(Rectangle){ 0, (float)size*i, (float)size, (float)size }, RL_WHITE);
         }
 
         // NOTE: Cubemap data is expected to be provided as 6 images in a single data array,
         // one after the other (that's a vertical image), following convention: +X, -X, +Y, -Y, +Z, -Z
-        cubemap.id = rlLoadTextureCubemap(faces.data, size, faces.format);
-        if (cubemap.id == 0) TRACELOG(LOG_WARNING, "IMAGE: Failed to load cubemap image");
+        cubemap.id = LoadTextureCubemap(faces.data, size, faces.format);
+        if (cubemap.id == 0) RL_TRACELOG(LOG_WARNING, "IMAGE: Failed to load cubemap image");
 
         UnloadImage(faces);
     }
-    else TRACELOG(LOG_WARNING, "IMAGE: Failed to detect cubemap image layout");
+    else RL_TRACELOG(LOG_WARNING, "IMAGE: Failed to detect cubemap image layout");
 
     return cubemap;
 }
@@ -3789,36 +3789,36 @@ RenderTexture2D LoadRenderTexture(int width, int height)
 {
     RenderTexture2D target = { 0 };
 
-    target.id = rlLoadFramebuffer(width, height);   // Load an empty framebuffer
+    target.id = LoadFramebuffer(width, height);   // Load an empty framebuffer
 
     if (target.id > 0)
     {
-        rlEnableFramebuffer(target.id);
+        EnableFramebuffer(target.id);
 
         // Create color texture (default to RGBA)
-        target.texture.id = rlLoadTexture(NULL, width, height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
+        target.texture.id = LoadTexture(NULL, width, height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
         target.texture.width = width;
         target.texture.height = height;
         target.texture.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
         target.texture.mipmaps = 1;
 
         // Create depth renderbuffer/texture
-        target.depth.id = rlLoadTextureDepth(width, height, true);
+        target.depth.id = LoadTextureDepth(width, height, true);
         target.depth.width = width;
         target.depth.height = height;
         target.depth.format = 19;       //DEPTH_COMPONENT_24BIT?
         target.depth.mipmaps = 1;
 
         // Attach color texture and depth renderbuffer/texture to FBO
-        rlFramebufferAttach(target.id, target.texture.id, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_TEXTURE2D, 0);
-        rlFramebufferAttach(target.id, target.depth.id, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_RENDERBUFFER, 0);
+        FramebufferAttach(target.id, target.texture.id, ATTACHMENT_COLOR_CHANNEL0, ATTACHMENT_TEXTURE2D, 0);
+        FramebufferAttach(target.id, target.depth.id, ATTACHMENT_DEPTH, ATTACHMENT_RENDERBUFFER, 0);
 
         // Check if fbo is complete with attachments (valid)
-        if (rlFramebufferComplete(target.id)) TRACELOG(LOG_INFO, "FBO: [ID %i] Framebuffer object created successfully", target.id);
+        if (FramebufferComplete(target.id)) RL_TRACELOG(LOG_INFO, "FBO: [ID %i] Framebuffer object created successfully", target.id);
 
-        rlDisableFramebuffer();
+        DisableFramebuffer();
     }
-    else TRACELOG(LOG_WARNING, "FBO: Framebuffer object can not be created");
+    else RL_TRACELOG(LOG_WARNING, "FBO: Framebuffer object can not be created");
 
     return target;
 }
@@ -3840,9 +3840,9 @@ void UnloadTexture(Texture2D texture)
 {
     if (texture.id > 0)
     {
-        rlUnloadTexture(texture.id);
+        UnloadTexture(texture.id);
 
-        TRACELOG(LOG_INFO, "TEXTURE: [ID %i] Unloaded texture data from VRAM (GPU)", texture.id);
+        RL_TRACELOG(LOG_INFO, "TEXTURE: [ID %i] Unloaded texture data from VRAM (GPU)", texture.id);
     }
 }
 
@@ -3862,12 +3862,12 @@ void UnloadRenderTexture(RenderTexture2D target)
         if (target.texture.id > 0)
         {
             // Color texture attached to FBO is deleted
-            rlUnloadTexture(target.texture.id);
+            UnloadTexture(target.texture.id);
         }
 
         // NOTE: Depth texture/renderbuffer is automatically
         // queried and deleted before deleting framebuffer
-        rlUnloadFramebuffer(target.id);
+        UnloadFramebuffer(target.id);
     }
 }
 
@@ -3875,14 +3875,14 @@ void UnloadRenderTexture(RenderTexture2D target)
 // NOTE: pixels data must match texture.format
 void UpdateTexture(Texture2D texture, const void *pixels)
 {
-    rlUpdateTexture(texture.id, 0, 0, texture.width, texture.height, texture.format, pixels);
+    UpdateTexture(texture.id, 0, 0, texture.width, texture.height, texture.format, pixels);
 }
 
 // Update GPU texture rectangle with new data
 // NOTE: pixels data must match texture.format
 void UpdateTextureRec(Texture2D texture, Rectangle rec, const void *pixels)
 {
-    rlUpdateTexture(texture.id, (int)rec.x, (int)rec.y, (int)rec.width, (int)rec.height, texture.format, pixels);
+    UpdateTexture(texture.id, (int)rec.x, (int)rec.y, (int)rec.width, (int)rec.height, texture.format, pixels);
 }
 
 //------------------------------------------------------------------------------------
@@ -3893,7 +3893,7 @@ void GenTextureMipmaps(Texture2D *texture)
 {
     // NOTE: NPOT textures support check inside function
     // On WebGL (OpenGL ES 2.0) NPOT textures support is limited
-    rlGenTextureMipmaps(texture->id, texture->width, texture->height, texture->format, &texture->mipmaps);
+    GenTextureMipmaps(texture->id, texture->width, texture->height, texture->format, &texture->mipmaps);
 }
 
 // Set texture scaling filter mode
@@ -3905,59 +3905,59 @@ void SetTextureFilter(Texture2D texture, int filter)
         {
             if (texture.mipmaps > 1)
             {
-                // RL_TEXTURE_FILTER_MIP_NEAREST - tex filter: POINT, mipmaps filter: POINT (sharp switching between mipmaps)
-                rlTextureParameters(texture.id, RL_TEXTURE_MIN_FILTER, RL_TEXTURE_FILTER_MIP_NEAREST);
+                // TEXTURE_FILTER_MIP_NEAREST - tex filter: POINT, mipmaps filter: POINT (sharp switching between mipmaps)
+                TextureParameters(texture.id, TEXTURE_MIN_FILTER, TEXTURE_FILTER_MIP_NEAREST);
 
-                // RL_TEXTURE_FILTER_NEAREST - tex filter: POINT (no filter), no mipmaps
-                rlTextureParameters(texture.id, RL_TEXTURE_MAG_FILTER, RL_TEXTURE_FILTER_NEAREST);
+                // TEXTURE_FILTER_NEAREST - tex filter: POINT (no filter), no mipmaps
+                TextureParameters(texture.id, TEXTURE_MAG_FILTER, TEXTURE_FILTER_NEAREST);
             }
             else
             {
-                // RL_TEXTURE_FILTER_NEAREST - tex filter: POINT (no filter), no mipmaps
-                rlTextureParameters(texture.id, RL_TEXTURE_MIN_FILTER, RL_TEXTURE_FILTER_NEAREST);
-                rlTextureParameters(texture.id, RL_TEXTURE_MAG_FILTER, RL_TEXTURE_FILTER_NEAREST);
+                // TEXTURE_FILTER_NEAREST - tex filter: POINT (no filter), no mipmaps
+                TextureParameters(texture.id, TEXTURE_MIN_FILTER, TEXTURE_FILTER_NEAREST);
+                TextureParameters(texture.id, TEXTURE_MAG_FILTER, TEXTURE_FILTER_NEAREST);
             }
         } break;
         case TEXTURE_FILTER_BILINEAR:
         {
             if (texture.mipmaps > 1)
             {
-                // RL_TEXTURE_FILTER_LINEAR_MIP_NEAREST - tex filter: BILINEAR, mipmaps filter: POINT (sharp switching between mipmaps)
-                // Alternative: RL_TEXTURE_FILTER_NEAREST_MIP_LINEAR - tex filter: POINT, mipmaps filter: BILINEAR (smooth transition between mipmaps)
-                rlTextureParameters(texture.id, RL_TEXTURE_MIN_FILTER, RL_TEXTURE_FILTER_LINEAR_MIP_NEAREST);
+                // TEXTURE_FILTER_LINEAR_MIP_NEAREST - tex filter: BILINEAR, mipmaps filter: POINT (sharp switching between mipmaps)
+                // Alternative: TEXTURE_FILTER_NEAREST_MIP_LINEAR - tex filter: POINT, mipmaps filter: BILINEAR (smooth transition between mipmaps)
+                TextureParameters(texture.id, TEXTURE_MIN_FILTER, TEXTURE_FILTER_LINEAR_MIP_NEAREST);
 
-                // RL_TEXTURE_FILTER_LINEAR - tex filter: BILINEAR, no mipmaps
-                rlTextureParameters(texture.id, RL_TEXTURE_MAG_FILTER, RL_TEXTURE_FILTER_LINEAR);
+                // TEXTURE_FILTER_LINEAR - tex filter: BILINEAR, no mipmaps
+                TextureParameters(texture.id, TEXTURE_MAG_FILTER, TEXTURE_FILTER_LINEAR);
             }
             else
             {
-                // RL_TEXTURE_FILTER_LINEAR - tex filter: BILINEAR, no mipmaps
-                rlTextureParameters(texture.id, RL_TEXTURE_MIN_FILTER, RL_TEXTURE_FILTER_LINEAR);
-                rlTextureParameters(texture.id, RL_TEXTURE_MAG_FILTER, RL_TEXTURE_FILTER_LINEAR);
+                // TEXTURE_FILTER_LINEAR - tex filter: BILINEAR, no mipmaps
+                TextureParameters(texture.id, TEXTURE_MIN_FILTER, TEXTURE_FILTER_LINEAR);
+                TextureParameters(texture.id, TEXTURE_MAG_FILTER, TEXTURE_FILTER_LINEAR);
             }
         } break;
         case TEXTURE_FILTER_TRILINEAR:
         {
             if (texture.mipmaps > 1)
             {
-                // RL_TEXTURE_FILTER_MIP_LINEAR - tex filter: BILINEAR, mipmaps filter: BILINEAR (smooth transition between mipmaps)
-                rlTextureParameters(texture.id, RL_TEXTURE_MIN_FILTER, RL_TEXTURE_FILTER_MIP_LINEAR);
+                // TEXTURE_FILTER_MIP_LINEAR - tex filter: BILINEAR, mipmaps filter: BILINEAR (smooth transition between mipmaps)
+                TextureParameters(texture.id, TEXTURE_MIN_FILTER, TEXTURE_FILTER_MIP_LINEAR);
 
-                // RL_TEXTURE_FILTER_LINEAR - tex filter: BILINEAR, no mipmaps
-                rlTextureParameters(texture.id, RL_TEXTURE_MAG_FILTER, RL_TEXTURE_FILTER_LINEAR);
+                // TEXTURE_FILTER_LINEAR - tex filter: BILINEAR, no mipmaps
+                TextureParameters(texture.id, TEXTURE_MAG_FILTER, TEXTURE_FILTER_LINEAR);
             }
             else
             {
-                TRACELOG(LOG_WARNING, "TEXTURE: [ID %i] No mipmaps available for TRILINEAR texture filtering", texture.id);
+                RL_TRACELOG(LOG_WARNING, "TEXTURE: [ID %i] No mipmaps available for TRILINEAR texture filtering", texture.id);
 
-                // RL_TEXTURE_FILTER_LINEAR - tex filter: BILINEAR, no mipmaps
-                rlTextureParameters(texture.id, RL_TEXTURE_MIN_FILTER, RL_TEXTURE_FILTER_LINEAR);
-                rlTextureParameters(texture.id, RL_TEXTURE_MAG_FILTER, RL_TEXTURE_FILTER_LINEAR);
+                // TEXTURE_FILTER_LINEAR - tex filter: BILINEAR, no mipmaps
+                TextureParameters(texture.id, TEXTURE_MIN_FILTER, TEXTURE_FILTER_LINEAR);
+                TextureParameters(texture.id, TEXTURE_MAG_FILTER, TEXTURE_FILTER_LINEAR);
             }
         } break;
-        case TEXTURE_FILTER_ANISOTROPIC_4X: rlTextureParameters(texture.id, RL_TEXTURE_FILTER_ANISOTROPIC, 4); break;
-        case TEXTURE_FILTER_ANISOTROPIC_8X: rlTextureParameters(texture.id, RL_TEXTURE_FILTER_ANISOTROPIC, 8); break;
-        case TEXTURE_FILTER_ANISOTROPIC_16X: rlTextureParameters(texture.id, RL_TEXTURE_FILTER_ANISOTROPIC, 16); break;
+        case TEXTURE_FILTER_ANISOTROPIC_4X: TextureParameters(texture.id, TEXTURE_FILTER_ANISOTROPIC, 4); break;
+        case TEXTURE_FILTER_ANISOTROPIC_8X: TextureParameters(texture.id, TEXTURE_FILTER_ANISOTROPIC, 8); break;
+        case TEXTURE_FILTER_ANISOTROPIC_16X: TextureParameters(texture.id, TEXTURE_FILTER_ANISOTROPIC, 16); break;
         default: break;
     }
 }
@@ -3970,23 +3970,23 @@ void SetTextureWrap(Texture2D texture, int wrap)
         case TEXTURE_WRAP_REPEAT:
         {
             // NOTE: It only works if NPOT textures are supported, i.e. OpenGL ES 2.0 could not support it
-            rlTextureParameters(texture.id, RL_TEXTURE_WRAP_S, RL_TEXTURE_WRAP_REPEAT);
-            rlTextureParameters(texture.id, RL_TEXTURE_WRAP_T, RL_TEXTURE_WRAP_REPEAT);
+            TextureParameters(texture.id, TEXTURE_WRAP_S, TEXTURE_WRAP_REPEAT);
+            TextureParameters(texture.id, TEXTURE_WRAP_T, TEXTURE_WRAP_REPEAT);
         } break;
         case TEXTURE_WRAP_CLAMP:
         {
-            rlTextureParameters(texture.id, RL_TEXTURE_WRAP_S, RL_TEXTURE_WRAP_CLAMP);
-            rlTextureParameters(texture.id, RL_TEXTURE_WRAP_T, RL_TEXTURE_WRAP_CLAMP);
+            TextureParameters(texture.id, TEXTURE_WRAP_S, TEXTURE_WRAP_CLAMP);
+            TextureParameters(texture.id, TEXTURE_WRAP_T, TEXTURE_WRAP_CLAMP);
         } break;
         case TEXTURE_WRAP_MIRROR_REPEAT:
         {
-            rlTextureParameters(texture.id, RL_TEXTURE_WRAP_S, RL_TEXTURE_WRAP_MIRROR_REPEAT);
-            rlTextureParameters(texture.id, RL_TEXTURE_WRAP_T, RL_TEXTURE_WRAP_MIRROR_REPEAT);
+            TextureParameters(texture.id, TEXTURE_WRAP_S, TEXTURE_WRAP_MIRROR_REPEAT);
+            TextureParameters(texture.id, TEXTURE_WRAP_T, TEXTURE_WRAP_MIRROR_REPEAT);
         } break;
         case TEXTURE_WRAP_MIRROR_CLAMP:
         {
-            rlTextureParameters(texture.id, RL_TEXTURE_WRAP_S, RL_TEXTURE_WRAP_MIRROR_CLAMP);
-            rlTextureParameters(texture.id, RL_TEXTURE_WRAP_T, RL_TEXTURE_WRAP_MIRROR_CLAMP);
+            TextureParameters(texture.id, TEXTURE_WRAP_S, TEXTURE_WRAP_MIRROR_CLAMP);
+            TextureParameters(texture.id, TEXTURE_WRAP_T, TEXTURE_WRAP_MIRROR_CLAMP);
         } break;
         default: break;
     }
@@ -4058,8 +4058,8 @@ void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2
         }
         else
         {
-            float sinRotation = sinf(rotation*DEG2RAD);
-            float cosRotation = cosf(rotation*DEG2RAD);
+            float sinRotation = sinf(rotation*RL_DEG2RAD);
+            float cosRotation = cosf(rotation*RL_DEG2RAD);
             float x = dest.x;
             float y = dest.y;
             float dx = -origin.x;
@@ -4078,34 +4078,34 @@ void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2
             bottomRight.y = y + (dx + dest.width)*sinRotation + (dy + dest.height)*cosRotation;
         }
 
-        rlSetTexture(texture.id);
-        rlBegin(RL_QUADS);
+        SetTexture(texture.id);
+        Begin(RL_QUADS);
 
-            rlColor4ub(tint.r, tint.g, tint.b, tint.a);
-            rlNormal3f(0.0f, 0.0f, 1.0f);                          // Normal vector pointing towards viewer
+            Color4ub(tint.r, tint.g, tint.b, tint.a);
+            Normal3f(0.0f, 0.0f, 1.0f);                          // Normal vector pointing towards viewer
 
             // Top-left corner for texture and quad
-            if (flipX) rlTexCoord2f((source.x + source.width)/width, source.y/height);
-            else rlTexCoord2f(source.x/width, source.y/height);
-            rlVertex2f(topLeft.x, topLeft.y);
+            if (flipX) TexCoord2f((source.x + source.width)/width, source.y/height);
+            else TexCoord2f(source.x/width, source.y/height);
+            Vertex2f(topLeft.x, topLeft.y);
 
             // Bottom-left corner for texture and quad
-            if (flipX) rlTexCoord2f((source.x + source.width)/width, (source.y + source.height)/height);
-            else rlTexCoord2f(source.x/width, (source.y + source.height)/height);
-            rlVertex2f(bottomLeft.x, bottomLeft.y);
+            if (flipX) TexCoord2f((source.x + source.width)/width, (source.y + source.height)/height);
+            else TexCoord2f(source.x/width, (source.y + source.height)/height);
+            Vertex2f(bottomLeft.x, bottomLeft.y);
 
             // Bottom-right corner for texture and quad
-            if (flipX) rlTexCoord2f(source.x/width, (source.y + source.height)/height);
-            else rlTexCoord2f((source.x + source.width)/width, (source.y + source.height)/height);
-            rlVertex2f(bottomRight.x, bottomRight.y);
+            if (flipX) TexCoord2f(source.x/width, (source.y + source.height)/height);
+            else TexCoord2f((source.x + source.width)/width, (source.y + source.height)/height);
+            Vertex2f(bottomRight.x, bottomRight.y);
 
             // Top-right corner for texture and quad
-            if (flipX) rlTexCoord2f(source.x/width, source.y/height);
-            else rlTexCoord2f((source.x + source.width)/width, source.y/height);
-            rlVertex2f(topRight.x, topRight.y);
+            if (flipX) TexCoord2f(source.x/width, source.y/height);
+            else TexCoord2f((source.x + source.width)/width, source.y/height);
+            Vertex2f(topRight.x, topRight.y);
 
-        rlEnd();
-        rlSetTexture(0);
+        End();
+        SetTexture(0);
 
         // NOTE: Vertex position can be transformed using matrices
         // but the process is way more costly than just calculating
@@ -4113,38 +4113,38 @@ void DrawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2
         // I leave here the old implementation for educational purposes,
         // just in case someone wants to do some performance test
         /*
-        rlSetTexture(texture.id);
-        rlPushMatrix();
-            rlTranslatef(dest.x, dest.y, 0.0f);
-            if (rotation != 0.0f) rlRotatef(rotation, 0.0f, 0.0f, 1.0f);
-            rlTranslatef(-origin.x, -origin.y, 0.0f);
+        SetTexture(texture.id);
+        PushMatrix();
+            Translatef(dest.x, dest.y, 0.0f);
+            if (rotation != 0.0f) Rotatef(rotation, 0.0f, 0.0f, 1.0f);
+            Translatef(-origin.x, -origin.y, 0.0f);
 
-            rlBegin(RL_QUADS);
-                rlColor4ub(tint.r, tint.g, tint.b, tint.a);
-                rlNormal3f(0.0f, 0.0f, 1.0f);                          // Normal vector pointing towards viewer
+            Begin(RL_QUADS);
+                Color4ub(tint.r, tint.g, tint.b, tint.a);
+                Normal3f(0.0f, 0.0f, 1.0f);                          // Normal vector pointing towards viewer
 
                 // Bottom-left corner for texture and quad
-                if (flipX) rlTexCoord2f((source.x + source.width)/width, source.y/height);
-                else rlTexCoord2f(source.x/width, source.y/height);
-                rlVertex2f(0.0f, 0.0f);
+                if (flipX) TexCoord2f((source.x + source.width)/width, source.y/height);
+                else TexCoord2f(source.x/width, source.y/height);
+                Vertex2f(0.0f, 0.0f);
 
                 // Bottom-right corner for texture and quad
-                if (flipX) rlTexCoord2f((source.x + source.width)/width, (source.y + source.height)/height);
-                else rlTexCoord2f(source.x/width, (source.y + source.height)/height);
-                rlVertex2f(0.0f, dest.height);
+                if (flipX) TexCoord2f((source.x + source.width)/width, (source.y + source.height)/height);
+                else TexCoord2f(source.x/width, (source.y + source.height)/height);
+                Vertex2f(0.0f, dest.height);
 
                 // Top-right corner for texture and quad
-                if (flipX) rlTexCoord2f(source.x/width, (source.y + source.height)/height);
-                else rlTexCoord2f((source.x + source.width)/width, (source.y + source.height)/height);
-                rlVertex2f(dest.width, dest.height);
+                if (flipX) TexCoord2f(source.x/width, (source.y + source.height)/height);
+                else TexCoord2f((source.x + source.width)/width, (source.y + source.height)/height);
+                Vertex2f(dest.width, dest.height);
 
                 // Top-left corner for texture and quad
-                if (flipX) rlTexCoord2f(source.x/width, source.y/height);
-                else rlTexCoord2f((source.x + source.width)/width, source.y/height);
-                rlVertex2f(dest.width, 0.0f);
-            rlEnd();
-        rlPopMatrix();
-        rlSetTexture(0);
+                if (flipX) TexCoord2f(source.x/width, source.y/height);
+                else TexCoord2f((source.x + source.width)/width, source.y/height);
+                Vertex2f(dest.width, 0.0f);
+            End();
+        PopMatrix();
+        SetTexture(0);
         */
     }
 }
@@ -4208,141 +4208,141 @@ void DrawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle dest,
         coordD.x = (nPatchInfo.source.x + nPatchInfo.source.width)/width;
         coordD.y = (nPatchInfo.source.y + nPatchInfo.source.height)/height;
 
-        rlSetTexture(texture.id);
+        SetTexture(texture.id);
 
-        rlPushMatrix();
-            rlTranslatef(dest.x, dest.y, 0.0f);
-            rlRotatef(rotation, 0.0f, 0.0f, 1.0f);
-            rlTranslatef(-origin.x, -origin.y, 0.0f);
+        PushMatrix();
+            Translatef(dest.x, dest.y, 0.0f);
+            Rotatef(rotation, 0.0f, 0.0f, 1.0f);
+            Translatef(-origin.x, -origin.y, 0.0f);
 
-            rlBegin(RL_QUADS);
-                rlColor4ub(tint.r, tint.g, tint.b, tint.a);
-                rlNormal3f(0.0f, 0.0f, 1.0f);               // Normal vector pointing towards viewer
+            Begin(RL_QUADS);
+                Color4ub(tint.r, tint.g, tint.b, tint.a);
+                Normal3f(0.0f, 0.0f, 1.0f);               // Normal vector pointing towards viewer
 
                 if (nPatchInfo.layout == NPATCH_NINE_PATCH)
                 {
                     // ------------------------------------------------------------
                     // TOP-LEFT QUAD
-                    rlTexCoord2f(coordA.x, coordB.y); rlVertex2f(vertA.x, vertB.y);  // Bottom-left corner for texture and quad
-                    rlTexCoord2f(coordB.x, coordB.y); rlVertex2f(vertB.x, vertB.y);  // Bottom-right corner for texture and quad
-                    rlTexCoord2f(coordB.x, coordA.y); rlVertex2f(vertB.x, vertA.y);  // Top-right corner for texture and quad
-                    rlTexCoord2f(coordA.x, coordA.y); rlVertex2f(vertA.x, vertA.y);  // Top-left corner for texture and quad
+                    TexCoord2f(coordA.x, coordB.y); Vertex2f(vertA.x, vertB.y);  // Bottom-left corner for texture and quad
+                    TexCoord2f(coordB.x, coordB.y); Vertex2f(vertB.x, vertB.y);  // Bottom-right corner for texture and quad
+                    TexCoord2f(coordB.x, coordA.y); Vertex2f(vertB.x, vertA.y);  // Top-right corner for texture and quad
+                    TexCoord2f(coordA.x, coordA.y); Vertex2f(vertA.x, vertA.y);  // Top-left corner for texture and quad
                     if (drawCenter)
                     {
                         // TOP-CENTER QUAD
-                        rlTexCoord2f(coordB.x, coordB.y); rlVertex2f(vertB.x, vertB.y);  // Bottom-left corner for texture and quad
-                        rlTexCoord2f(coordC.x, coordB.y); rlVertex2f(vertC.x, vertB.y);  // Bottom-right corner for texture and quad
-                        rlTexCoord2f(coordC.x, coordA.y); rlVertex2f(vertC.x, vertA.y);  // Top-right corner for texture and quad
-                        rlTexCoord2f(coordB.x, coordA.y); rlVertex2f(vertB.x, vertA.y);  // Top-left corner for texture and quad
+                        TexCoord2f(coordB.x, coordB.y); Vertex2f(vertB.x, vertB.y);  // Bottom-left corner for texture and quad
+                        TexCoord2f(coordC.x, coordB.y); Vertex2f(vertC.x, vertB.y);  // Bottom-right corner for texture and quad
+                        TexCoord2f(coordC.x, coordA.y); Vertex2f(vertC.x, vertA.y);  // Top-right corner for texture and quad
+                        TexCoord2f(coordB.x, coordA.y); Vertex2f(vertB.x, vertA.y);  // Top-left corner for texture and quad
                     }
                     // TOP-RIGHT QUAD
-                    rlTexCoord2f(coordC.x, coordB.y); rlVertex2f(vertC.x, vertB.y);  // Bottom-left corner for texture and quad
-                    rlTexCoord2f(coordD.x, coordB.y); rlVertex2f(vertD.x, vertB.y);  // Bottom-right corner for texture and quad
-                    rlTexCoord2f(coordD.x, coordA.y); rlVertex2f(vertD.x, vertA.y);  // Top-right corner for texture and quad
-                    rlTexCoord2f(coordC.x, coordA.y); rlVertex2f(vertC.x, vertA.y);  // Top-left corner for texture and quad
+                    TexCoord2f(coordC.x, coordB.y); Vertex2f(vertC.x, vertB.y);  // Bottom-left corner for texture and quad
+                    TexCoord2f(coordD.x, coordB.y); Vertex2f(vertD.x, vertB.y);  // Bottom-right corner for texture and quad
+                    TexCoord2f(coordD.x, coordA.y); Vertex2f(vertD.x, vertA.y);  // Top-right corner for texture and quad
+                    TexCoord2f(coordC.x, coordA.y); Vertex2f(vertC.x, vertA.y);  // Top-left corner for texture and quad
                     if (drawMiddle)
                     {
                         // ------------------------------------------------------------
                         // MIDDLE-LEFT QUAD
-                        rlTexCoord2f(coordA.x, coordC.y); rlVertex2f(vertA.x, vertC.y);  // Bottom-left corner for texture and quad
-                        rlTexCoord2f(coordB.x, coordC.y); rlVertex2f(vertB.x, vertC.y);  // Bottom-right corner for texture and quad
-                        rlTexCoord2f(coordB.x, coordB.y); rlVertex2f(vertB.x, vertB.y);  // Top-right corner for texture and quad
-                        rlTexCoord2f(coordA.x, coordB.y); rlVertex2f(vertA.x, vertB.y);  // Top-left corner for texture and quad
+                        TexCoord2f(coordA.x, coordC.y); Vertex2f(vertA.x, vertC.y);  // Bottom-left corner for texture and quad
+                        TexCoord2f(coordB.x, coordC.y); Vertex2f(vertB.x, vertC.y);  // Bottom-right corner for texture and quad
+                        TexCoord2f(coordB.x, coordB.y); Vertex2f(vertB.x, vertB.y);  // Top-right corner for texture and quad
+                        TexCoord2f(coordA.x, coordB.y); Vertex2f(vertA.x, vertB.y);  // Top-left corner for texture and quad
                         if (drawCenter)
                         {
                             // MIDDLE-CENTER QUAD
-                            rlTexCoord2f(coordB.x, coordC.y); rlVertex2f(vertB.x, vertC.y);  // Bottom-left corner for texture and quad
-                            rlTexCoord2f(coordC.x, coordC.y); rlVertex2f(vertC.x, vertC.y);  // Bottom-right corner for texture and quad
-                            rlTexCoord2f(coordC.x, coordB.y); rlVertex2f(vertC.x, vertB.y);  // Top-right corner for texture and quad
-                            rlTexCoord2f(coordB.x, coordB.y); rlVertex2f(vertB.x, vertB.y);  // Top-left corner for texture and quad
+                            TexCoord2f(coordB.x, coordC.y); Vertex2f(vertB.x, vertC.y);  // Bottom-left corner for texture and quad
+                            TexCoord2f(coordC.x, coordC.y); Vertex2f(vertC.x, vertC.y);  // Bottom-right corner for texture and quad
+                            TexCoord2f(coordC.x, coordB.y); Vertex2f(vertC.x, vertB.y);  // Top-right corner for texture and quad
+                            TexCoord2f(coordB.x, coordB.y); Vertex2f(vertB.x, vertB.y);  // Top-left corner for texture and quad
                         }
 
                         // MIDDLE-RIGHT QUAD
-                        rlTexCoord2f(coordC.x, coordC.y); rlVertex2f(vertC.x, vertC.y);  // Bottom-left corner for texture and quad
-                        rlTexCoord2f(coordD.x, coordC.y); rlVertex2f(vertD.x, vertC.y);  // Bottom-right corner for texture and quad
-                        rlTexCoord2f(coordD.x, coordB.y); rlVertex2f(vertD.x, vertB.y);  // Top-right corner for texture and quad
-                        rlTexCoord2f(coordC.x, coordB.y); rlVertex2f(vertC.x, vertB.y);  // Top-left corner for texture and quad
+                        TexCoord2f(coordC.x, coordC.y); Vertex2f(vertC.x, vertC.y);  // Bottom-left corner for texture and quad
+                        TexCoord2f(coordD.x, coordC.y); Vertex2f(vertD.x, vertC.y);  // Bottom-right corner for texture and quad
+                        TexCoord2f(coordD.x, coordB.y); Vertex2f(vertD.x, vertB.y);  // Top-right corner for texture and quad
+                        TexCoord2f(coordC.x, coordB.y); Vertex2f(vertC.x, vertB.y);  // Top-left corner for texture and quad
                     }
 
                     // ------------------------------------------------------------
                     // BOTTOM-LEFT QUAD
-                    rlTexCoord2f(coordA.x, coordD.y); rlVertex2f(vertA.x, vertD.y);  // Bottom-left corner for texture and quad
-                    rlTexCoord2f(coordB.x, coordD.y); rlVertex2f(vertB.x, vertD.y);  // Bottom-right corner for texture and quad
-                    rlTexCoord2f(coordB.x, coordC.y); rlVertex2f(vertB.x, vertC.y);  // Top-right corner for texture and quad
-                    rlTexCoord2f(coordA.x, coordC.y); rlVertex2f(vertA.x, vertC.y);  // Top-left corner for texture and quad
+                    TexCoord2f(coordA.x, coordD.y); Vertex2f(vertA.x, vertD.y);  // Bottom-left corner for texture and quad
+                    TexCoord2f(coordB.x, coordD.y); Vertex2f(vertB.x, vertD.y);  // Bottom-right corner for texture and quad
+                    TexCoord2f(coordB.x, coordC.y); Vertex2f(vertB.x, vertC.y);  // Top-right corner for texture and quad
+                    TexCoord2f(coordA.x, coordC.y); Vertex2f(vertA.x, vertC.y);  // Top-left corner for texture and quad
                     if (drawCenter)
                     {
                         // BOTTOM-CENTER QUAD
-                        rlTexCoord2f(coordB.x, coordD.y); rlVertex2f(vertB.x, vertD.y);  // Bottom-left corner for texture and quad
-                        rlTexCoord2f(coordC.x, coordD.y); rlVertex2f(vertC.x, vertD.y);  // Bottom-right corner for texture and quad
-                        rlTexCoord2f(coordC.x, coordC.y); rlVertex2f(vertC.x, vertC.y);  // Top-right corner for texture and quad
-                        rlTexCoord2f(coordB.x, coordC.y); rlVertex2f(vertB.x, vertC.y);  // Top-left corner for texture and quad
+                        TexCoord2f(coordB.x, coordD.y); Vertex2f(vertB.x, vertD.y);  // Bottom-left corner for texture and quad
+                        TexCoord2f(coordC.x, coordD.y); Vertex2f(vertC.x, vertD.y);  // Bottom-right corner for texture and quad
+                        TexCoord2f(coordC.x, coordC.y); Vertex2f(vertC.x, vertC.y);  // Top-right corner for texture and quad
+                        TexCoord2f(coordB.x, coordC.y); Vertex2f(vertB.x, vertC.y);  // Top-left corner for texture and quad
                     }
 
                     // BOTTOM-RIGHT QUAD
-                    rlTexCoord2f(coordC.x, coordD.y); rlVertex2f(vertC.x, vertD.y);  // Bottom-left corner for texture and quad
-                    rlTexCoord2f(coordD.x, coordD.y); rlVertex2f(vertD.x, vertD.y);  // Bottom-right corner for texture and quad
-                    rlTexCoord2f(coordD.x, coordC.y); rlVertex2f(vertD.x, vertC.y);  // Top-right corner for texture and quad
-                    rlTexCoord2f(coordC.x, coordC.y); rlVertex2f(vertC.x, vertC.y);  // Top-left corner for texture and quad
+                    TexCoord2f(coordC.x, coordD.y); Vertex2f(vertC.x, vertD.y);  // Bottom-left corner for texture and quad
+                    TexCoord2f(coordD.x, coordD.y); Vertex2f(vertD.x, vertD.y);  // Bottom-right corner for texture and quad
+                    TexCoord2f(coordD.x, coordC.y); Vertex2f(vertD.x, vertC.y);  // Top-right corner for texture and quad
+                    TexCoord2f(coordC.x, coordC.y); Vertex2f(vertC.x, vertC.y);  // Top-left corner for texture and quad
                 }
                 else if (nPatchInfo.layout == NPATCH_THREE_PATCH_VERTICAL)
                 {
                     // TOP QUAD
                     // -----------------------------------------------------------
                     // Texture coords                 Vertices
-                    rlTexCoord2f(coordA.x, coordB.y); rlVertex2f(vertA.x, vertB.y);  // Bottom-left corner for texture and quad
-                    rlTexCoord2f(coordD.x, coordB.y); rlVertex2f(vertD.x, vertB.y);  // Bottom-right corner for texture and quad
-                    rlTexCoord2f(coordD.x, coordA.y); rlVertex2f(vertD.x, vertA.y);  // Top-right corner for texture and quad
-                    rlTexCoord2f(coordA.x, coordA.y); rlVertex2f(vertA.x, vertA.y);  // Top-left corner for texture and quad
+                    TexCoord2f(coordA.x, coordB.y); Vertex2f(vertA.x, vertB.y);  // Bottom-left corner for texture and quad
+                    TexCoord2f(coordD.x, coordB.y); Vertex2f(vertD.x, vertB.y);  // Bottom-right corner for texture and quad
+                    TexCoord2f(coordD.x, coordA.y); Vertex2f(vertD.x, vertA.y);  // Top-right corner for texture and quad
+                    TexCoord2f(coordA.x, coordA.y); Vertex2f(vertA.x, vertA.y);  // Top-left corner for texture and quad
                     if (drawCenter)
                     {
                         // MIDDLE QUAD
                         // -----------------------------------------------------------
                         // Texture coords                 Vertices
-                        rlTexCoord2f(coordA.x, coordC.y); rlVertex2f(vertA.x, vertC.y);  // Bottom-left corner for texture and quad
-                        rlTexCoord2f(coordD.x, coordC.y); rlVertex2f(vertD.x, vertC.y);  // Bottom-right corner for texture and quad
-                        rlTexCoord2f(coordD.x, coordB.y); rlVertex2f(vertD.x, vertB.y);  // Top-right corner for texture and quad
-                        rlTexCoord2f(coordA.x, coordB.y); rlVertex2f(vertA.x, vertB.y);  // Top-left corner for texture and quad
+                        TexCoord2f(coordA.x, coordC.y); Vertex2f(vertA.x, vertC.y);  // Bottom-left corner for texture and quad
+                        TexCoord2f(coordD.x, coordC.y); Vertex2f(vertD.x, vertC.y);  // Bottom-right corner for texture and quad
+                        TexCoord2f(coordD.x, coordB.y); Vertex2f(vertD.x, vertB.y);  // Top-right corner for texture and quad
+                        TexCoord2f(coordA.x, coordB.y); Vertex2f(vertA.x, vertB.y);  // Top-left corner for texture and quad
                     }
                     // BOTTOM QUAD
                     // -----------------------------------------------------------
                     // Texture coords                 Vertices
-                    rlTexCoord2f(coordA.x, coordD.y); rlVertex2f(vertA.x, vertD.y);  // Bottom-left corner for texture and quad
-                    rlTexCoord2f(coordD.x, coordD.y); rlVertex2f(vertD.x, vertD.y);  // Bottom-right corner for texture and quad
-                    rlTexCoord2f(coordD.x, coordC.y); rlVertex2f(vertD.x, vertC.y);  // Top-right corner for texture and quad
-                    rlTexCoord2f(coordA.x, coordC.y); rlVertex2f(vertA.x, vertC.y);  // Top-left corner for texture and quad
+                    TexCoord2f(coordA.x, coordD.y); Vertex2f(vertA.x, vertD.y);  // Bottom-left corner for texture and quad
+                    TexCoord2f(coordD.x, coordD.y); Vertex2f(vertD.x, vertD.y);  // Bottom-right corner for texture and quad
+                    TexCoord2f(coordD.x, coordC.y); Vertex2f(vertD.x, vertC.y);  // Top-right corner for texture and quad
+                    TexCoord2f(coordA.x, coordC.y); Vertex2f(vertA.x, vertC.y);  // Top-left corner for texture and quad
                 }
                 else if (nPatchInfo.layout == NPATCH_THREE_PATCH_HORIZONTAL)
                 {
                     // LEFT QUAD
                     // -----------------------------------------------------------
                     // Texture coords                 Vertices
-                    rlTexCoord2f(coordA.x, coordD.y); rlVertex2f(vertA.x, vertD.y);  // Bottom-left corner for texture and quad
-                    rlTexCoord2f(coordB.x, coordD.y); rlVertex2f(vertB.x, vertD.y);  // Bottom-right corner for texture and quad
-                    rlTexCoord2f(coordB.x, coordA.y); rlVertex2f(vertB.x, vertA.y);  // Top-right corner for texture and quad
-                    rlTexCoord2f(coordA.x, coordA.y); rlVertex2f(vertA.x, vertA.y);  // Top-left corner for texture and quad
+                    TexCoord2f(coordA.x, coordD.y); Vertex2f(vertA.x, vertD.y);  // Bottom-left corner for texture and quad
+                    TexCoord2f(coordB.x, coordD.y); Vertex2f(vertB.x, vertD.y);  // Bottom-right corner for texture and quad
+                    TexCoord2f(coordB.x, coordA.y); Vertex2f(vertB.x, vertA.y);  // Top-right corner for texture and quad
+                    TexCoord2f(coordA.x, coordA.y); Vertex2f(vertA.x, vertA.y);  // Top-left corner for texture and quad
                     if (drawCenter)
                     {
                         // CENTER QUAD
                         // -----------------------------------------------------------
                         // Texture coords                 Vertices
-                        rlTexCoord2f(coordB.x, coordD.y); rlVertex2f(vertB.x, vertD.y);  // Bottom-left corner for texture and quad
-                        rlTexCoord2f(coordC.x, coordD.y); rlVertex2f(vertC.x, vertD.y);  // Bottom-right corner for texture and quad
-                        rlTexCoord2f(coordC.x, coordA.y); rlVertex2f(vertC.x, vertA.y);  // Top-right corner for texture and quad
-                        rlTexCoord2f(coordB.x, coordA.y); rlVertex2f(vertB.x, vertA.y);  // Top-left corner for texture and quad
+                        TexCoord2f(coordB.x, coordD.y); Vertex2f(vertB.x, vertD.y);  // Bottom-left corner for texture and quad
+                        TexCoord2f(coordC.x, coordD.y); Vertex2f(vertC.x, vertD.y);  // Bottom-right corner for texture and quad
+                        TexCoord2f(coordC.x, coordA.y); Vertex2f(vertC.x, vertA.y);  // Top-right corner for texture and quad
+                        TexCoord2f(coordB.x, coordA.y); Vertex2f(vertB.x, vertA.y);  // Top-left corner for texture and quad
                     }
                     // RIGHT QUAD
                     // -----------------------------------------------------------
                     // Texture coords                 Vertices
-                    rlTexCoord2f(coordC.x, coordD.y); rlVertex2f(vertC.x, vertD.y);  // Bottom-left corner for texture and quad
-                    rlTexCoord2f(coordD.x, coordD.y); rlVertex2f(vertD.x, vertD.y);  // Bottom-right corner for texture and quad
-                    rlTexCoord2f(coordD.x, coordA.y); rlVertex2f(vertD.x, vertA.y);  // Top-right corner for texture and quad
-                    rlTexCoord2f(coordC.x, coordA.y); rlVertex2f(vertC.x, vertA.y);  // Top-left corner for texture and quad
+                    TexCoord2f(coordC.x, coordD.y); Vertex2f(vertC.x, vertD.y);  // Bottom-left corner for texture and quad
+                    TexCoord2f(coordD.x, coordD.y); Vertex2f(vertD.x, vertD.y);  // Bottom-right corner for texture and quad
+                    TexCoord2f(coordD.x, coordA.y); Vertex2f(vertD.x, vertA.y);  // Top-right corner for texture and quad
+                    TexCoord2f(coordC.x, coordA.y); Vertex2f(vertC.x, vertA.y);  // Top-left corner for texture and quad
                 }
-            rlEnd();
-        rlPopMatrix();
+            End();
+        PopMatrix();
 
-        rlSetTexture(0);
+        SetTexture(0);
     }
 }
 
@@ -4586,7 +4586,7 @@ Color ColorAlpha(Color color, float alpha)
 // Get src alpha-blended into dst color with tint
 Color ColorAlphaBlend(Color dst, Color src, Color tint)
 {
-    Color out = WHITE;
+    Color out = RL_WHITE;
 
     // Apply color tint to source color
     src.r = (unsigned char)(((unsigned int)src.r*((unsigned int)tint.r+1)) >> 8);
@@ -4902,7 +4902,7 @@ static Vector4 *LoadImageDataNormalized(Image image)
 {
     Vector4 *pixels = (Vector4 *)RL_MALLOC(image.width*image.height*sizeof(Vector4));
 
-    if (image.format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) TRACELOG(LOG_WARNING, "IMAGE: Pixel data retrieval not supported for compressed image formats");
+    if (image.format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) RL_TRACELOG(LOG_WARNING, "IMAGE: Pixel data retrieval not supported for compressed image formats");
     else
     {
         for (int i = 0, k = 0; i < image.width*image.height; i++)
@@ -5035,4 +5035,4 @@ static Vector4 *LoadImageDataNormalized(Image image)
 
 RL_NS_END
 
-#endif      // SUPPORT_MODULE_RTEXTURES
+#endif      // RL_SUPPORT_MODULE_RTEXTURES

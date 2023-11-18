@@ -14,10 +14,10 @@
 *       - Improvement 02
 *
 *   ADDITIONAL NOTES:
-*       - TRACELOG() function is located in raylib [utils] module
+*       - RL_TRACELOG() function is located in raylib [utils] module
 *
 *   CONFIGURATION:
-*       #define SUPPORT_SSH_KEYBOARD_RPI (Raspberry Pi only)
+*       #define RL_SUPPORT_SSH_KEYBOARD_RPI (Raspberry Pi only)
 *           Reconfigure standard input to receive key inputs, works with SSH connection.
 *           WARNING: Reconfiguring standard input could lead to undesired effects, like breaking other
 *           running processes orblocking the device if not restored properly. Use with care.
@@ -128,7 +128,7 @@ typedef struct {
     // Mouse data
     Vector2 eventWheelMove;             // Registers the event mouse wheel variation
     // NOTE: currentButtonState[] can't be written directly due to multithreading, app could miss the update
-    char currentButtonStateEvdev[MAX_MOUSE_BUTTONS]; // Holds the new mouse state for the next polling event to grab
+    char currentButtonStateEvdev[RL_MAX_MOUSE_BUTTONS]; // Holds the new mouse state for the next polling event to grab
     bool cursorRelative;                // Relative cursor mode
     int mouseFd;                        // File descriptor for the evdev mouse/touch/gestures
     Rectangle absRange;                 // Range of values for absolute pointing devices (touchscreens)
@@ -136,7 +136,7 @@ typedef struct {
 
     // Gamepad data
     pthread_t gamepadThreadId;          // Gamepad reading thread id
-    int gamepadStreamFd[MAX_GAMEPADS];  // Gamepad device file descriptor
+    int gamepadStreamFd[RL_MAX_GAMEPADS];  // Gamepad device file descriptor
 
 } PlatformData;
 
@@ -188,7 +188,7 @@ void ClosePlatform(void);        // Close platform
 
 static void InitKeyboard(void);                 // Initialize raw keyboard system
 static void RestoreKeyboard(void);              // Restore keyboard system
-#if defined(SUPPORT_SSH_KEYBOARD_RPI)
+#if defined(RL_SUPPORT_SSH_KEYBOARD_RPI)
 static void ProcessKeyboard(void);              // Process keyboard events
 #endif
 
@@ -224,55 +224,55 @@ bool WindowShouldClose(void)
 // Toggle fullscreen mode
 void ToggleFullscreen(void)
 {
-    TRACELOG(LOG_WARNING, "ToggleFullscreen() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "ToggleFullscreen() not available on target platform");
 }
 
 // Toggle borderless windowed mode
 void ToggleBorderlessWindowed(void)
 {
-    TRACELOG(LOG_WARNING, "ToggleBorderlessWindowed() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "ToggleBorderlessWindowed() not available on target platform");
 }
 
 // Set window state: maximized, if resizable
 void MaximizeWindow(void)
 {
-    TRACELOG(LOG_WARNING, "MaximizeWindow() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "MaximizeWindow() not available on target platform");
 }
 
 // Set window state: minimized
 void MinimizeWindow(void)
 {
-    TRACELOG(LOG_WARNING, "MinimizeWindow() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "MinimizeWindow() not available on target platform");
 }
 
 // Set window state: not minimized/maximized
 void RestoreWindow(void)
 {
-    TRACELOG(LOG_WARNING, "RestoreWindow() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "RestoreWindow() not available on target platform");
 }
 
 // Set window configuration state using flags
 void SetWindowState(unsigned int flags)
 {
-    TRACELOG(LOG_WARNING, "SetWindowState() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetWindowState() not available on target platform");
 }
 
 // Clear window configuration state flags
 void ClearWindowState(unsigned int flags)
 {
-    TRACELOG(LOG_WARNING, "ClearWindowState() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "ClearWindowState() not available on target platform");
 }
 
 // Set icon for window
 void SetWindowIcon(Image image)
 {
-    TRACELOG(LOG_WARNING, "SetWindowIcon() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetWindowIcon() not available on target platform");
 }
 
 // Set icon for window
 void SetWindowIcons(Image *images, int count)
 {
-    TRACELOG(LOG_WARNING, "SetWindowIcons() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetWindowIcons() not available on target platform");
 }
 
 // Set title for window
@@ -284,13 +284,13 @@ void SetWindowTitle(const char *title)
 // Set window position on screen (windowed mode)
 void SetWindowPosition(int x, int y)
 {
-    TRACELOG(LOG_WARNING, "SetWindowPosition() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetWindowPosition() not available on target platform");
 }
 
 // Set monitor for the current window
 void SetWindowMonitor(int monitor)
 {
-    TRACELOG(LOG_WARNING, "SetWindowMonitor() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetWindowMonitor() not available on target platform");
 }
 
 // Set window minimum dimensions (FLAG_WINDOW_RESIZABLE)
@@ -310,74 +310,74 @@ void SetWindowMaxSize(int width, int height)
 // Set window dimensions
 void SetWindowSize(int width, int height)
 {
-    TRACELOG(LOG_WARNING, "SetWindowSize() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetWindowSize() not available on target platform");
 }
 
 // Set window opacity, value opacity is between 0.0 and 1.0
 void SetWindowOpacity(float opacity)
 {
-    TRACELOG(LOG_WARNING, "SetWindowOpacity() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetWindowOpacity() not available on target platform");
 }
 
 // Set window focused
 void SetWindowFocused(void)
 {
-    TRACELOG(LOG_WARNING, "SetWindowFocused() not available on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetWindowFocused() not available on target platform");
 }
 
 // Get native window handle
 void *GetWindowHandle(void)
 {
-    TRACELOG(LOG_WARNING, "GetWindowHandle() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "GetWindowHandle() not implemented on target platform");
     return NULL;
 }
 
 // Get number of monitors
 int GetMonitorCount(void)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorCount() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "GetMonitorCount() not implemented on target platform");
     return 1;
 }
 
 // Get number of monitors
 int GetCurrentMonitor(void)
 {
-    TRACELOG(LOG_WARNING, "GetCurrentMonitor() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "GetCurrentMonitor() not implemented on target platform");
     return 0;
 }
 
 // Get selected monitor position
 Vector2 GetMonitorPosition(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPosition() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "GetMonitorPosition() not implemented on target platform");
     return (Vector2){ 0, 0 };
 }
 
 // Get selected monitor width (currently used by monitor)
 int GetMonitorWidth(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorWidth() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "GetMonitorWidth() not implemented on target platform");
     return 0;
 }
 
 // Get selected monitor height (currently used by monitor)
 int GetMonitorHeight(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorHeight() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "GetMonitorHeight() not implemented on target platform");
     return 0;
 }
 
 // Get selected monitor physical width in millimetres
 int GetMonitorPhysicalWidth(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPhysicalWidth() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "GetMonitorPhysicalWidth() not implemented on target platform");
     return 0;
 }
 
 // Get selected monitor physical height in millimetres
 int GetMonitorPhysicalHeight(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPhysicalHeight() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "GetMonitorPhysicalHeight() not implemented on target platform");
     return 0;
 }
 
@@ -397,7 +397,7 @@ int GetMonitorRefreshRate(int monitor)
 // Get the human-readable, UTF-8 encoded name of the selected monitor
 const char *GetMonitorName(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorName() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "GetMonitorName() not implemented on target platform");
     return "";
 }
 
@@ -416,14 +416,14 @@ Vector2 GetWindowScaleDPI(void)
 // Set clipboard text content
 void SetClipboardText(const char *text)
 {
-    TRACELOG(LOG_WARNING, "SetClipboardText() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetClipboardText() not implemented on target platform");
 }
 
 // Get clipboard text content
 // NOTE: returned string is allocated and freed by GLFW
 const char *GetClipboardText(void)
 {
-    TRACELOG(LOG_WARNING, "GetClipboardText() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "GetClipboardText() not implemented on target platform");
     return NULL;
 }
 
@@ -464,22 +464,22 @@ void SwapScreenBuffer(void)
 {
     eglSwapBuffers(platform.device, platform.surface);
 
-    if (!platform.gbmSurface || (-1 == platform.fd) || !platform.connector || !platform.crtc) TRACELOG(LOG_ERROR, "DISPLAY: DRM initialization failed to swap");
+    if (!platform.gbmSurface || (-1 == platform.fd) || !platform.connector || !platform.crtc) RL_TRACELOG(LOG_ERROR, "DISPLAY: DRM initialization failed to swap");
 
     struct gbm_bo *bo = gbm_surface_lock_front_buffer(platform.gbmSurface);
-    if (!bo) TRACELOG(LOG_ERROR, "DISPLAY: Failed GBM to lock front buffer");
+    if (!bo) RL_TRACELOG(LOG_ERROR, "DISPLAY: Failed GBM to lock front buffer");
 
     uint32_t fb = 0;
     int result = drmModeAddFB(platform.fd, platform.connector->modes[platform.modeIndex].hdisplay, platform.connector->modes[platform.modeIndex].vdisplay, 24, 32, gbm_bo_get_stride(bo), gbm_bo_get_handle(bo).u32, &fb);
-    if (result != 0) TRACELOG(LOG_ERROR, "DISPLAY: drmModeAddFB() failed with result: %d", result);
+    if (result != 0) RL_TRACELOG(LOG_ERROR, "DISPLAY: drmModeAddFB() failed with result: %d", result);
 
     result = drmModeSetCrtc(platform.fd, platform.crtc->crtc_id, fb, 0, 0, &platform.connector->connector_id, 1, &platform.connector->modes[platform.modeIndex]);
-    if (result != 0) TRACELOG(LOG_ERROR, "DISPLAY: drmModeSetCrtc() failed with result: %d", result);
+    if (result != 0) RL_TRACELOG(LOG_ERROR, "DISPLAY: drmModeSetCrtc() failed with result: %d", result);
 
     if (platform.prevFB)
     {
         result = drmModeRmFB(platform.fd, platform.prevFB);
-        if (result != 0) TRACELOG(LOG_ERROR, "DISPLAY: drmModeRmFB() failed with result: %d", result);
+        if (result != 0) RL_TRACELOG(LOG_ERROR, "DISPLAY: drmModeRmFB() failed with result: %d", result);
     }
 
     platform.prevFB = fb;
@@ -513,7 +513,7 @@ double GetTime(void)
 // Ref: https://github.com/raysan5/raylib/issues/686
 void OpenURL(const char *url)
 {
-    TRACELOG(LOG_WARNING, "OpenURL() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "OpenURL() not implemented on target platform");
 }
 
 //----------------------------------------------------------------------------------
@@ -523,7 +523,7 @@ void OpenURL(const char *url)
 // Set internal gamepad mappings
 int SetGamepadMappings(const char *mappings)
 {
-    TRACELOG(LOG_WARNING, "SetGamepadMappings() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetGamepadMappings() not implemented on target platform");
     return 0;
 }
 
@@ -537,13 +537,13 @@ void SetMousePosition(int x, int y)
 // Set mouse cursor
 void SetMouseCursor(int cursor)
 {
-    TRACELOG(LOG_WARNING, "SetMouseCursor() not implemented on target platform");
+    RL_TRACELOG(LOG_WARNING, "SetMouseCursor() not implemented on target platform");
 }
 
 // Register all input events
 void PollInputEvents(void)
 {
-#if defined(SUPPORT_GESTURES_SYSTEM)
+#if defined(RL_SUPPORT_GESTURES_SYSTEM)
     // NOTE: Gestures update must be called every frame to reset gestures correctly
     // because ProcessGestureEvent() is just called on an event, not every frame
     UpdateGestures();
@@ -554,14 +554,14 @@ void PollInputEvents(void)
     CORE.Input.Keyboard.charPressedQueueCount = 0;
 
     // Reset key repeats
-    for (int i = 0; i < MAX_KEYBOARD_KEYS; i++) CORE.Input.Keyboard.keyRepeatInFrame[i] = 0;
+    for (int i = 0; i < RL_MAX_KEYBOARD_KEYS; i++) CORE.Input.Keyboard.keyRepeatInFrame[i] = 0;
 
     // Reset last gamepad button/axis registered state
     CORE.Input.Gamepad.lastButtonPressed = 0;       // GAMEPAD_BUTTON_UNKNOWN
     //CORE.Input.Gamepad.axisCount = 0;
 
     // Register previous keys states
-    for (int i = 0; i < MAX_KEYBOARD_KEYS; i++)
+    for (int i = 0; i < RL_MAX_KEYBOARD_KEYS; i++)
     {
         CORE.Input.Keyboard.previousKeyState[i] = CORE.Input.Keyboard.currentKeyState[i];
         CORE.Input.Keyboard.keyRepeatInFrame[i] = 0;
@@ -577,32 +577,32 @@ void PollInputEvents(void)
     CORE.Input.Mouse.previousWheelMove = CORE.Input.Mouse.currentWheelMove;
     CORE.Input.Mouse.currentWheelMove = platform.eventWheelMove;
     platform.eventWheelMove = (Vector2){ 0.0f, 0.0f };
-    for (int i = 0; i < MAX_MOUSE_BUTTONS; i++)
+    for (int i = 0; i < RL_MAX_MOUSE_BUTTONS; i++)
     {
         CORE.Input.Mouse.previousButtonState[i] = CORE.Input.Mouse.currentButtonState[i];
         CORE.Input.Mouse.currentButtonState[i] = platform.currentButtonStateEvdev[i];
     }
 
     // Register gamepads buttons events
-    for (int i = 0; i < MAX_GAMEPADS; i++)
+    for (int i = 0; i < RL_MAX_GAMEPADS; i++)
     {
         if (CORE.Input.Gamepad.ready[i])
         {
             // Register previous gamepad states
-            for (int k = 0; k < MAX_GAMEPAD_BUTTONS; k++) CORE.Input.Gamepad.previousButtonState[i][k] = CORE.Input.Gamepad.currentButtonState[i][k];
+            for (int k = 0; k < RL_MAX_GAMEPAD_BUTTONS; k++) CORE.Input.Gamepad.previousButtonState[i][k] = CORE.Input.Gamepad.currentButtonState[i][k];
         }
     }
 
     // Register previous touch states
-    for (int i = 0; i < MAX_TOUCH_POINTS; i++) CORE.Input.Touch.previousTouchState[i] = CORE.Input.Touch.currentTouchState[i];
+    for (int i = 0; i < RL_MAX_TOUCH_POINTS; i++) CORE.Input.Touch.previousTouchState[i] = CORE.Input.Touch.currentTouchState[i];
 
     // Reset touch positions
-    //for (int i = 0; i < MAX_TOUCH_POINTS; i++) CORE.Input.Touch.position[i] = (Vector2){ 0, 0 };
+    //for (int i = 0; i < RL_MAX_TOUCH_POINTS; i++) CORE.Input.Touch.position[i] = (Vector2){ 0, 0 };
 
     // Map touch position to mouse position for convenience
     CORE.Input.Touch.position[0] = CORE.Input.Mouse.currentPosition;
 
-#if defined(SUPPORT_SSH_KEYBOARD_RPI)
+#if defined(RL_SUPPORT_SSH_KEYBOARD_RPI)
     // NOTE: Keyboard reading could be done using input_event(s) or just read from stdin, both methods are used here.
     // stdin reading is still used for legacy purposes, it allows keyboard input trough SSH console
 
@@ -687,17 +687,17 @@ void PollInputEvents(void)
 
                 if (event.code == ABS_MT_POSITION_X)
                 {
-                    if (platform.touchSlot < MAX_TOUCH_POINTS) CORE.Input.Touch.position[platform.touchSlot].x = (event.value - platform.absRange.x)*CORE.Window.screen.width/platform.absRange.width;    // Scale according to absRange
+                    if (platform.touchSlot < RL_MAX_TOUCH_POINTS) CORE.Input.Touch.position[platform.touchSlot].x = (event.value - platform.absRange.x)*CORE.Window.screen.width/platform.absRange.width;    // Scale according to absRange
                 }
 
                 if (event.code == ABS_MT_POSITION_Y)
                 {
-                    if (platform.touchSlot < MAX_TOUCH_POINTS) CORE.Input.Touch.position[platform.touchSlot].y = (event.value - platform.absRange.y)*CORE.Window.screen.height/platform.absRange.height;  // Scale according to absRange
+                    if (platform.touchSlot < RL_MAX_TOUCH_POINTS) CORE.Input.Touch.position[platform.touchSlot].y = (event.value - platform.absRange.y)*CORE.Window.screen.height/platform.absRange.height;  // Scale according to absRange
                 }
 
                 if (event.code == ABS_MT_TRACKING_ID)
                 {
-                    if ((event.value < 0) && (platform.touchSlot < MAX_TOUCH_POINTS))
+                    if ((event.value < 0) && (platform.touchSlot < RL_MAX_TOUCH_POINTS))
                     {
                         // Touch has ended for this point
                         CORE.Input.Touch.position[platform.touchSlot].x = -1;
@@ -762,12 +762,12 @@ void PollInputEvents(void)
 
             // Update touch point count
             CORE.Input.Touch.pointCount = 0;
-            for (int i = 0; i < MAX_TOUCH_POINTS; i++)
+            for (int i = 0; i < RL_MAX_TOUCH_POINTS; i++)
             {
                 if (CORE.Input.Touch.position[i].x >= 0) CORE.Input.Touch.pointCount++;
             }
 
-#if defined(SUPPORT_GESTURES_SYSTEM)
+#if defined(RL_SUPPORT_GESTURES_SYSTEM)
             if (gestureUpdate)
             {
                 GestureEvent gestureEvent = { 0 };
@@ -775,7 +775,7 @@ void PollInputEvents(void)
                 gestureEvent.touchAction = touchAction;
                 gestureEvent.pointCount = CORE.Input.Touch.pointCount;
 
-                for (int i = 0; i < MAX_TOUCH_POINTS; i++)
+                for (int i = 0; i < RL_MAX_TOUCH_POINTS; i++)
                 {
                     gestureEvent.pointId[i] = i;
                     gestureEvent.position[i] = CORE.Input.Touch.position[i];
@@ -814,60 +814,60 @@ int InitPlatform(void)
 #if defined(DEFAULT_GRAPHIC_DEVICE_DRM)
     platform.fd = open(DEFAULT_GRAPHIC_DEVICE_DRM, O_RDWR);
 #else
-    TRACELOG(LOG_INFO, "DISPLAY: No graphic card set, trying platform-gpu-card");
+    RL_TRACELOG(LOG_INFO, "DISPLAY: No graphic card set, trying platform-gpu-card");
     platform.fd = open("/dev/dri/by-path/platform-gpu-card",  O_RDWR); // VideoCore VI (Raspberry Pi 4)
 
     if ((platform.fd == -1) || (drmModeGetResources(platform.fd) == NULL))
     {
-        TRACELOG(LOG_INFO, "DISPLAY: Failed to open platform-gpu-card, trying card1");
+        RL_TRACELOG(LOG_INFO, "DISPLAY: Failed to open platform-gpu-card, trying card1");
         platform.fd = open("/dev/dri/card1", O_RDWR); // Other Embedded
     }
 
     if ((platform.fd == -1) || (drmModeGetResources(platform.fd) == NULL))
     {
-        TRACELOG(LOG_INFO, "DISPLAY: Failed to open graphic card1, trying card0");
+        RL_TRACELOG(LOG_INFO, "DISPLAY: Failed to open graphic card1, trying card0");
         platform.fd = open("/dev/dri/card0", O_RDWR); // VideoCore IV (Raspberry Pi 1-3)
     }
 #endif
 
     if (platform.fd == -1)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to open graphic card");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to open graphic card");
         return -1;
     }
 
     drmModeRes *res = drmModeGetResources(platform.fd);
     if (!res)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed get DRM resources");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed get DRM resources");
         return -1;
     }
 
-    TRACELOG(LOG_TRACE, "DISPLAY: Connectors found: %i", res->count_connectors);
+    RL_TRACELOG(LOG_TRACE, "DISPLAY: Connectors found: %i", res->count_connectors);
 
     for (size_t i = 0; i < res->count_connectors; i++)
     {
-        TRACELOG(LOG_TRACE, "DISPLAY: Connector index %i", i);
+        RL_TRACELOG(LOG_TRACE, "DISPLAY: Connector index %i", i);
 
         drmModeConnector *con = drmModeGetConnector(platform.fd, res->connectors[i]);
-        TRACELOG(LOG_TRACE, "DISPLAY: Connector modes detected: %i", con->count_modes);
+        RL_TRACELOG(LOG_TRACE, "DISPLAY: Connector modes detected: %i", con->count_modes);
 
         if ((con->connection == DRM_MODE_CONNECTED) && (con->encoder_id))
         {
-            TRACELOG(LOG_TRACE, "DISPLAY: DRM mode connected");
+            RL_TRACELOG(LOG_TRACE, "DISPLAY: DRM mode connected");
             platform.connector = con;
             break;
         }
         else
         {
-            TRACELOG(LOG_TRACE, "DISPLAY: DRM mode NOT connected (deleting)");
+            RL_TRACELOG(LOG_TRACE, "DISPLAY: DRM mode NOT connected (deleting)");
             drmModeFreeConnector(con);
         }
     }
 
     if (!platform.connector)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: No suitable DRM connector found");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: No suitable DRM connector found");
         drmModeFreeResources(res);
         return -1;
     }
@@ -875,7 +875,7 @@ int InitPlatform(void)
     drmModeEncoder *enc = drmModeGetEncoder(platform.fd, platform.connector->encoder_id);
     if (!enc)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to get DRM mode encoder");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to get DRM mode encoder");
         drmModeFreeResources(res);
         return -1;
     }
@@ -883,7 +883,7 @@ int InitPlatform(void)
     platform.crtc = drmModeGetCrtc(platform.fd, enc->crtc_id);
     if (!platform.crtc)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to get DRM mode crtc");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to get DRM mode crtc");
         drmModeFreeEncoder(enc);
         drmModeFreeResources(res);
         return -1;
@@ -892,13 +892,13 @@ int InitPlatform(void)
     // If InitWindow should use the current mode find it in the connector's mode list
     if ((CORE.Window.screen.width <= 0) || (CORE.Window.screen.height <= 0))
     {
-        TRACELOG(LOG_TRACE, "DISPLAY: Selecting DRM connector mode for current used mode...");
+        RL_TRACELOG(LOG_TRACE, "DISPLAY: Selecting DRM connector mode for current used mode...");
 
         platform.modeIndex = FindMatchingConnectorMode(platform.connector, &platform.crtc->mode);
 
         if (platform.modeIndex < 0)
         {
-            TRACELOG(LOG_WARNING, "DISPLAY: No matching DRM connector mode found");
+            RL_TRACELOG(LOG_WARNING, "DISPLAY: No matching DRM connector mode found");
             drmModeFreeEncoder(enc);
             drmModeFreeResources(res);
             return -1;
@@ -926,7 +926,7 @@ int InitPlatform(void)
     // If nothing found, there is no suitable mode
     if (platform.modeIndex < 0)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to find a suitable DRM connector mode");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to find a suitable DRM connector mode");
         drmModeFreeEncoder(enc);
         drmModeFreeResources(res);
         return -1;
@@ -935,7 +935,7 @@ int InitPlatform(void)
     CORE.Window.display.width = platform.connector->modes[platform.modeIndex].hdisplay;
     CORE.Window.display.height = platform.connector->modes[platform.modeIndex].vdisplay;
 
-    TRACELOG(LOG_INFO, "DISPLAY: Selected DRM connector mode %s (%ux%u%c@%u)", platform.connector->modes[platform.modeIndex].name,
+    RL_TRACELOG(LOG_INFO, "DISPLAY: Selected DRM connector mode %s (%ux%u%c@%u)", platform.connector->modes[platform.modeIndex].name,
         platform.connector->modes[platform.modeIndex].hdisplay, platform.connector->modes[platform.modeIndex].vdisplay,
         (platform.connector->modes[platform.modeIndex].flags & DRM_MODE_FLAG_INTERLACE)? 'i' : 'p',
         platform.connector->modes[platform.modeIndex].vrefresh);
@@ -953,7 +953,7 @@ int InitPlatform(void)
     platform.gbmDevice = gbm_create_device(platform.fd);
     if (!platform.gbmDevice)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to create GBM device");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to create GBM device");
         return -1;
     }
 
@@ -961,7 +961,7 @@ int InitPlatform(void)
         platform.connector->modes[platform.modeIndex].vdisplay, GBM_FORMAT_ARGB8888, GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
     if (!platform.gbmSurface)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to create GBM surface");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to create GBM surface");
         return -1;
     }
 
@@ -971,16 +971,16 @@ int InitPlatform(void)
     {
         samples = 4;
         sampleBuffer = 1;
-        TRACELOG(LOG_INFO, "DISPLAY: Trying to enable MSAA x4");
+        RL_TRACELOG(LOG_INFO, "DISPLAY: Trying to enable MSAA x4");
     }
 
     const EGLint framebufferAttribs[] =
     {
-        EGL_RENDERABLE_TYPE, (rlGetVersion() == RL_OPENGL_ES_30)? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT,      // Type of context support
+        EGL_RENDERABLE_TYPE, (GetVersion() == RL_OPENGL_ES_30)? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT,      // Type of context support
         EGL_SURFACE_TYPE, EGL_WINDOW_BIT,          // Don't use it on Android!
-        EGL_RED_SIZE, 8,            // RED color bit depth (alternative: 5)
-        EGL_GREEN_SIZE, 8,          // GREEN color bit depth (alternative: 6)
-        EGL_BLUE_SIZE, 8,           // BLUE color bit depth (alternative: 5)
+        EGL_RED_SIZE, 8,            // RL_RED color bit depth (alternative: 5)
+        EGL_GREEN_SIZE, 8,          // RL_GREEN color bit depth (alternative: 6)
+        EGL_BLUE_SIZE, 8,           // RL_BLUE color bit depth (alternative: 5)
         EGL_ALPHA_SIZE, 8,        // ALPHA bit depth (required for transparent framebuffer)
         //EGL_TRANSPARENT_TYPE, EGL_NONE, // Request transparent framebuffer (EGL_TRANSPARENT_RGB does not work on RPI)
         EGL_DEPTH_SIZE, 16,         // Depth buffer size (Required to use Depth testing!)
@@ -1001,7 +1001,7 @@ int InitPlatform(void)
     platform.device = eglGetDisplay((EGLNativeDisplayType)platform.gbmDevice);
     if (platform.device == EGL_NO_DISPLAY)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to initialize EGL device");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to initialize EGL device");
         return -1;
     }
 
@@ -1009,34 +1009,34 @@ int InitPlatform(void)
     if (eglInitialize(platform.device, NULL, NULL) == EGL_FALSE)
     {
         // If all of the calls to eglInitialize returned EGL_FALSE then an error has occurred.
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to initialize EGL device");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to initialize EGL device");
         return -1;
     }
 
     if (!eglChooseConfig(platform.device, NULL, NULL, 0, &numConfigs))
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to get EGL config count: 0x%x", eglGetError());
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to get EGL config count: 0x%x", eglGetError());
         return -1;
     }
 
-    TRACELOG(LOG_TRACE, "DISPLAY: EGL configs available: %d", numConfigs);
+    RL_TRACELOG(LOG_TRACE, "DISPLAY: EGL configs available: %d", numConfigs);
 
     EGLConfig *configs = RL_CALLOC(numConfigs, sizeof(*configs));
     if (!configs)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to get memory for EGL configs");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to get memory for EGL configs");
         return -1;
     }
 
     EGLint matchingNumConfigs = 0;
     if (!eglChooseConfig(platform.device, framebufferAttribs, configs, numConfigs, &matchingNumConfigs))
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to choose EGL config: 0x%x", eglGetError());
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to choose EGL config: 0x%x", eglGetError());
         free(configs);
         return -1;
     }
 
-    TRACELOG(LOG_TRACE, "DISPLAY: EGL matching configs available: %d", matchingNumConfigs);
+    RL_TRACELOG(LOG_TRACE, "DISPLAY: EGL matching configs available: %d", matchingNumConfigs);
 
     // find the EGL config that matches the previously setup GBM format
     int found = 0;
@@ -1045,13 +1045,13 @@ int InitPlatform(void)
         EGLint id = 0;
         if (!eglGetConfigAttrib(platform.device, configs[i], EGL_NATIVE_VISUAL_ID, &id))
         {
-            TRACELOG(LOG_WARNING, "DISPLAY: Failed to get EGL config attribute: 0x%x", eglGetError());
+            RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to get EGL config attribute: 0x%x", eglGetError());
             continue;
         }
 
         if (GBM_FORMAT_ARGB8888 == id)
         {
-            TRACELOG(LOG_TRACE, "DISPLAY: Using EGL config: %d", i);
+            RL_TRACELOG(LOG_TRACE, "DISPLAY: Using EGL config: %d", i);
             platform.config = configs[i];
             found = 1;
             break;
@@ -1062,7 +1062,7 @@ int InitPlatform(void)
 
     if (!found)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to find a suitable EGL config");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to find a suitable EGL config");
         return -1;
     }
 
@@ -1073,7 +1073,7 @@ int InitPlatform(void)
     platform.context = eglCreateContext(platform.device, platform.config, EGL_NO_CONTEXT, contextAttribs);
     if (platform.context == EGL_NO_CONTEXT)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to create EGL context");
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to create EGL context");
         return -1;
     }
 
@@ -1081,7 +1081,7 @@ int InitPlatform(void)
     platform.surface = eglCreateWindowSurface(platform.device, platform.config, (EGLNativeWindowType)platform.gbmSurface, NULL);
     if (EGL_NO_SURFACE == platform.surface)
     {
-        TRACELOG(LOG_WARNING, "DISPLAY: Failed to create EGL window surface: 0x%04x", eglGetError());
+        RL_TRACELOG(LOG_WARNING, "DISPLAY: Failed to create EGL window surface: 0x%04x", eglGetError());
         return -1;
     }
 
@@ -1107,22 +1107,22 @@ int InitPlatform(void)
         CORE.Window.currentFbo.width = CORE.Window.render.width;
         CORE.Window.currentFbo.height = CORE.Window.render.height;
 
-        TRACELOG(LOG_INFO, "DISPLAY: Device initialized successfully");
-        TRACELOG(LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
-        TRACELOG(LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
-        TRACELOG(LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
-        TRACELOG(LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
+        RL_TRACELOG(LOG_INFO, "DISPLAY: Device initialized successfully");
+        RL_TRACELOG(LOG_INFO, "    > Display size: %i x %i", CORE.Window.display.width, CORE.Window.display.height);
+        RL_TRACELOG(LOG_INFO, "    > Screen size:  %i x %i", CORE.Window.screen.width, CORE.Window.screen.height);
+        RL_TRACELOG(LOG_INFO, "    > Render size:  %i x %i", CORE.Window.render.width, CORE.Window.render.height);
+        RL_TRACELOG(LOG_INFO, "    > Viewport offsets: %i, %i", CORE.Window.renderOffset.x, CORE.Window.renderOffset.y);
     }
     else
     {
-        TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphics device");
+        RL_TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphics device");
         return -1;
     }
 
     if ((CORE.Window.flags & FLAG_WINDOW_MINIMIZED) > 0) MinimizeWindow();
 
     // If graphic device is no properly initialized, we end program
-    if (!CORE.Window.ready) { TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphic device"); return -1; }
+    if (!CORE.Window.ready) { RL_TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphic device"); return -1; }
     else SetWindowPosition(GetMonitorWidth(GetCurrentMonitor()) / 2 - CORE.Window.screen.width / 2, GetMonitorHeight(GetCurrentMonitor()) / 2 - CORE.Window.screen.height / 2);
 
     // Set some default window flags
@@ -1133,7 +1133,7 @@ int InitPlatform(void)
 
     // Load OpenGL extensions
     // NOTE: GL procedures address loader is required to load extensions
-    rlLoadExtensions(eglGetProcAddress);
+    LoadExtensions(eglGetProcAddress);
     //----------------------------------------------------------------------------
 
     // Initialize timming system
@@ -1154,7 +1154,7 @@ int InitPlatform(void)
     CORE.Storage.basePath = GetWorkingDirectory();
     //----------------------------------------------------------------------------
 
-    TRACELOG(LOG_INFO, "PLATFORM: DRM: Initialized successfully");
+    RL_TRACELOG(LOG_INFO, "PLATFORM: DRM: Initialized successfully");
 
     return 0;
 }
@@ -1280,7 +1280,7 @@ static void InitKeyboard(void)
     int result = ioctl(STDIN_FILENO, KDGKBMODE, &platform.defaultKeyboardMode);
 
     // In case of failure, it could mean a remote keyboard is used (SSH)
-    if (result < 0) TRACELOG(LOG_WARNING, "RPI: Failed to change keyboard mode, an SSH keyboard is probably used");
+    if (result < 0) RL_TRACELOG(LOG_WARNING, "RPI: Failed to change keyboard mode, an SSH keyboard is probably used");
     else
     {
         // Reconfigure keyboard mode to get:
@@ -1306,21 +1306,21 @@ static void RestoreKeyboard(void)
     ioctl(STDIN_FILENO, KDSKBMODE, platform.defaultKeyboardMode);
 }
 
-#if defined(SUPPORT_SSH_KEYBOARD_RPI)
+#if defined(RL_SUPPORT_SSH_KEYBOARD_RPI)
 // Process keyboard inputs
 static void ProcessKeyboard(void)
 {
-    #define MAX_KEYBUFFER_SIZE      32      // Max size in bytes to read
+    #define RL_MAX_KEYBUFFER_SIZE      32      // Max size in bytes to read
 
     // Keyboard input polling (fill keys[256] array with status)
     int bufferByteCount = 0;                        // Bytes available on the buffer
-    char keysBuffer[MAX_KEYBUFFER_SIZE] = { 0 };    // Max keys to be read at a time
+    char keysBuffer[RL_MAX_KEYBUFFER_SIZE] = { 0 };    // Max keys to be read at a time
 
     // Read availables keycodes from stdin
-    bufferByteCount = read(STDIN_FILENO, keysBuffer, MAX_KEYBUFFER_SIZE);     // POSIX system call
+    bufferByteCount = read(STDIN_FILENO, keysBuffer, RL_MAX_KEYBUFFER_SIZE);     // POSIX system call
 
     // Reset pressed keys array (it will be filled below)
-    for (int i = 0; i < MAX_KEYBOARD_KEYS; i++)
+    for (int i = 0; i < RL_MAX_KEYBOARD_KEYS; i++)
     {
         CORE.Input.Keyboard.currentKeyState[i] = 0;
         CORE.Input.Keyboard.keyRepeatInFrame[i] = 0;
@@ -1411,7 +1411,7 @@ static void ProcessKeyboard(void)
     // Check exit key (same functionality as GLFW3 KeyCallback())
     if (CORE.Input.Keyboard.currentKeyState[CORE.Input.Keyboard.exitKey] == 1) CORE.Window.shouldClose = true;
 
-#if defined(SUPPORT_SCREEN_CAPTURE)
+#if defined(RL_SUPPORT_SCREEN_CAPTURE)
     // Check screen capture key (raylib key: KEY_F12)
     if (CORE.Input.Keyboard.currentKeyState[301] == 1)
     {
@@ -1420,13 +1420,13 @@ static void ProcessKeyboard(void)
     }
 #endif
 }
-#endif  // SUPPORT_SSH_KEYBOARD_RPI
+#endif  // RL_SUPPORT_SSH_KEYBOARD_RPI
 
 // Initialise user input from evdev(/dev/input/event<N>)
 // this means mouse, keyboard or gamepad devices
 static void InitEvdevInput(void)
 {
-    char path[MAX_FILEPATH_LENGTH] = { 0 };
+    char path[RL_MAX_FILEPATH_LENGTH] = { 0 };
     DIR *directory = NULL;
     struct dirent *entity = NULL;
 
@@ -1434,14 +1434,14 @@ static void InitEvdevInput(void)
     platform.keyboardFd = -1;
 
     // Reset variables
-    for (int i = 0; i < MAX_TOUCH_POINTS; ++i)
+    for (int i = 0; i < RL_MAX_TOUCH_POINTS; ++i)
     {
         CORE.Input.Touch.position[i].x = -1;
         CORE.Input.Touch.position[i].y = -1;
     }
 
     // Reset keyboard key state
-    for (int i = 0; i < MAX_KEYBOARD_KEYS; i++)
+    for (int i = 0; i < RL_MAX_KEYBOARD_KEYS; i++)
     {
         CORE.Input.Keyboard.currentKeyState[i] = 0;
         CORE.Input.Keyboard.keyRepeatInFrame[i] = 0;
@@ -1464,7 +1464,7 @@ static void InitEvdevInput(void)
 
         closedir(directory);
     }
-    else TRACELOG(LOG_WARNING, "RPI: Failed to open linux event directory: %s", DEFAULT_EVDEV_PATH);
+    else RL_TRACELOG(LOG_WARNING, "RPI: Failed to open linux event directory: %s", DEFAULT_EVDEV_PATH);
 }
 
 // Identifies a input device and configures it for use if appropriate
@@ -1510,7 +1510,7 @@ static void ConfigureEvdevDevice(char *device)
     }
     else
     {
-        TRACELOG(LOG_WARNING, "RPI: Failed to create input device thread for %s, out of worker slots", device);
+        RL_TRACELOG(LOG_WARNING, "RPI: Failed to create input device thread for %s, out of worker slots", device);
         return;
     }
 
@@ -1518,7 +1518,7 @@ static void ConfigureEvdevDevice(char *device)
     fd = open(device, O_RDONLY | O_NONBLOCK);
     if (fd < 0)
     {
-        TRACELOG(LOG_WARNING, "RPI: Failed to open input device: %s", device);
+        RL_TRACELOG(LOG_WARNING, "RPI: Failed to open input device: %s", device);
         return;
     }
     worker->fd = fd;
@@ -1631,13 +1631,13 @@ static void ConfigureEvdevDevice(char *device)
         // Use the first keyboard encountered. This assumes that a device that says it's a keyboard is just a
         // keyboard. The keyboard is polled synchronously, whereas other input devices are polled in separate
         // threads so that they don't drop events when the frame rate is slow.
-        TRACELOG(LOG_INFO, "RPI: Opening keyboard device: %s", device);
+        RL_TRACELOG(LOG_INFO, "RPI: Opening keyboard device: %s", device);
         platform.keyboardFd = worker->fd;
     }
     else if (worker->isTouch || worker->isMouse)
     {
         // Looks like an interesting device
-        TRACELOG(LOG_INFO, "RPI: Opening input device: %s (%s%s%s%s)", device,
+        RL_TRACELOG(LOG_INFO, "RPI: Opening input device: %s (%s%s%s%s)", device,
             worker->isMouse? "mouse " : "",
             worker->isMultitouch? "multitouch " : "",
             worker->isTouch? "touchscreen " : "",
@@ -1652,7 +1652,7 @@ static void ConfigureEvdevDevice(char *device)
         //int error = pthread_create(&worker->threadId, NULL, &EventThread, (void *)worker);
         //if (error != 0)
         //{
-        //    TRACELOG(LOG_WARNING, "RPI: Failed to create input device thread: %s (error: %d)", device, error);
+        //    RL_TRACELOG(LOG_WARNING, "RPI: Failed to create input device thread: %s (error: %d)", device, error);
         //    worker->threadId = 0;
         //    close(fd);
         //}
@@ -1673,7 +1673,7 @@ static void ConfigureEvdevDevice(char *device)
             {
                 if (platform.eventWorker[i].threadId != 0)
                 {
-                    TRACELOG(LOG_WARNING, "RPI: Found duplicate touchscreen, killing touchscreen on event: %d", i);
+                    RL_TRACELOG(LOG_WARNING, "RPI: Found duplicate touchscreen, killing touchscreen on event: %d", i);
                     pthread_cancel(platform.eventWorker[i].threadId);
                     close(platform.eventWorker[i].fd);
                 }
@@ -1700,7 +1700,7 @@ static void PollKeyboardEvents(void)
         // Button parsing
         if (event.type == EV_KEY)
         {
-#if defined(SUPPORT_SSH_KEYBOARD_RPI)
+#if defined(RL_SUPPORT_SSH_KEYBOARD_RPI)
             // Change keyboard mode to events
             platform.eventKeyboardMode = true;
 #endif
@@ -1722,7 +1722,7 @@ static void PollKeyboardEvents(void)
                         CORE.Input.Keyboard.keyPressedQueueCount++;
                     }
 
-                #if defined(SUPPORT_SCREEN_CAPTURE)
+                #if defined(RL_SUPPORT_SCREEN_CAPTURE)
                     // Check screen capture key (raylib key: KEY_F12)
                     if (CORE.Input.Keyboard.currentKeyState[301] == 1)
                     {
@@ -1735,7 +1735,7 @@ static void PollKeyboardEvents(void)
                     if (event.value == 1)
                     {
                         // Check if there is space available in the queue
-                        if (CORE.Input.Keyboard.charPressedQueueCount < MAX_CHAR_PRESSED_QUEUE)
+                        if (CORE.Input.Keyboard.charPressedQueueCount < RL_MAX_CHAR_PRESSED_QUEUE)
                         {
                             // Add character to the queue
                             CORE.Input.Keyboard.charPressedQueue[CORE.Input.Keyboard.charPressedQueueCount] = EvkeyToUnicodeLUT[event.code];
@@ -1834,17 +1834,17 @@ static void *EventThread(void *arg)
 
                 if (event.code == ABS_MT_POSITION_X)
                 {
-                    if (worker->touchSlot < MAX_TOUCH_POINTS) CORE.Input.Touch.position[worker->touchSlot].x = (event.value - worker->absRange.x)*CORE.Window.screen.width/worker->absRange.width;    // Scale according to absRange
+                    if (worker->touchSlot < RL_MAX_TOUCH_POINTS) CORE.Input.Touch.position[worker->touchSlot].x = (event.value - worker->absRange.x)*CORE.Window.screen.width/worker->absRange.width;    // Scale according to absRange
                 }
 
                 if (event.code == ABS_MT_POSITION_Y)
                 {
-                    if (worker->touchSlot < MAX_TOUCH_POINTS) CORE.Input.Touch.position[worker->touchSlot].y = (event.value - worker->absRange.y)*CORE.Window.screen.height/worker->absRange.height;  // Scale according to absRange
+                    if (worker->touchSlot < RL_MAX_TOUCH_POINTS) CORE.Input.Touch.position[worker->touchSlot].y = (event.value - worker->absRange.y)*CORE.Window.screen.height/worker->absRange.height;  // Scale according to absRange
                 }
 
                 if (event.code == ABS_MT_TRACKING_ID)
                 {
-                    if ((event.value < 0) && (worker->touchSlot < MAX_TOUCH_POINTS))
+                    if ((event.value < 0) && (worker->touchSlot < RL_MAX_TOUCH_POINTS))
                     {
                         // Touch has ended for this point
                         CORE.Input.Touch.position[worker->touchSlot].x = -1;
@@ -1909,12 +1909,12 @@ static void *EventThread(void *arg)
 
             // Update touch point count
             CORE.Input.Touch.pointCount = 0;
-            for (int i = 0; i < MAX_TOUCH_POINTS; i++)
+            for (int i = 0; i < RL_MAX_TOUCH_POINTS; i++)
             {
                 if (CORE.Input.Touch.position[i].x >= 0) CORE.Input.Touch.pointCount++;
             }
 
-#if defined(SUPPORT_GESTURES_SYSTEM)
+#if defined(RL_SUPPORT_GESTURES_SYSTEM)
             if (gestureUpdate)
             {
                 GestureEvent gestureEvent = { 0 };
@@ -1922,7 +1922,7 @@ static void *EventThread(void *arg)
                 gestureEvent.touchAction = touchAction;
                 gestureEvent.pointCount = CORE.Input.Touch.pointCount;
 
-                for (int i = 0; i < MAX_TOUCH_POINTS; i++)
+                for (int i = 0; i < RL_MAX_TOUCH_POINTS; i++)
                 {
                     gestureEvent.pointId[i] = i;
                     gestureEvent.position[i] = CORE.Input.Touch.position[i];
@@ -1946,14 +1946,14 @@ static void InitGamepad(void)
 {
     char gamepadDev[128] = { 0 };
 
-    for (int i = 0; i < MAX_GAMEPADS; i++)
+    for (int i = 0; i < RL_MAX_GAMEPADS; i++)
     {
         sprintf(gamepadDev, "%s%i", DEFAULT_GAMEPAD_DEV, i);
 
         if ((platform.gamepadStreamFd[i] = open(gamepadDev, O_RDONLY | O_NONBLOCK)) < 0)
         {
             // NOTE: Only show message for first gamepad
-            if (i == 0) TRACELOG(LOG_WARNING, "RPI: Failed to open Gamepad device, no gamepad available");
+            if (i == 0) RL_TRACELOG(LOG_WARNING, "RPI: Failed to open Gamepad device, no gamepad available");
         }
         else
         {
@@ -1964,8 +1964,8 @@ static void InitGamepad(void)
             {
                 int error = pthread_create(&platform.gamepadThreadId, NULL, &GamepadThread, NULL);
 
-                if (error != 0) TRACELOG(LOG_WARNING, "RPI: Failed to create gamepad input event thread");
-                else  TRACELOG(LOG_INFO, "RPI: Gamepad device initialized successfully");
+                if (error != 0) RL_TRACELOG(LOG_WARNING, "RPI: Failed to create gamepad input event thread");
+                else  RL_TRACELOG(LOG_INFO, "RPI: Gamepad device initialized successfully");
             }
 
             ioctl(platform.gamepadStreamFd[i], JSIOCGNAME(64), &CORE.Input.Gamepad.name[i]);
@@ -1993,7 +1993,7 @@ static void *GamepadThread(void *arg)
 
     while (!CORE.Window.shouldClose)
     {
-        for (int i = 0; i < MAX_GAMEPADS; i++)
+        for (int i = 0; i < RL_MAX_GAMEPADS; i++)
         {
             if (read(platform.gamepadStreamFd[i], &gamepadEvent, sizeof(struct js_event)) == (int)sizeof(struct js_event))
             {
@@ -2002,9 +2002,9 @@ static void *GamepadThread(void *arg)
                 // Process gamepad events by type
                 if (gamepadEvent.type == JS_EVENT_BUTTON)
                 {
-                    //TRACELOG(LOG_WARNING, "RPI: Gamepad button: %i, value: %i", gamepadEvent.number, gamepadEvent.value);
+                    //RL_TRACELOG(LOG_WARNING, "RPI: Gamepad button: %i, value: %i", gamepadEvent.number, gamepadEvent.value);
 
-                    if (gamepadEvent.number < MAX_GAMEPAD_BUTTONS)
+                    if (gamepadEvent.number < RL_MAX_GAMEPAD_BUTTONS)
                     {
                         // 1 - button pressed, 0 - button released
                         CORE.Input.Gamepad.currentButtonState[i][gamepadEvent.number] = (int)gamepadEvent.value;
@@ -2015,9 +2015,9 @@ static void *GamepadThread(void *arg)
                 }
                 else if (gamepadEvent.type == JS_EVENT_AXIS)
                 {
-                    //TRACELOG(LOG_WARNING, "RPI: Gamepad axis: %i, value: %i", gamepadEvent.number, gamepadEvent.value);
+                    //RL_TRACELOG(LOG_WARNING, "RPI: Gamepad axis: %i, value: %i", gamepadEvent.number, gamepadEvent.value);
 
-                    if (gamepadEvent.number < MAX_GAMEPAD_AXIS)
+                    if (gamepadEvent.number < RL_MAX_GAMEPAD_AXIS)
                     {
                         // NOTE: Scaling of gamepadEvent.value to get values between -1..1
                         CORE.Input.Gamepad.axisState[i][gamepadEvent.number] = (float)gamepadEvent.value/32768;
@@ -2042,7 +2042,7 @@ static int FindMatchingConnectorMode(const drmModeConnector *connector, const dr
 
     for (size_t i = 0; i < connector->count_modes; i++)
     {
-        TRACELOG(LOG_TRACE, "DISPLAY: DRM mode: %d %ux%u@%u %s", i, connector->modes[i].hdisplay, connector->modes[i].vdisplay,
+        RL_TRACELOG(LOG_TRACE, "DISPLAY: DRM mode: %d %ux%u@%u %s", i, connector->modes[i].hdisplay, connector->modes[i].vdisplay,
             connector->modes[i].vrefresh, (connector->modes[i].flags & DRM_MODE_FLAG_INTERLACE)? "interlaced" : "progressive");
 
         if (0 == BINCMP(&platform.crtc->mode, &platform.connector->modes[i])) return i;
@@ -2056,7 +2056,7 @@ static int FindMatchingConnectorMode(const drmModeConnector *connector, const dr
 // Search exactly matching DRM connector mode in connector's list
 static int FindExactConnectorMode(const drmModeConnector *connector, uint width, uint height, uint fps, bool allowInterlaced)
 {
-    TRACELOG(LOG_TRACE, "DISPLAY: Searching exact connector mode for %ux%u@%u, selecting an interlaced mode is allowed: %s", width, height, fps, allowInterlaced? "yes" : "no");
+    RL_TRACELOG(LOG_TRACE, "DISPLAY: Searching exact connector mode for %ux%u@%u, selecting an interlaced mode is allowed: %s", width, height, fps, allowInterlaced? "yes" : "no");
 
     if (NULL == connector) return -1;
 
@@ -2064,21 +2064,21 @@ static int FindExactConnectorMode(const drmModeConnector *connector, uint width,
     {
         const drmModeModeInfo *const mode = &platform.connector->modes[i];
 
-        TRACELOG(LOG_TRACE, "DISPLAY: DRM Mode %d %ux%u@%u %s", i, mode->hdisplay, mode->vdisplay, mode->vrefresh, (mode->flags & DRM_MODE_FLAG_INTERLACE)? "interlaced" : "progressive");
+        RL_TRACELOG(LOG_TRACE, "DISPLAY: DRM Mode %d %ux%u@%u %s", i, mode->hdisplay, mode->vdisplay, mode->vrefresh, (mode->flags & DRM_MODE_FLAG_INTERLACE)? "interlaced" : "progressive");
 
         if ((mode->flags & DRM_MODE_FLAG_INTERLACE) && (!allowInterlaced)) continue;
 
         if ((mode->hdisplay == width) && (mode->vdisplay == height) && (mode->vrefresh == fps)) return i;
     }
 
-    TRACELOG(LOG_TRACE, "DISPLAY: No DRM exact matching mode found");
+    RL_TRACELOG(LOG_TRACE, "DISPLAY: No DRM exact matching mode found");
     return -1;
 }
 
 // Search the nearest matching DRM connector mode in connector's list
 static int FindNearestConnectorMode(const drmModeConnector *connector, uint width, uint height, uint fps, bool allowInterlaced)
 {
-    TRACELOG(LOG_TRACE, "DISPLAY: Searching nearest connector mode for %ux%u@%u, selecting an interlaced mode is allowed: %s", width, height, fps, allowInterlaced? "yes" : "no");
+    RL_TRACELOG(LOG_TRACE, "DISPLAY: Searching nearest connector mode for %ux%u@%u, selecting an interlaced mode is allowed: %s", width, height, fps, allowInterlaced? "yes" : "no");
 
     if (NULL == connector) return -1;
 
@@ -2087,18 +2087,18 @@ static int FindNearestConnectorMode(const drmModeConnector *connector, uint widt
     {
         const drmModeModeInfo *const mode = &platform.connector->modes[i];
 
-        TRACELOG(LOG_TRACE, "DISPLAY: DRM mode: %d %ux%u@%u %s", i, mode->hdisplay, mode->vdisplay, mode->vrefresh,
+        RL_TRACELOG(LOG_TRACE, "DISPLAY: DRM mode: %d %ux%u@%u %s", i, mode->hdisplay, mode->vdisplay, mode->vrefresh,
             (mode->flags & DRM_MODE_FLAG_INTERLACE)? "interlaced" : "progressive");
 
         if ((mode->hdisplay < width) || (mode->vdisplay < height))
         {
-            TRACELOG(LOG_TRACE, "DISPLAY: DRM mode is too small");
+            RL_TRACELOG(LOG_TRACE, "DISPLAY: DRM mode is too small");
             continue;
         }
 
         if ((mode->flags & DRM_MODE_FLAG_INTERLACE) && (!allowInterlaced))
         {
-            TRACELOG(LOG_TRACE, "DISPLAY: DRM shouldn't choose an interlaced mode");
+            RL_TRACELOG(LOG_TRACE, "DISPLAY: DRM shouldn't choose an interlaced mode");
             continue;
         }
 

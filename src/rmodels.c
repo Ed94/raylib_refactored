@@ -3,18 +3,18 @@
 *   rmodels - Basic functions to draw 3d shapes and load and draw 3d models
 *
 *   CONFIGURATION:
-*       #define SUPPORT_MODULE_RMODELS
+*       #define RL_SUPPORT_MODULE_RMODELS
 *           rmodels module is included in the build
 *
-*       #define SUPPORT_FILEFORMAT_OBJ
-*       #define SUPPORT_FILEFORMAT_MTL
-*       #define SUPPORT_FILEFORMAT_IQM
-*       #define SUPPORT_FILEFORMAT_GLTF
-*       #define SUPPORT_FILEFORMAT_VOX
-*       #define SUPPORT_FILEFORMAT_M3D
+*       #define RL_SUPPORT_FILEFORMAT_OBJ
+*       #define RL_SUPPORT_FILEFORMAT_MTL
+*       #define RL_SUPPORT_FILEFORMAT_IQM
+*       #define RL_SUPPORT_FILEFORMAT_GLTF
+*       #define RL_SUPPORT_FILEFORMAT_VOX
+*       #define RL_SUPPORT_FILEFORMAT_M3D
 *           Selected desired fileformats to be supported for model data loading.
 *
-*       #define SUPPORT_MESH_GENERATION
+*       #define RL_SUPPORT_MESH_GENERATION
 *           Support procedural mesh generation functions, uses external par_shapes.h library
 *           NOTE: Some generated meshes DO NOT include generated texture coordinates
 *
@@ -47,9 +47,9 @@
     #include "config.h"     // Defines module configuration flags
 #endif
 
-#if defined(SUPPORT_MODULE_RMODELS)
+#if defined(RL_SUPPORT_MODULE_RMODELS)
 
-#include "utils.h"          // Required for: TRACELOG(), LoadFileData(), LoadFileText(), SaveFileText()
+#include "utils.h"          // Required for: RL_TRACELOG(), LoadFileData(), LoadFileText(), SaveFileText()
 #include "rlgl.h"           // OpenGL abstraction layer to OpenGL 1.1, 2.1, 3.3+ or ES2
 #include "raymath.h"        // Required for: Vector3, Quaternion and Matrix functionality
 
@@ -58,7 +58,7 @@
 #include <string.h>         // Required for: memcmp(), strlen()
 #include <math.h>           // Required for: sinf(), cosf(), sqrtf(), fabsf()
 
-#if defined(SUPPORT_FILEFORMAT_OBJ) || defined(SUPPORT_FILEFORMAT_MTL)
+#if defined(RL_SUPPORT_FILEFORMAT_OBJ) || defined(RL_SUPPORT_FILEFORMAT_MTL)
     #define TINYOBJ_MALLOC RL_MALLOC
     #define TINYOBJ_CALLOC RL_CALLOC
     #define TINYOBJ_REALLOC RL_REALLOC
@@ -68,7 +68,7 @@
     #include "external/tinyobj_loader_c.h"      // OBJ/MTL file formats loading
 #endif
 
-#if defined(SUPPORT_FILEFORMAT_GLTF)
+#if defined(RL_SUPPORT_FILEFORMAT_GLTF)
     #define CGLTF_MALLOC RL_MALLOC
     #define CGLTF_FREE RL_FREE
 
@@ -76,7 +76,7 @@
     #include "external/cgltf.h"         // glTF file format loading
 #endif
 
-#if defined(SUPPORT_FILEFORMAT_VOX)
+#if defined(RL_SUPPORT_FILEFORMAT_VOX)
     #define VOX_MALLOC RL_MALLOC
     #define VOX_CALLOC RL_CALLOC
     #define VOX_REALLOC RL_REALLOC
@@ -86,7 +86,7 @@
     #include "external/vox_loader.h"    // VOX file format loading (MagikaVoxel)
 #endif
 
-#if defined(SUPPORT_FILEFORMAT_M3D)
+#if defined(RL_SUPPORT_FILEFORMAT_M3D)
     #define M3D_MALLOC RL_MALLOC
     #define M3D_REALLOC RL_REALLOC
     #define M3D_FREE RL_FREE
@@ -95,7 +95,7 @@
     #include "external/m3d.h"           // Model3D file format loading
 #endif
 
-#if defined(SUPPORT_MESH_GENERATION)
+#if defined(RL_SUPPORT_MESH_GENERATION)
     #define PAR_MALLOC(T, N) ((T*)RL_MALLOC(N*sizeof(T)))
     #define PAR_CALLOC(T, N) ((T*)RL_CALLOC(N*sizeof(T), 1))
     #define PAR_REALLOC(T, BUF, N) ((T*)RL_REALLOC(BUF, sizeof(T)*(N)))
@@ -126,11 +126,11 @@
 //----------------------------------------------------------------------------------
 // Defines and Macros
 //----------------------------------------------------------------------------------
-#ifndef MAX_MATERIAL_MAPS
-    #define MAX_MATERIAL_MAPS       12    // Maximum number of maps supported
+#ifndef RL_MAX_MATERIAL_MAPS
+    #define RL_MAX_MATERIAL_MAPS       12    // Maximum number of maps supported
 #endif
-#ifndef MAX_MESH_VERTEX_BUFFERS
-    #define MAX_MESH_VERTEX_BUFFERS  7    // Maximum vertex buffers (VBO) per mesh
+#ifndef RL_MAX_MESH_VERTEX_BUFFERS
+    #define RL_MAX_MESH_VERTEX_BUFFERS  7    // Maximum vertex buffers (VBO) per mesh
 #endif
 
 //----------------------------------------------------------------------------------
@@ -148,25 +148,25 @@ RL_NS_BEGIN
 //----------------------------------------------------------------------------------
 // Module specific Functions Declaration
 //----------------------------------------------------------------------------------
-#if defined(SUPPORT_FILEFORMAT_OBJ)
+#if defined(RL_SUPPORT_FILEFORMAT_OBJ)
 static Model LoadOBJ(const char *fileName);     // Load OBJ mesh data
 #endif
-#if defined(SUPPORT_FILEFORMAT_IQM)
+#if defined(RL_SUPPORT_FILEFORMAT_IQM)
 static Model LoadIQM(const char *fileName);     // Load IQM mesh data
 static ModelAnimation *LoadModelAnimationsIQM(const char *fileName, int *animCount);   // Load IQM animation data
 #endif
-#if defined(SUPPORT_FILEFORMAT_GLTF)
+#if defined(RL_SUPPORT_FILEFORMAT_GLTF)
 static Model LoadGLTF(const char *fileName);    // Load GLTF mesh data
 static ModelAnimation *LoadModelAnimationsGLTF(const char *fileName, int *animCount);  // Load GLTF animation data
 #endif
-#if defined(SUPPORT_FILEFORMAT_VOX)
+#if defined(RL_SUPPORT_FILEFORMAT_VOX)
 static Model LoadVOX(const char *filename);     // Load VOX mesh data
 #endif
-#if defined(SUPPORT_FILEFORMAT_M3D)
+#if defined(RL_SUPPORT_FILEFORMAT_M3D)
 static Model LoadM3D(const char *filename);     // Load M3D mesh data
 static ModelAnimation *LoadModelAnimationsM3D(const char *fileName, int *animCount);   // Load M3D animation data
 #endif
-#if defined(SUPPORT_FILEFORMAT_OBJ) || defined(SUPPORT_FILEFORMAT_MTL)
+#if defined(RL_SUPPORT_FILEFORMAT_OBJ) || defined(RL_SUPPORT_FILEFORMAT_MTL)
 static void ProcessMaterialsOBJ(Material *rayMaterials, tinyobj_material_t *materials, int materialCount);  // Process obj materials
 #endif
 
@@ -177,54 +177,54 @@ static void ProcessMaterialsOBJ(Material *rayMaterials, tinyobj_material_t *mate
 // Draw a line in 3D world space
 void DrawLine3D(Vector3 startPos, Vector3 endPos, Color color)
 {
-    rlBegin(RL_LINES);
-        rlColor4ub(color.r, color.g, color.b, color.a);
-        rlVertex3f(startPos.x, startPos.y, startPos.z);
-        rlVertex3f(endPos.x, endPos.y, endPos.z);
-    rlEnd();
+    Begin(RL_LINES);
+        Color4ub(color.r, color.g, color.b, color.a);
+        Vertex3f(startPos.x, startPos.y, startPos.z);
+        Vertex3f(endPos.x, endPos.y, endPos.z);
+    End();
 }
 
 // Draw a point in 3D space, actually a small line
 void DrawPoint3D(Vector3 position, Color color)
 {
-    rlPushMatrix();
-        rlTranslatef(position.x, position.y, position.z);
-        rlBegin(RL_LINES);
-            rlColor4ub(color.r, color.g, color.b, color.a);
-            rlVertex3f(0.0f, 0.0f, 0.0f);
-            rlVertex3f(0.0f, 0.0f, 0.1f);
-        rlEnd();
-    rlPopMatrix();
+    PushMatrix();
+        Translatef(position.x, position.y, position.z);
+        Begin(RL_LINES);
+            Color4ub(color.r, color.g, color.b, color.a);
+            Vertex3f(0.0f, 0.0f, 0.0f);
+            Vertex3f(0.0f, 0.0f, 0.1f);
+        End();
+    PopMatrix();
 }
 
 // Draw a circle in 3D world space
 void DrawCircle3D(Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color)
 {
-    rlPushMatrix();
-        rlTranslatef(center.x, center.y, center.z);
-        rlRotatef(rotationAngle, rotationAxis.x, rotationAxis.y, rotationAxis.z);
+    PushMatrix();
+        Translatef(center.x, center.y, center.z);
+        Rotatef(rotationAngle, rotationAxis.x, rotationAxis.y, rotationAxis.z);
 
-        rlBegin(RL_LINES);
+        Begin(RL_LINES);
             for (int i = 0; i < 360; i += 10)
             {
-                rlColor4ub(color.r, color.g, color.b, color.a);
+                Color4ub(color.r, color.g, color.b, color.a);
 
-                rlVertex3f(sinf(DEG2RAD*i)*radius, cosf(DEG2RAD*i)*radius, 0.0f);
-                rlVertex3f(sinf(DEG2RAD*(i + 10))*radius, cosf(DEG2RAD*(i + 10))*radius, 0.0f);
+                Vertex3f(sinf(RL_DEG2RAD*i)*radius, cosf(RL_DEG2RAD*i)*radius, 0.0f);
+                Vertex3f(sinf(RL_DEG2RAD*(i + 10))*radius, cosf(RL_DEG2RAD*(i + 10))*radius, 0.0f);
             }
-        rlEnd();
-    rlPopMatrix();
+        End();
+    PopMatrix();
 }
 
 // Draw a color-filled triangle (vertex in counter-clockwise order!)
 void DrawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
 {
-    rlBegin(RL_TRIANGLES);
-        rlColor4ub(color.r, color.g, color.b, color.a);
-        rlVertex3f(v1.x, v1.y, v1.z);
-        rlVertex3f(v2.x, v2.y, v2.z);
-        rlVertex3f(v3.x, v3.y, v3.z);
-    rlEnd();
+    Begin(RL_TRIANGLES);
+        Color4ub(color.r, color.g, color.b, color.a);
+        Vertex3f(v1.x, v1.y, v1.z);
+        Vertex3f(v2.x, v2.y, v2.z);
+        Vertex3f(v3.x, v3.y, v3.z);
+    End();
 }
 
 // Draw a triangle strip defined by points
@@ -232,25 +232,25 @@ void DrawTriangleStrip3D(Vector3 *points, int pointCount, Color color)
 {
     if (pointCount < 3) return;
 
-    rlBegin(RL_TRIANGLES);
-        rlColor4ub(color.r, color.g, color.b, color.a);
+    Begin(RL_TRIANGLES);
+        Color4ub(color.r, color.g, color.b, color.a);
 
         for (int i = 2; i < pointCount; i++)
         {
             if ((i%2) == 0)
             {
-                rlVertex3f(points[i].x, points[i].y, points[i].z);
-                rlVertex3f(points[i - 2].x, points[i - 2].y, points[i - 2].z);
-                rlVertex3f(points[i - 1].x, points[i - 1].y, points[i - 1].z);
+                Vertex3f(points[i].x, points[i].y, points[i].z);
+                Vertex3f(points[i - 2].x, points[i - 2].y, points[i - 2].z);
+                Vertex3f(points[i - 1].x, points[i - 1].y, points[i - 1].z);
             }
             else
             {
-                rlVertex3f(points[i].x, points[i].y, points[i].z);
-                rlVertex3f(points[i - 1].x, points[i - 1].y, points[i - 1].z);
-                rlVertex3f(points[i - 2].x, points[i - 2].y, points[i - 2].z);
+                Vertex3f(points[i].x, points[i].y, points[i].z);
+                Vertex3f(points[i - 1].x, points[i - 1].y, points[i - 1].z);
+                Vertex3f(points[i - 2].x, points[i - 2].y, points[i - 2].z);
             }
         }
-    rlEnd();
+    End();
 }
 
 // Draw cube
@@ -261,70 +261,70 @@ void DrawCube(Vector3 position, float width, float height, float length, Color c
     float y = 0.0f;
     float z = 0.0f;
 
-    rlPushMatrix();
+    PushMatrix();
         // NOTE: Transformation is applied in inverse order (scale -> rotate -> translate)
-        rlTranslatef(position.x, position.y, position.z);
-        //rlRotatef(45, 0, 1, 0);
-        //rlScalef(1.0f, 1.0f, 1.0f);   // NOTE: Vertices are directly scaled on definition
+        Translatef(position.x, position.y, position.z);
+        //Rotatef(45, 0, 1, 0);
+        //Scalef(1.0f, 1.0f, 1.0f);   // NOTE: Vertices are directly scaled on definition
 
-        rlBegin(RL_TRIANGLES);
-            rlColor4ub(color.r, color.g, color.b, color.a);
+        Begin(RL_TRIANGLES);
+            Color4ub(color.r, color.g, color.b, color.a);
 
             // Front face
-            rlVertex3f(x - width/2, y - height/2, z + length/2);  // Bottom Left
-            rlVertex3f(x + width/2, y - height/2, z + length/2);  // Bottom Right
-            rlVertex3f(x - width/2, y + height/2, z + length/2);  // Top Left
+            Vertex3f(x - width/2, y - height/2, z + length/2);  // Bottom Left
+            Vertex3f(x + width/2, y - height/2, z + length/2);  // Bottom Right
+            Vertex3f(x - width/2, y + height/2, z + length/2);  // Top Left
 
-            rlVertex3f(x + width/2, y + height/2, z + length/2);  // Top Right
-            rlVertex3f(x - width/2, y + height/2, z + length/2);  // Top Left
-            rlVertex3f(x + width/2, y - height/2, z + length/2);  // Bottom Right
+            Vertex3f(x + width/2, y + height/2, z + length/2);  // Top Right
+            Vertex3f(x - width/2, y + height/2, z + length/2);  // Top Left
+            Vertex3f(x + width/2, y - height/2, z + length/2);  // Bottom Right
 
             // Back face
-            rlVertex3f(x - width/2, y - height/2, z - length/2);  // Bottom Left
-            rlVertex3f(x - width/2, y + height/2, z - length/2);  // Top Left
-            rlVertex3f(x + width/2, y - height/2, z - length/2);  // Bottom Right
+            Vertex3f(x - width/2, y - height/2, z - length/2);  // Bottom Left
+            Vertex3f(x - width/2, y + height/2, z - length/2);  // Top Left
+            Vertex3f(x + width/2, y - height/2, z - length/2);  // Bottom Right
 
-            rlVertex3f(x + width/2, y + height/2, z - length/2);  // Top Right
-            rlVertex3f(x + width/2, y - height/2, z - length/2);  // Bottom Right
-            rlVertex3f(x - width/2, y + height/2, z - length/2);  // Top Left
+            Vertex3f(x + width/2, y + height/2, z - length/2);  // Top Right
+            Vertex3f(x + width/2, y - height/2, z - length/2);  // Bottom Right
+            Vertex3f(x - width/2, y + height/2, z - length/2);  // Top Left
 
             // Top face
-            rlVertex3f(x - width/2, y + height/2, z - length/2);  // Top Left
-            rlVertex3f(x - width/2, y + height/2, z + length/2);  // Bottom Left
-            rlVertex3f(x + width/2, y + height/2, z + length/2);  // Bottom Right
+            Vertex3f(x - width/2, y + height/2, z - length/2);  // Top Left
+            Vertex3f(x - width/2, y + height/2, z + length/2);  // Bottom Left
+            Vertex3f(x + width/2, y + height/2, z + length/2);  // Bottom Right
 
-            rlVertex3f(x + width/2, y + height/2, z - length/2);  // Top Right
-            rlVertex3f(x - width/2, y + height/2, z - length/2);  // Top Left
-            rlVertex3f(x + width/2, y + height/2, z + length/2);  // Bottom Right
+            Vertex3f(x + width/2, y + height/2, z - length/2);  // Top Right
+            Vertex3f(x - width/2, y + height/2, z - length/2);  // Top Left
+            Vertex3f(x + width/2, y + height/2, z + length/2);  // Bottom Right
 
             // Bottom face
-            rlVertex3f(x - width/2, y - height/2, z - length/2);  // Top Left
-            rlVertex3f(x + width/2, y - height/2, z + length/2);  // Bottom Right
-            rlVertex3f(x - width/2, y - height/2, z + length/2);  // Bottom Left
+            Vertex3f(x - width/2, y - height/2, z - length/2);  // Top Left
+            Vertex3f(x + width/2, y - height/2, z + length/2);  // Bottom Right
+            Vertex3f(x - width/2, y - height/2, z + length/2);  // Bottom Left
 
-            rlVertex3f(x + width/2, y - height/2, z - length/2);  // Top Right
-            rlVertex3f(x + width/2, y - height/2, z + length/2);  // Bottom Right
-            rlVertex3f(x - width/2, y - height/2, z - length/2);  // Top Left
+            Vertex3f(x + width/2, y - height/2, z - length/2);  // Top Right
+            Vertex3f(x + width/2, y - height/2, z + length/2);  // Bottom Right
+            Vertex3f(x - width/2, y - height/2, z - length/2);  // Top Left
 
             // Right face
-            rlVertex3f(x + width/2, y - height/2, z - length/2);  // Bottom Right
-            rlVertex3f(x + width/2, y + height/2, z - length/2);  // Top Right
-            rlVertex3f(x + width/2, y + height/2, z + length/2);  // Top Left
+            Vertex3f(x + width/2, y - height/2, z - length/2);  // Bottom Right
+            Vertex3f(x + width/2, y + height/2, z - length/2);  // Top Right
+            Vertex3f(x + width/2, y + height/2, z + length/2);  // Top Left
 
-            rlVertex3f(x + width/2, y - height/2, z + length/2);  // Bottom Left
-            rlVertex3f(x + width/2, y - height/2, z - length/2);  // Bottom Right
-            rlVertex3f(x + width/2, y + height/2, z + length/2);  // Top Left
+            Vertex3f(x + width/2, y - height/2, z + length/2);  // Bottom Left
+            Vertex3f(x + width/2, y - height/2, z - length/2);  // Bottom Right
+            Vertex3f(x + width/2, y + height/2, z + length/2);  // Top Left
 
             // Left face
-            rlVertex3f(x - width/2, y - height/2, z - length/2);  // Bottom Right
-            rlVertex3f(x - width/2, y + height/2, z + length/2);  // Top Left
-            rlVertex3f(x - width/2, y + height/2, z - length/2);  // Top Right
+            Vertex3f(x - width/2, y - height/2, z - length/2);  // Bottom Right
+            Vertex3f(x - width/2, y + height/2, z + length/2);  // Top Left
+            Vertex3f(x - width/2, y + height/2, z - length/2);  // Top Right
 
-            rlVertex3f(x - width/2, y - height/2, z + length/2);  // Bottom Left
-            rlVertex3f(x - width/2, y + height/2, z + length/2);  // Top Left
-            rlVertex3f(x - width/2, y - height/2, z - length/2);  // Bottom Right
-        rlEnd();
-    rlPopMatrix();
+            Vertex3f(x - width/2, y - height/2, z + length/2);  // Bottom Left
+            Vertex3f(x - width/2, y + height/2, z + length/2);  // Top Left
+            Vertex3f(x - width/2, y - height/2, z - length/2);  // Bottom Right
+        End();
+    PopMatrix();
 }
 
 // Draw cube (Vector version)
@@ -340,69 +340,69 @@ void DrawCubeWires(Vector3 position, float width, float height, float length, Co
     float y = 0.0f;
     float z = 0.0f;
 
-    rlPushMatrix();
-        rlTranslatef(position.x, position.y, position.z);
+    PushMatrix();
+        Translatef(position.x, position.y, position.z);
 
-        rlBegin(RL_LINES);
-            rlColor4ub(color.r, color.g, color.b, color.a);
+        Begin(RL_LINES);
+            Color4ub(color.r, color.g, color.b, color.a);
 
             // Front face
             //------------------------------------------------------------------
             // Bottom line
-            rlVertex3f(x - width/2, y - height/2, z + length/2);  // Bottom left
-            rlVertex3f(x + width/2, y - height/2, z + length/2);  // Bottom right
+            Vertex3f(x - width/2, y - height/2, z + length/2);  // Bottom left
+            Vertex3f(x + width/2, y - height/2, z + length/2);  // Bottom right
 
             // Left line
-            rlVertex3f(x + width/2, y - height/2, z + length/2);  // Bottom right
-            rlVertex3f(x + width/2, y + height/2, z + length/2);  // Top right
+            Vertex3f(x + width/2, y - height/2, z + length/2);  // Bottom right
+            Vertex3f(x + width/2, y + height/2, z + length/2);  // Top right
 
             // Top line
-            rlVertex3f(x + width/2, y + height/2, z + length/2);  // Top right
-            rlVertex3f(x - width/2, y + height/2, z + length/2);  // Top left
+            Vertex3f(x + width/2, y + height/2, z + length/2);  // Top right
+            Vertex3f(x - width/2, y + height/2, z + length/2);  // Top left
 
             // Right line
-            rlVertex3f(x - width/2, y + height/2, z + length/2);  // Top left
-            rlVertex3f(x - width/2, y - height/2, z + length/2);  // Bottom left
+            Vertex3f(x - width/2, y + height/2, z + length/2);  // Top left
+            Vertex3f(x - width/2, y - height/2, z + length/2);  // Bottom left
 
             // Back face
             //------------------------------------------------------------------
             // Bottom line
-            rlVertex3f(x - width/2, y - height/2, z - length/2);  // Bottom left
-            rlVertex3f(x + width/2, y - height/2, z - length/2);  // Bottom right
+            Vertex3f(x - width/2, y - height/2, z - length/2);  // Bottom left
+            Vertex3f(x + width/2, y - height/2, z - length/2);  // Bottom right
 
             // Left line
-            rlVertex3f(x + width/2, y - height/2, z - length/2);  // Bottom right
-            rlVertex3f(x + width/2, y + height/2, z - length/2);  // Top right
+            Vertex3f(x + width/2, y - height/2, z - length/2);  // Bottom right
+            Vertex3f(x + width/2, y + height/2, z - length/2);  // Top right
 
             // Top line
-            rlVertex3f(x + width/2, y + height/2, z - length/2);  // Top right
-            rlVertex3f(x - width/2, y + height/2, z - length/2);  // Top left
+            Vertex3f(x + width/2, y + height/2, z - length/2);  // Top right
+            Vertex3f(x - width/2, y + height/2, z - length/2);  // Top left
 
             // Right line
-            rlVertex3f(x - width/2, y + height/2, z - length/2);  // Top left
-            rlVertex3f(x - width/2, y - height/2, z - length/2);  // Bottom left
+            Vertex3f(x - width/2, y + height/2, z - length/2);  // Top left
+            Vertex3f(x - width/2, y - height/2, z - length/2);  // Bottom left
 
             // Top face
             //------------------------------------------------------------------
             // Left line
-            rlVertex3f(x - width/2, y + height/2, z + length/2);  // Top left front
-            rlVertex3f(x - width/2, y + height/2, z - length/2);  // Top left back
+            Vertex3f(x - width/2, y + height/2, z + length/2);  // Top left front
+            Vertex3f(x - width/2, y + height/2, z - length/2);  // Top left back
 
             // Right line
-            rlVertex3f(x + width/2, y + height/2, z + length/2);  // Top right front
-            rlVertex3f(x + width/2, y + height/2, z - length/2);  // Top right back
+            Vertex3f(x + width/2, y + height/2, z + length/2);  // Top right front
+            Vertex3f(x + width/2, y + height/2, z - length/2);  // Top right back
 
             // Bottom face
             //------------------------------------------------------------------
             // Left line
-            rlVertex3f(x - width/2, y - height/2, z + length/2);  // Top left front
-            rlVertex3f(x - width/2, y - height/2, z - length/2);  // Top left back
+            Vertex3f(x - width/2, y - height/2, z + length/2);  // Top left front
+            Vertex3f(x - width/2, y - height/2, z - length/2);  // Top left back
 
             // Right line
-            rlVertex3f(x + width/2, y - height/2, z + length/2);  // Top right front
-            rlVertex3f(x + width/2, y - height/2, z - length/2);  // Top right back
-        rlEnd();
-    rlPopMatrix();
+            Vertex3f(x + width/2, y - height/2, z + length/2);  // Top right front
+            Vertex3f(x + width/2, y - height/2, z - length/2);  // Top right back
+        End();
+    PopMatrix();
 }
 
 // Draw cube wires (vector version)
@@ -420,82 +420,82 @@ void DrawSphere(Vector3 centerPos, float radius, Color color)
 // Draw sphere with extended parameters
 void DrawSphereEx(Vector3 centerPos, float radius, int rings, int slices, Color color)
 {
-    rlPushMatrix();
+    PushMatrix();
         // NOTE: Transformation is applied in inverse order (scale -> translate)
-        rlTranslatef(centerPos.x, centerPos.y, centerPos.z);
-        rlScalef(radius, radius, radius);
+        Translatef(centerPos.x, centerPos.y, centerPos.z);
+        Scalef(radius, radius, radius);
 
-        rlBegin(RL_TRIANGLES);
-            rlColor4ub(color.r, color.g, color.b, color.a);
+        Begin(RL_TRIANGLES);
+            Color4ub(color.r, color.g, color.b, color.a);
 
             for (int i = 0; i < (rings + 2); i++)
             {
                 for (int j = 0; j < slices; j++)
                 {
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*i))*sinf(DEG2RAD*(360.0f*j/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*i)),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*i))*cosf(DEG2RAD*(360.0f*j/slices)));
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(DEG2RAD*(360.0f*(j + 1)/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(DEG2RAD*(360.0f*(j + 1)/slices)));
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(DEG2RAD*(360.0f*j/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(DEG2RAD*(360.0f*j/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i))*sinf(RL_DEG2RAD*(360.0f*j/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i)),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i))*cosf(RL_DEG2RAD*(360.0f*j/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(RL_DEG2RAD*(360.0f*(j + 1)/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(RL_DEG2RAD*(360.0f*(j + 1)/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(RL_DEG2RAD*(360.0f*j/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(RL_DEG2RAD*(360.0f*j/slices)));
 
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*i))*sinf(DEG2RAD*(360.0f*j/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*i)),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*i))*cosf(DEG2RAD*(360.0f*j/slices)));
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i)))*sinf(DEG2RAD*(360.0f*(j + 1)/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i))),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i)))*cosf(DEG2RAD*(360.0f*(j + 1)/slices)));
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(DEG2RAD*(360.0f*(j + 1)/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(DEG2RAD*(360.0f*(j + 1)/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i))*sinf(RL_DEG2RAD*(360.0f*j/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i)),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i))*cosf(RL_DEG2RAD*(360.0f*j/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i)))*sinf(RL_DEG2RAD*(360.0f*(j + 1)/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i))),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i)))*cosf(RL_DEG2RAD*(360.0f*(j + 1)/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(RL_DEG2RAD*(360.0f*(j + 1)/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(RL_DEG2RAD*(360.0f*(j + 1)/slices)));
                 }
             }
-        rlEnd();
-    rlPopMatrix();
+        End();
+    PopMatrix();
 }
 
 // Draw sphere wires
 void DrawSphereWires(Vector3 centerPos, float radius, int rings, int slices, Color color)
 {
-    rlPushMatrix();
+    PushMatrix();
         // NOTE: Transformation is applied in inverse order (scale -> translate)
-        rlTranslatef(centerPos.x, centerPos.y, centerPos.z);
-        rlScalef(radius, radius, radius);
+        Translatef(centerPos.x, centerPos.y, centerPos.z);
+        Scalef(radius, radius, radius);
 
-        rlBegin(RL_LINES);
-            rlColor4ub(color.r, color.g, color.b, color.a);
+        Begin(RL_LINES);
+            Color4ub(color.r, color.g, color.b, color.a);
 
             for (int i = 0; i < (rings + 2); i++)
             {
                 for (int j = 0; j < slices; j++)
                 {
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*i))*sinf(DEG2RAD*(360.0f*j/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*i)),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*i))*cosf(DEG2RAD*(360.0f*j/slices)));
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(DEG2RAD*(360.0f*(j + 1)/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(DEG2RAD*(360.0f*(j + 1)/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i))*sinf(RL_DEG2RAD*(360.0f*j/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i)),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i))*cosf(RL_DEG2RAD*(360.0f*j/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(RL_DEG2RAD*(360.0f*(j + 1)/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(RL_DEG2RAD*(360.0f*(j + 1)/slices)));
 
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(DEG2RAD*(360.0f*(j + 1)/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(DEG2RAD*(360.0f*(j + 1)/slices)));
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(DEG2RAD*(360.0f*j/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(DEG2RAD*(360.0f*j/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(RL_DEG2RAD*(360.0f*(j + 1)/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(RL_DEG2RAD*(360.0f*(j + 1)/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(RL_DEG2RAD*(360.0f*j/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(RL_DEG2RAD*(360.0f*j/slices)));
 
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(DEG2RAD*(360.0f*j/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(DEG2RAD*(360.0f*j/slices)));
-                    rlVertex3f(cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*i))*sinf(DEG2RAD*(360.0f*j/slices)),
-                               sinf(DEG2RAD*(270 + (180.0f/(rings + 1))*i)),
-                               cosf(DEG2RAD*(270 + (180.0f/(rings + 1))*i))*cosf(DEG2RAD*(360.0f*j/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*sinf(RL_DEG2RAD*(360.0f*j/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1))),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*(i + 1)))*cosf(RL_DEG2RAD*(360.0f*j/slices)));
+                    Vertex3f(cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i))*sinf(RL_DEG2RAD*(360.0f*j/slices)),
+                               sinf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i)),
+                               cosf(RL_DEG2RAD*(270 + (180.0f/(rings + 1))*i))*cosf(RL_DEG2RAD*(360.0f*j/slices)));
                 }
             }
-        rlEnd();
-    rlPopMatrix();
+        End();
+    PopMatrix();
 }
 
 // Draw a cylinder
@@ -504,32 +504,32 @@ void DrawCylinder(Vector3 position, float radiusTop, float radiusBottom, float h
 {
     if (sides < 3) sides = 3;
 
-    rlPushMatrix();
-        rlTranslatef(position.x, position.y, position.z);
+    PushMatrix();
+        Translatef(position.x, position.y, position.z);
 
-        rlBegin(RL_TRIANGLES);
-            rlColor4ub(color.r, color.g, color.b, color.a);
+        Begin(RL_TRIANGLES);
+            Color4ub(color.r, color.g, color.b, color.a);
 
             if (radiusTop > 0)
             {
                 // Draw Body -------------------------------------------------------------------------------------
                 for (int i = 0; i < 360; i += 360/sides)
                 {
-                    rlVertex3f(sinf(DEG2RAD*i)*radiusBottom, 0, cosf(DEG2RAD*i)*radiusBottom); //Bottom Left
-                    rlVertex3f(sinf(DEG2RAD*(i + 360.0f/sides))*radiusBottom, 0, cosf(DEG2RAD*(i + 360.0f/sides))*radiusBottom); //Bottom Right
-                    rlVertex3f(sinf(DEG2RAD*(i + 360.0f/sides))*radiusTop, height, cosf(DEG2RAD*(i + 360.0f/sides))*radiusTop); //Top Right
+                    Vertex3f(sinf(RL_DEG2RAD*i)*radiusBottom, 0, cosf(RL_DEG2RAD*i)*radiusBottom); //Bottom Left
+                    Vertex3f(sinf(RL_DEG2RAD*(i + 360.0f/sides))*radiusBottom, 0, cosf(RL_DEG2RAD*(i + 360.0f/sides))*radiusBottom); //Bottom Right
+                    Vertex3f(sinf(RL_DEG2RAD*(i + 360.0f/sides))*radiusTop, height, cosf(RL_DEG2RAD*(i + 360.0f/sides))*radiusTop); //Top Right
 
-                    rlVertex3f(sinf(DEG2RAD*i)*radiusTop, height, cosf(DEG2RAD*i)*radiusTop); //Top Left
-                    rlVertex3f(sinf(DEG2RAD*i)*radiusBottom, 0, cosf(DEG2RAD*i)*radiusBottom); //Bottom Left
-                    rlVertex3f(sinf(DEG2RAD*(i + 360.0f/sides))*radiusTop, height, cosf(DEG2RAD*(i + 360.0f/sides))*radiusTop); //Top Right
+                    Vertex3f(sinf(RL_DEG2RAD*i)*radiusTop, height, cosf(RL_DEG2RAD*i)*radiusTop); //Top Left
+                    Vertex3f(sinf(RL_DEG2RAD*i)*radiusBottom, 0, cosf(RL_DEG2RAD*i)*radiusBottom); //Bottom Left
+                    Vertex3f(sinf(RL_DEG2RAD*(i + 360.0f/sides))*radiusTop, height, cosf(RL_DEG2RAD*(i + 360.0f/sides))*radiusTop); //Top Right
                 }
 
                 // Draw Cap --------------------------------------------------------------------------------------
                 for (int i = 0; i < 360; i += 360/sides)
                 {
-                    rlVertex3f(0, height, 0);
-                    rlVertex3f(sinf(DEG2RAD*i)*radiusTop, height, cosf(DEG2RAD*i)*radiusTop);
-                    rlVertex3f(sinf(DEG2RAD*(i + 360.0f/sides))*radiusTop, height, cosf(DEG2RAD*(i + 360.0f/sides))*radiusTop);
+                    Vertex3f(0, height, 0);
+                    Vertex3f(sinf(RL_DEG2RAD*i)*radiusTop, height, cosf(RL_DEG2RAD*i)*radiusTop);
+                    Vertex3f(sinf(RL_DEG2RAD*(i + 360.0f/sides))*radiusTop, height, cosf(RL_DEG2RAD*(i + 360.0f/sides))*radiusTop);
                 }
             }
             else
@@ -537,21 +537,21 @@ void DrawCylinder(Vector3 position, float radiusTop, float radiusBottom, float h
                 // Draw Cone -------------------------------------------------------------------------------------
                 for (int i = 0; i < 360; i += 360/sides)
                 {
-                    rlVertex3f(0, height, 0);
-                    rlVertex3f(sinf(DEG2RAD*i)*radiusBottom, 0, cosf(DEG2RAD*i)*radiusBottom);
-                    rlVertex3f(sinf(DEG2RAD*(i + 360.0f/sides))*radiusBottom, 0, cosf(DEG2RAD*(i + 360.0f/sides))*radiusBottom);
+                    Vertex3f(0, height, 0);
+                    Vertex3f(sinf(RL_DEG2RAD*i)*radiusBottom, 0, cosf(RL_DEG2RAD*i)*radiusBottom);
+                    Vertex3f(sinf(RL_DEG2RAD*(i + 360.0f/sides))*radiusBottom, 0, cosf(RL_DEG2RAD*(i + 360.0f/sides))*radiusBottom);
                 }
             }
 
             // Draw Base -----------------------------------------------------------------------------------------
             for (int i = 0; i < 360; i += 360/sides)
             {
-                rlVertex3f(0, 0, 0);
-                rlVertex3f(sinf(DEG2RAD*(i + 360.0f/sides))*radiusBottom, 0, cosf(DEG2RAD*(i + 360.0f/sides))*radiusBottom);
-                rlVertex3f(sinf(DEG2RAD*i)*radiusBottom, 0, cosf(DEG2RAD*i)*radiusBottom);
+                Vertex3f(0, 0, 0);
+                Vertex3f(sinf(RL_DEG2RAD*(i + 360.0f/sides))*radiusBottom, 0, cosf(RL_DEG2RAD*(i + 360.0f/sides))*radiusBottom);
+                Vertex3f(sinf(RL_DEG2RAD*i)*radiusBottom, 0, cosf(RL_DEG2RAD*i)*radiusBottom);
             }
-        rlEnd();
-    rlPopMatrix();
+        End();
+    PopMatrix();
 }
 
 // Draw a cylinder with base at startPos and top at endPos
@@ -567,10 +567,10 @@ void DrawCylinderEx(Vector3 startPos, Vector3 endPos, float startRadius, float e
     Vector3 b1 = Vector3Normalize(Vector3Perpendicular(direction));
     Vector3 b2 = Vector3Normalize(Vector3CrossProduct(b1, direction));
 
-    float baseAngle = (2.0f*PI)/sides;
+    float baseAngle = (2.0f*RL_PI)/sides;
 
-    rlBegin(RL_TRIANGLES);
-        rlColor4ub(color.r, color.g, color.b, color.a);
+    Begin(RL_TRIANGLES);
+        Color4ub(color.r, color.g, color.b, color.a);
 
         for (int i = 0; i < sides; i++) {
             // compute the four vertices
@@ -588,26 +588,26 @@ void DrawCylinderEx(Vector3 startPos, Vector3 endPos, float startRadius, float e
             Vector3 w4 = { endPos.x + s4*b1.x + c4*b2.x, endPos.y + s4*b1.y + c4*b2.y, endPos.z + s4*b1.z + c4*b2.z };
 
             if (startRadius > 0) {                              //
-                rlVertex3f(startPos.x, startPos.y, startPos.z); // |
-                rlVertex3f(w2.x, w2.y, w2.z);                   // T0
-                rlVertex3f(w1.x, w1.y, w1.z);                   // |
+                Vertex3f(startPos.x, startPos.y, startPos.z); // |
+                Vertex3f(w2.x, w2.y, w2.z);                   // T0
+                Vertex3f(w1.x, w1.y, w1.z);                   // |
             }                                                   //
                                                                 //          w2 x.-----------x startPos
-            rlVertex3f(w1.x, w1.y, w1.z);                       // |           |\'.  T0    /
-            rlVertex3f(w2.x, w2.y, w2.z);                       // T1          | \ '.     /
-            rlVertex3f(w3.x, w3.y, w3.z);                       // |           |T \  '.  /
+            Vertex3f(w1.x, w1.y, w1.z);                       // |           |\'.  T0    /
+            Vertex3f(w2.x, w2.y, w2.z);                       // T1          | \ '.     /
+            Vertex3f(w3.x, w3.y, w3.z);                       // |           |T \  '.  /
                                                                 //             | 2 \ T 'x w1
-            rlVertex3f(w2.x, w2.y, w2.z);                       // |        w4 x.---\-1-|---x endPos
-            rlVertex3f(w4.x, w4.y, w4.z);                       // T2            '.  \  |T3/
-            rlVertex3f(w3.x, w3.y, w3.z);                       // |               '. \ | /
+            Vertex3f(w2.x, w2.y, w2.z);                       // |        w4 x.---\-1-|---x endPos
+            Vertex3f(w4.x, w4.y, w4.z);                       // T2            '.  \  |T3/
+            Vertex3f(w3.x, w3.y, w3.z);                       // |               '. \ | /
                                                                 //                   '.\|/
             if (endRadius > 0) {                                //                     'x w3
-                rlVertex3f(endPos.x, endPos.y, endPos.z);       // |
-                rlVertex3f(w3.x, w3.y, w3.z);                   // T3
-                rlVertex3f(w4.x, w4.y, w4.z);                   // |
+                Vertex3f(endPos.x, endPos.y, endPos.z);       // |
+                Vertex3f(w3.x, w3.y, w3.z);                   // T3
+                Vertex3f(w4.x, w4.y, w4.z);                   // |
             }                                                   //
         }
-    rlEnd();
+    End();
 }
 
 // Draw a wired cylinder
@@ -616,28 +616,28 @@ void DrawCylinderWires(Vector3 position, float radiusTop, float radiusBottom, fl
 {
     if (sides < 3) sides = 3;
 
-    rlPushMatrix();
-        rlTranslatef(position.x, position.y, position.z);
+    PushMatrix();
+        Translatef(position.x, position.y, position.z);
 
-        rlBegin(RL_LINES);
-            rlColor4ub(color.r, color.g, color.b, color.a);
+        Begin(RL_LINES);
+            Color4ub(color.r, color.g, color.b, color.a);
 
             for (int i = 0; i < 360; i += 360/sides)
             {
-                rlVertex3f(sinf(DEG2RAD*i)*radiusBottom, 0, cosf(DEG2RAD*i)*radiusBottom);
-                rlVertex3f(sinf(DEG2RAD*(i + 360.0f/sides))*radiusBottom, 0, cosf(DEG2RAD*(i + 360.0f/sides))*radiusBottom);
+                Vertex3f(sinf(RL_DEG2RAD*i)*radiusBottom, 0, cosf(RL_DEG2RAD*i)*radiusBottom);
+                Vertex3f(sinf(RL_DEG2RAD*(i + 360.0f/sides))*radiusBottom, 0, cosf(RL_DEG2RAD*(i + 360.0f/sides))*radiusBottom);
 
-                rlVertex3f(sinf(DEG2RAD*(i + 360.0f/sides))*radiusBottom, 0, cosf(DEG2RAD*(i + 360.0f/sides))*radiusBottom);
-                rlVertex3f(sinf(DEG2RAD*(i + 360.0f/sides))*radiusTop, height, cosf(DEG2RAD*(i + 360.0f/sides))*radiusTop);
+                Vertex3f(sinf(RL_DEG2RAD*(i + 360.0f/sides))*radiusBottom, 0, cosf(RL_DEG2RAD*(i + 360.0f/sides))*radiusBottom);
+                Vertex3f(sinf(RL_DEG2RAD*(i + 360.0f/sides))*radiusTop, height, cosf(RL_DEG2RAD*(i + 360.0f/sides))*radiusTop);
 
-                rlVertex3f(sinf(DEG2RAD*(i + 360.0f/sides))*radiusTop, height, cosf(DEG2RAD*(i + 360.0f/sides))*radiusTop);
-                rlVertex3f(sinf(DEG2RAD*i)*radiusTop, height, cosf(DEG2RAD*i)*radiusTop);
+                Vertex3f(sinf(RL_DEG2RAD*(i + 360.0f/sides))*radiusTop, height, cosf(RL_DEG2RAD*(i + 360.0f/sides))*radiusTop);
+                Vertex3f(sinf(RL_DEG2RAD*i)*radiusTop, height, cosf(RL_DEG2RAD*i)*radiusTop);
 
-                rlVertex3f(sinf(DEG2RAD*i)*radiusTop, height, cosf(DEG2RAD*i)*radiusTop);
-                rlVertex3f(sinf(DEG2RAD*i)*radiusBottom, 0, cosf(DEG2RAD*i)*radiusBottom);
+                Vertex3f(sinf(RL_DEG2RAD*i)*radiusTop, height, cosf(RL_DEG2RAD*i)*radiusTop);
+                Vertex3f(sinf(RL_DEG2RAD*i)*radiusBottom, 0, cosf(RL_DEG2RAD*i)*radiusBottom);
             }
-        rlEnd();
-    rlPopMatrix();
+        End();
+    PopMatrix();
 }
 
 
@@ -654,10 +654,10 @@ void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, float startRadius, fl
     Vector3 b1 = Vector3Normalize(Vector3Perpendicular(direction));
     Vector3 b2 = Vector3Normalize(Vector3CrossProduct(b1, direction));
 
-    float baseAngle = (2.0f*PI)/sides;
+    float baseAngle = (2.0f*RL_PI)/sides;
 
-    rlBegin(RL_LINES);
-        rlColor4ub(color.r, color.g, color.b, color.a);
+    Begin(RL_LINES);
+        Color4ub(color.r, color.g, color.b, color.a);
 
         for (int i = 0; i < sides; i++) {
             // compute the four vertices
@@ -674,16 +674,16 @@ void DrawCylinderWiresEx(Vector3 startPos, Vector3 endPos, float startRadius, fl
             float c4 = cosf(baseAngle*(i + 1))*endRadius;
             Vector3 w4 = { endPos.x + s4*b1.x + c4*b2.x, endPos.y + s4*b1.y + c4*b2.y, endPos.z + s4*b1.z + c4*b2.z };
 
-            rlVertex3f(w1.x, w1.y, w1.z);
-            rlVertex3f(w2.x, w2.y, w2.z);
+            Vertex3f(w1.x, w1.y, w1.z);
+            Vertex3f(w2.x, w2.y, w2.z);
 
-            rlVertex3f(w1.x, w1.y, w1.z);
-            rlVertex3f(w3.x, w3.y, w3.z);
+            Vertex3f(w1.x, w1.y, w1.z);
+            Vertex3f(w3.x, w3.y, w3.z);
 
-            rlVertex3f(w3.x, w3.y, w3.z);
-            rlVertex3f(w4.x, w4.y, w4.z);
+            Vertex3f(w3.x, w3.y, w3.z);
+            Vertex3f(w4.x, w4.y, w4.z);
         }
-    rlEnd();
+    End();
 }
 
 // Draw a capsule with the center of its sphere caps at startPos and endPos
@@ -703,11 +703,11 @@ void DrawCapsule(Vector3 startPos, Vector3 endPos, float radius, int slices, int
     Vector3 b2 = Vector3Normalize(Vector3CrossProduct(b1, direction));
     Vector3 capCenter = endPos;
 
-    float baseSliceAngle = (2.0f*PI)/slices;
-    float baseRingAngle  = PI * 0.5f / rings;
+    float baseSliceAngle = (2.0f*RL_PI)/slices;
+    float baseRingAngle  = RL_PI * 0.5f / rings;
 
-    rlBegin(RL_TRIANGLES);
-        rlColor4ub(color.r, color.g, color.b, color.a);
+    Begin(RL_TRIANGLES);
+        Color4ub(color.r, color.g, color.b, color.a);
 
         // render both caps
         for (int c = 0; c < 2; c++)
@@ -756,23 +756,23 @@ void DrawCapsule(Vector3 startPos, Vector3 endPos, float radius, int slices, int
                     // make sure cap triangle normals are facing outwards
                     if(c == 0)
                     {
-                        rlVertex3f(w1.x, w1.y, w1.z);
-                        rlVertex3f(w2.x, w2.y, w2.z);
-                        rlVertex3f(w3.x, w3.y, w3.z);
+                        Vertex3f(w1.x, w1.y, w1.z);
+                        Vertex3f(w2.x, w2.y, w2.z);
+                        Vertex3f(w3.x, w3.y, w3.z);
 
-                        rlVertex3f(w2.x, w2.y, w2.z);
-                        rlVertex3f(w4.x, w4.y, w4.z);
-                        rlVertex3f(w3.x, w3.y, w3.z);
+                        Vertex3f(w2.x, w2.y, w2.z);
+                        Vertex3f(w4.x, w4.y, w4.z);
+                        Vertex3f(w3.x, w3.y, w3.z);
                     }
                     else
                     {
-                        rlVertex3f(w1.x, w1.y, w1.z);
-                        rlVertex3f(w3.x, w3.y, w3.z);
-                        rlVertex3f(w2.x, w2.y, w2.z);
+                        Vertex3f(w1.x, w1.y, w1.z);
+                        Vertex3f(w3.x, w3.y, w3.z);
+                        Vertex3f(w2.x, w2.y, w2.z);
 
-                        rlVertex3f(w2.x, w2.y, w2.z);
-                        rlVertex3f(w3.x, w3.y, w3.z);
-                        rlVertex3f(w4.x, w4.y, w4.z);
+                        Vertex3f(w2.x, w2.y, w2.z);
+                        Vertex3f(w3.x, w3.y, w3.z);
+                        Vertex3f(w4.x, w4.y, w4.z);
                     }
                 }
             }
@@ -815,18 +815,18 @@ void DrawCapsule(Vector3 startPos, Vector3 endPos, float radius, int slices, int
                     endPos.z + ringSin4*b1.z + ringCos4*b2.z
                 };
                                                                         //          w2 x.-----------x startPos
-                rlVertex3f(w1.x, w1.y, w1.z);                         // |           |\'.  T0    /
-                rlVertex3f(w2.x, w2.y, w2.z);                         // T1          | \ '.     /
-                rlVertex3f(w3.x, w3.y, w3.z);                         // |           |T \  '.  /
+                Vertex3f(w1.x, w1.y, w1.z);                         // |           |\'.  T0    /
+                Vertex3f(w2.x, w2.y, w2.z);                         // T1          | \ '.     /
+                Vertex3f(w3.x, w3.y, w3.z);                         // |           |T \  '.  /
                                                                         //             | 2 \ T 'x w1
-                rlVertex3f(w2.x, w2.y, w2.z);                         // |        w4 x.---\-1-|---x endPos
-                rlVertex3f(w4.x, w4.y, w4.z);                         // T2            '.  \  |T3/
-                rlVertex3f(w3.x, w3.y, w3.z);                         // |               '. \ | /
+                Vertex3f(w2.x, w2.y, w2.z);                         // |        w4 x.---\-1-|---x endPos
+                Vertex3f(w4.x, w4.y, w4.z);                         // T2            '.  \  |T3/
+                Vertex3f(w3.x, w3.y, w3.z);                         // |               '. \ | /
                                                                         //                   '.\|/
                                                                         //                   'x w3
             }
         }
-    rlEnd();
+    End();
 }
 
 // Draw capsule wires with the center of its sphere caps at startPos and endPos
@@ -846,11 +846,11 @@ void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, float radius, int slices
     Vector3 b2 = Vector3Normalize(Vector3CrossProduct(b1, direction));
     Vector3 capCenter = endPos;
 
-    float baseSliceAngle = (2.0f*PI)/slices;
-    float baseRingAngle  = PI * 0.5f / rings;
+    float baseSliceAngle = (2.0f*RL_PI)/slices;
+    float baseRingAngle  = RL_PI * 0.5f / rings;
 
-    rlBegin(RL_LINES);
-        rlColor4ub(color.r, color.g, color.b, color.a);
+    Begin(RL_LINES);
+        Color4ub(color.r, color.g, color.b, color.a);
 
         // render both caps
         for (int c = 0; c < 2; c++)
@@ -896,20 +896,20 @@ void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, float radius, int slices
                         capCenter.z + (sinf(baseRingAngle * ( i + 1 ))*b0.z + ringSin4*b1.z + ringCos4*b2.z) * radius
                     };
 
-                    rlVertex3f(w1.x, w1.y, w1.z);
-                    rlVertex3f(w2.x, w2.y, w2.z);
+                    Vertex3f(w1.x, w1.y, w1.z);
+                    Vertex3f(w2.x, w2.y, w2.z);
 
-                    rlVertex3f(w2.x, w2.y, w2.z);
-                    rlVertex3f(w3.x, w3.y, w3.z);
+                    Vertex3f(w2.x, w2.y, w2.z);
+                    Vertex3f(w3.x, w3.y, w3.z);
 
-                    rlVertex3f(w1.x, w1.y, w1.z);
-                    rlVertex3f(w3.x, w3.y, w3.z);
+                    Vertex3f(w1.x, w1.y, w1.z);
+                    Vertex3f(w3.x, w3.y, w3.z);
 
-                    rlVertex3f(w2.x, w2.y, w2.z);
-                    rlVertex3f(w4.x, w4.y, w4.z);
+                    Vertex3f(w2.x, w2.y, w2.z);
+                    Vertex3f(w4.x, w4.y, w4.z);
 
-                    rlVertex3f(w3.x, w3.y, w3.z);
-                    rlVertex3f(w4.x, w4.y, w4.z);
+                    Vertex3f(w3.x, w3.y, w3.z);
+                    Vertex3f(w4.x, w4.y, w4.z);
                 }
             }
             capCenter = startPos;
@@ -951,37 +951,37 @@ void DrawCapsuleWires(Vector3 startPos, Vector3 endPos, float radius, int slices
                     endPos.z + ringSin4*b1.z + ringCos4*b2.z
                 };
 
-                rlVertex3f(w1.x, w1.y, w1.z);
-                rlVertex3f(w3.x, w3.y, w3.z);
+                Vertex3f(w1.x, w1.y, w1.z);
+                Vertex3f(w3.x, w3.y, w3.z);
 
-                rlVertex3f(w2.x, w2.y, w2.z);
-                rlVertex3f(w4.x, w4.y, w4.z);
+                Vertex3f(w2.x, w2.y, w2.z);
+                Vertex3f(w4.x, w4.y, w4.z);
 
-                rlVertex3f(w2.x, w2.y, w2.z);
-                rlVertex3f(w3.x, w3.y, w3.z);
+                Vertex3f(w2.x, w2.y, w2.z);
+                Vertex3f(w3.x, w3.y, w3.z);
             }
         }
-    rlEnd();
+    End();
 }
 
 // Draw a plane
 void DrawPlane(Vector3 centerPos, Vector2 size, Color color)
 {
     // NOTE: Plane is always created on XZ ground
-    rlPushMatrix();
-        rlTranslatef(centerPos.x, centerPos.y, centerPos.z);
-        rlScalef(size.x, 1.0f, size.y);
+    PushMatrix();
+        Translatef(centerPos.x, centerPos.y, centerPos.z);
+        Scalef(size.x, 1.0f, size.y);
 
-        rlBegin(RL_QUADS);
-            rlColor4ub(color.r, color.g, color.b, color.a);
-            rlNormal3f(0.0f, 1.0f, 0.0f);
+        Begin(RL_QUADS);
+            Color4ub(color.r, color.g, color.b, color.a);
+            Normal3f(0.0f, 1.0f, 0.0f);
 
-            rlVertex3f(-0.5f, 0.0f, -0.5f);
-            rlVertex3f(-0.5f, 0.0f, 0.5f);
-            rlVertex3f(0.5f, 0.0f, 0.5f);
-            rlVertex3f(0.5f, 0.0f, -0.5f);
-        rlEnd();
-    rlPopMatrix();
+            Vertex3f(-0.5f, 0.0f, -0.5f);
+            Vertex3f(-0.5f, 0.0f, 0.5f);
+            Vertex3f(0.5f, 0.0f, 0.5f);
+            Vertex3f(0.5f, 0.0f, -0.5f);
+        End();
+    PopMatrix();
 }
 
 // Draw a ray line
@@ -989,13 +989,13 @@ void DrawRay(Ray ray, Color color)
 {
     float scale = 10000;
 
-    rlBegin(RL_LINES);
-        rlColor4ub(color.r, color.g, color.b, color.a);
-        rlColor4ub(color.r, color.g, color.b, color.a);
+    Begin(RL_LINES);
+        Color4ub(color.r, color.g, color.b, color.a);
+        Color4ub(color.r, color.g, color.b, color.a);
 
-        rlVertex3f(ray.position.x, ray.position.y, ray.position.z);
-        rlVertex3f(ray.position.x + ray.direction.x*scale, ray.position.y + ray.direction.y*scale, ray.position.z + ray.direction.z*scale);
-    rlEnd();
+        Vertex3f(ray.position.x, ray.position.y, ray.position.z);
+        Vertex3f(ray.position.x + ray.direction.x*scale, ray.position.y + ray.direction.y*scale, ray.position.z + ray.direction.z*scale);
+    End();
 }
 
 // Draw a grid centered at (0, 0, 0)
@@ -1003,31 +1003,31 @@ void DrawGrid(int slices, float spacing)
 {
     int halfSlices = slices/2;
 
-    rlBegin(RL_LINES);
+    Begin(RL_LINES);
         for (int i = -halfSlices; i <= halfSlices; i++)
         {
             if (i == 0)
             {
-                rlColor3f(0.5f, 0.5f, 0.5f);
-                rlColor3f(0.5f, 0.5f, 0.5f);
-                rlColor3f(0.5f, 0.5f, 0.5f);
-                rlColor3f(0.5f, 0.5f, 0.5f);
+                Color3f(0.5f, 0.5f, 0.5f);
+                Color3f(0.5f, 0.5f, 0.5f);
+                Color3f(0.5f, 0.5f, 0.5f);
+                Color3f(0.5f, 0.5f, 0.5f);
             }
             else
             {
-                rlColor3f(0.75f, 0.75f, 0.75f);
-                rlColor3f(0.75f, 0.75f, 0.75f);
-                rlColor3f(0.75f, 0.75f, 0.75f);
-                rlColor3f(0.75f, 0.75f, 0.75f);
+                Color3f(0.75f, 0.75f, 0.75f);
+                Color3f(0.75f, 0.75f, 0.75f);
+                Color3f(0.75f, 0.75f, 0.75f);
+                Color3f(0.75f, 0.75f, 0.75f);
             }
 
-            rlVertex3f((float)i*spacing, 0.0f, (float)-halfSlices*spacing);
-            rlVertex3f((float)i*spacing, 0.0f, (float)halfSlices*spacing);
+            Vertex3f((float)i*spacing, 0.0f, (float)-halfSlices*spacing);
+            Vertex3f((float)i*spacing, 0.0f, (float)halfSlices*spacing);
 
-            rlVertex3f((float)-halfSlices*spacing, 0.0f, (float)i*spacing);
-            rlVertex3f((float)halfSlices*spacing, 0.0f, (float)i*spacing);
+            Vertex3f((float)-halfSlices*spacing, 0.0f, (float)i*spacing);
+            Vertex3f((float)halfSlices*spacing, 0.0f, (float)i*spacing);
         }
-    rlEnd();
+    End();
 }
 
 // Load model from files (mesh and material)
@@ -1035,19 +1035,19 @@ Model LoadModel(const char *fileName)
 {
     Model model = { 0 };
 
-#if defined(SUPPORT_FILEFORMAT_OBJ)
+#if defined(RL_SUPPORT_FILEFORMAT_OBJ)
     if (IsFileExtension(fileName, ".obj")) model = LoadOBJ(fileName);
 #endif
-#if defined(SUPPORT_FILEFORMAT_IQM)
+#if defined(RL_SUPPORT_FILEFORMAT_IQM)
     if (IsFileExtension(fileName, ".iqm")) model = LoadIQM(fileName);
 #endif
-#if defined(SUPPORT_FILEFORMAT_GLTF)
+#if defined(RL_SUPPORT_FILEFORMAT_GLTF)
     if (IsFileExtension(fileName, ".gltf") || IsFileExtension(fileName, ".glb")) model = LoadGLTF(fileName);
 #endif
-#if defined(SUPPORT_FILEFORMAT_VOX)
+#if defined(RL_SUPPORT_FILEFORMAT_VOX)
     if (IsFileExtension(fileName, ".vox")) model = LoadVOX(fileName);
 #endif
-#if defined(SUPPORT_FILEFORMAT_M3D)
+#if defined(RL_SUPPORT_FILEFORMAT_M3D)
     if (IsFileExtension(fileName, ".m3d")) model = LoadM3D(fileName);
 #endif
 
@@ -1059,11 +1059,11 @@ Model LoadModel(const char *fileName)
         // Upload vertex data to GPU (static meshes)
         for (int i = 0; i < model.meshCount; i++) UploadMesh(&model.meshes[i], false);
     }
-    else TRACELOG(LOG_WARNING, "MESH: [%s] Failed to load model mesh(es) data", fileName);
+    else RL_TRACELOG(LOG_WARNING, "MESH: [%s] Failed to load model mesh(es) data", fileName);
 
     if (model.materialCount == 0)
     {
-        TRACELOG(LOG_WARNING, "MATERIAL: [%s] Failed to load model material data, default to white material", fileName);
+        RL_TRACELOG(LOG_WARNING, "MATERIAL: [%s] Failed to load model material data, default to white material", fileName);
 
         model.materialCount = 1;
         model.materials = (Material *)RL_CALLOC(model.materialCount, sizeof(Material));
@@ -1134,7 +1134,7 @@ void UnloadModel(Model model)
     RL_FREE(model.bones);
     RL_FREE(model.bindPose);
 
-    TRACELOG(LOG_INFO, "MODEL: Unloaded model (and meshes) from RAM and VRAM");
+    RL_TRACELOG(LOG_INFO, "MODEL: Unloaded model (and meshes) from RAM and VRAM");
 }
 
 // Compute model bounding box limits (considers all meshes)
@@ -1178,11 +1178,11 @@ void UploadMesh(Mesh *mesh, bool dynamic)
     if (mesh->vaoId > 0)
     {
         // Check if mesh has already been loaded in GPU
-        TRACELOG(LOG_WARNING, "VAO: [ID %i] Trying to re-load an already loaded mesh", mesh->vaoId);
+        RL_TRACELOG(LOG_WARNING, "VAO: [ID %i] Trying to re-load an already loaded mesh", mesh->vaoId);
         return;
     }
 
-    mesh->vboId = (unsigned int *)RL_CALLOC(MAX_MESH_VERTEX_BUFFERS, sizeof(unsigned int));
+    mesh->vboId = (unsigned int *)RL_CALLOC(RL_MAX_MESH_VERTEX_BUFFERS, sizeof(unsigned int));
 
     mesh->vaoId = 0;        // Vertex Array Object
     mesh->vboId[0] = 0;     // Vertex buffer: positions
@@ -1194,21 +1194,21 @@ void UploadMesh(Mesh *mesh, bool dynamic)
     mesh->vboId[6] = 0;     // Vertex buffer: indices
 
 #if defined(GRAPHICS_API_OPENGL_33) || defined(GRAPHICS_API_OPENGL_ES2)
-    mesh->vaoId = rlLoadVertexArray();
-    rlEnableVertexArray(mesh->vaoId);
+    mesh->vaoId = LoadVertexArray();
+    EnableVertexArray(mesh->vaoId);
 
     // NOTE: Vertex attributes must be uploaded considering default locations points and available vertex data
 
     // Enable vertex attributes: position (shader-location = 0)
     void *vertices = (mesh->animVertices != NULL)? mesh->animVertices : mesh->vertices;
-    mesh->vboId[0] = rlLoadVertexBuffer(vertices, mesh->vertexCount*3*sizeof(float), dynamic);
-    rlSetVertexAttribute(0, 3, RL_FLOAT, 0, 0, 0);
-    rlEnableVertexAttribute(0);
+    mesh->vboId[0] = LoadVertexBuffer(vertices, mesh->vertexCount*3*sizeof(float), dynamic);
+    SetVertexAttribute(0, 3, RL_FLOAT, 0, 0, 0);
+    EnableVertexAttribute(0);
 
     // Enable vertex attributes: texcoords (shader-location = 1)
-    mesh->vboId[1] = rlLoadVertexBuffer(mesh->texcoords, mesh->vertexCount*2*sizeof(float), dynamic);
-    rlSetVertexAttribute(1, 2, RL_FLOAT, 0, 0, 0);
-    rlEnableVertexAttribute(1);
+    mesh->vboId[1] = LoadVertexBuffer(mesh->texcoords, mesh->vertexCount*2*sizeof(float), dynamic);
+    SetVertexAttribute(1, 2, RL_FLOAT, 0, 0, 0);
+    EnableVertexAttribute(1);
 
     // WARNING: When setting default vertex attribute values, the values for each generic vertex attribute
     // is part of current state, and it is maintained even if a different program object is used
@@ -1217,83 +1217,83 @@ void UploadMesh(Mesh *mesh, bool dynamic)
     {
         // Enable vertex attributes: normals (shader-location = 2)
         void *normals = (mesh->animNormals != NULL)? mesh->animNormals : mesh->normals;
-        mesh->vboId[2] = rlLoadVertexBuffer(normals, mesh->vertexCount*3*sizeof(float), dynamic);
-        rlSetVertexAttribute(2, 3, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(2);
+        mesh->vboId[2] = LoadVertexBuffer(normals, mesh->vertexCount*3*sizeof(float), dynamic);
+        SetVertexAttribute(2, 3, RL_FLOAT, 0, 0, 0);
+        EnableVertexAttribute(2);
     }
     else
     {
         // Default vertex attribute: normal
         // WARNING: Default value provided to shader if location available
         float value[3] = { 1.0f, 1.0f, 1.0f };
-        rlSetVertexAttributeDefault(2, value, SHADER_ATTRIB_VEC3, 3);
-        rlDisableVertexAttribute(2);
+        SetVertexAttributeDefault(2, value, SHADER_ATTRIB_VEC3, 3);
+        DisableVertexAttribute(2);
     }
 
     if (mesh->colors != NULL)
     {
         // Enable vertex attribute: color (shader-location = 3)
-        mesh->vboId[3] = rlLoadVertexBuffer(mesh->colors, mesh->vertexCount*4*sizeof(unsigned char), dynamic);
-        rlSetVertexAttribute(3, 4, RL_UNSIGNED_BYTE, 1, 0, 0);
-        rlEnableVertexAttribute(3);
+        mesh->vboId[3] = LoadVertexBuffer(mesh->colors, mesh->vertexCount*4*sizeof(unsigned char), dynamic);
+        SetVertexAttribute(3, 4, RL_UNSIGNED_BYTE, 1, 0, 0);
+        EnableVertexAttribute(3);
     }
     else
     {
         // Default vertex attribute: color
         // WARNING: Default value provided to shader if location available
-        float value[4] = { 1.0f, 1.0f, 1.0f, 1.0f };    // WHITE
-        rlSetVertexAttributeDefault(3, value, SHADER_ATTRIB_VEC4, 4);
-        rlDisableVertexAttribute(3);
+        float value[4] = { 1.0f, 1.0f, 1.0f, 1.0f };    // RL_WHITE
+        SetVertexAttributeDefault(3, value, SHADER_ATTRIB_VEC4, 4);
+        DisableVertexAttribute(3);
     }
 
     if (mesh->tangents != NULL)
     {
         // Enable vertex attribute: tangent (shader-location = 4)
-        mesh->vboId[4] = rlLoadVertexBuffer(mesh->tangents, mesh->vertexCount*4*sizeof(float), dynamic);
-        rlSetVertexAttribute(4, 4, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(4);
+        mesh->vboId[4] = LoadVertexBuffer(mesh->tangents, mesh->vertexCount*4*sizeof(float), dynamic);
+        SetVertexAttribute(4, 4, RL_FLOAT, 0, 0, 0);
+        EnableVertexAttribute(4);
     }
     else
     {
         // Default vertex attribute: tangent
         // WARNING: Default value provided to shader if location available
         float value[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-        rlSetVertexAttributeDefault(4, value, SHADER_ATTRIB_VEC4, 4);
-        rlDisableVertexAttribute(4);
+        SetVertexAttributeDefault(4, value, SHADER_ATTRIB_VEC4, 4);
+        DisableVertexAttribute(4);
     }
 
     if (mesh->texcoords2 != NULL)
     {
         // Enable vertex attribute: texcoord2 (shader-location = 5)
-        mesh->vboId[5] = rlLoadVertexBuffer(mesh->texcoords2, mesh->vertexCount*2*sizeof(float), dynamic);
-        rlSetVertexAttribute(5, 2, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(5);
+        mesh->vboId[5] = LoadVertexBuffer(mesh->texcoords2, mesh->vertexCount*2*sizeof(float), dynamic);
+        SetVertexAttribute(5, 2, RL_FLOAT, 0, 0, 0);
+        EnableVertexAttribute(5);
     }
     else
     {
         // Default vertex attribute: texcoord2
         // WARNING: Default value provided to shader if location available
         float value[2] = { 0.0f, 0.0f };
-        rlSetVertexAttributeDefault(5, value, SHADER_ATTRIB_VEC2, 2);
-        rlDisableVertexAttribute(5);
+        SetVertexAttributeDefault(5, value, SHADER_ATTRIB_VEC2, 2);
+        DisableVertexAttribute(5);
     }
 
     if (mesh->indices != NULL)
     {
-        mesh->vboId[6] = rlLoadVertexBufferElement(mesh->indices, mesh->triangleCount*3*sizeof(unsigned short), dynamic);
+        mesh->vboId[6] = LoadVertexBufferElement(mesh->indices, mesh->triangleCount*3*sizeof(unsigned short), dynamic);
     }
 
-    if (mesh->vaoId > 0) TRACELOG(LOG_INFO, "VAO: [ID %i] Mesh uploaded successfully to VRAM (GPU)", mesh->vaoId);
-    else TRACELOG(LOG_INFO, "VBO: Mesh uploaded successfully to VRAM (GPU)");
+    if (mesh->vaoId > 0) RL_TRACELOG(LOG_INFO, "VAO: [ID %i] Mesh uploaded successfully to VRAM (GPU)", mesh->vaoId);
+    else RL_TRACELOG(LOG_INFO, "VBO: Mesh uploaded successfully to VRAM (GPU)");
 
-    rlDisableVertexArray();
+    DisableVertexArray();
 #endif
 }
 
 // Update mesh vertex data in GPU for a specific buffer index
 void UpdateMeshBuffer(Mesh mesh, int index, const void *data, int dataSize, int offset)
 {
-    rlUpdateVertexBuffer(mesh.vboId[index], data, dataSize, offset);
+    UpdateVertexBuffer(mesh.vboId[index], data, dataSize, offset);
 }
 
 // Draw a 3d mesh with material and transform
@@ -1305,35 +1305,35 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
     #define GL_COLOR_ARRAY          0x8076
     #define GL_TEXTURE_COORD_ARRAY  0x8078
 
-    rlEnableTexture(material.maps[MATERIAL_MAP_DIFFUSE].texture.id);
+    EnableTexture(material.maps[MATERIAL_MAP_DIFFUSE].texture.id);
 
-    rlEnableStatePointer(GL_VERTEX_ARRAY, mesh.vertices);
-    rlEnableStatePointer(GL_TEXTURE_COORD_ARRAY, mesh.texcoords);
-    rlEnableStatePointer(GL_NORMAL_ARRAY, mesh.normals);
-    rlEnableStatePointer(GL_COLOR_ARRAY, mesh.colors);
+    EnableStatePointer(GL_VERTEX_ARRAY, mesh.vertices);
+    EnableStatePointer(GL_TEXTURE_COORD_ARRAY, mesh.texcoords);
+    EnableStatePointer(GL_NORMAL_ARRAY, mesh.normals);
+    EnableStatePointer(GL_COLOR_ARRAY, mesh.colors);
 
-    rlPushMatrix();
-        rlMultMatrixf(MatrixToFloat(transform));
-        rlColor4ub(material.maps[MATERIAL_MAP_DIFFUSE].color.r,
+    PushMatrix();
+        MultMatrixf(MatrixToFloat(transform));
+        Color4ub(material.maps[MATERIAL_MAP_DIFFUSE].color.r,
                    material.maps[MATERIAL_MAP_DIFFUSE].color.g,
                    material.maps[MATERIAL_MAP_DIFFUSE].color.b,
                    material.maps[MATERIAL_MAP_DIFFUSE].color.a);
 
-        if (mesh.indices != NULL) rlDrawVertexArrayElements(0, mesh.triangleCount*3, mesh.indices);
-        else rlDrawVertexArray(0, mesh.vertexCount);
-    rlPopMatrix();
+        if (mesh.indices != NULL) DrawVertexArrayElements(0, mesh.triangleCount*3, mesh.indices);
+        else DrawVertexArray(0, mesh.vertexCount);
+    PopMatrix();
 
-    rlDisableStatePointer(GL_VERTEX_ARRAY);
-    rlDisableStatePointer(GL_TEXTURE_COORD_ARRAY);
-    rlDisableStatePointer(GL_NORMAL_ARRAY);
-    rlDisableStatePointer(GL_COLOR_ARRAY);
+    DisableStatePointer(GL_VERTEX_ARRAY);
+    DisableStatePointer(GL_TEXTURE_COORD_ARRAY);
+    DisableStatePointer(GL_NORMAL_ARRAY);
+    DisableStatePointer(GL_COLOR_ARRAY);
 
-    rlDisableTexture();
+    DisableTexture();
 #endif
 
 #if defined(GRAPHICS_API_OPENGL_33) || defined(GRAPHICS_API_OPENGL_ES2)
     // Bind shader program
-    rlEnableShader(material.shader.id);
+    EnableShader(material.shader.id);
 
     // Send required data to shader (matrices, values)
     //-----------------------------------------------------
@@ -1347,7 +1347,7 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
             (float)material.maps[MATERIAL_MAP_DIFFUSE].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[SHADER_LOC_COLOR_DIFFUSE], values, SHADER_UNIFORM_VEC4, 1);
+        SetUniform(material.shader.locs[SHADER_LOC_COLOR_DIFFUSE], values, SHADER_UNIFORM_VEC4, 1);
     }
 
     // Upload to shader material.colSpecular (if location available)
@@ -1360,53 +1360,53 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
             (float)material.maps[SHADER_LOC_COLOR_SPECULAR].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[SHADER_LOC_COLOR_SPECULAR], values, SHADER_UNIFORM_VEC4, 1);
+        SetUniform(material.shader.locs[SHADER_LOC_COLOR_SPECULAR], values, SHADER_UNIFORM_VEC4, 1);
     }
 
     // Get a copy of current matrices to work with,
     // just in case stereo render is required, and we need to modify them
     // NOTE: At this point the modelview matrix just contains the view matrix (camera)
     // That's because BeginMode3D() sets it and there is no model-drawing function
-    // that modifies it, all use rlPushMatrix() and rlPopMatrix()
+    // that modifies it, all use PushMatrix() and PopMatrix()
     Matrix matModel = MatrixIdentity();
-    Matrix matView = rlGetMatrixModelview();
+    Matrix matView = GetMatrixModelview();
     Matrix matModelView = MatrixIdentity();
-    Matrix matProjection = rlGetMatrixProjection();
+    Matrix matProjection = GetMatrixProjection();
 
     // Upload view and projection matrices (if locations available)
-    if (material.shader.locs[SHADER_LOC_MATRIX_VIEW] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_VIEW], matView);
-    if (material.shader.locs[SHADER_LOC_MATRIX_PROJECTION] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_PROJECTION], matProjection);
+    if (material.shader.locs[SHADER_LOC_MATRIX_VIEW] != -1) SetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_VIEW], matView);
+    if (material.shader.locs[SHADER_LOC_MATRIX_PROJECTION] != -1) SetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_PROJECTION], matProjection);
 
     // Model transformation matrix is sent to shader uniform location: SHADER_LOC_MATRIX_MODEL
-    if (material.shader.locs[SHADER_LOC_MATRIX_MODEL] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_MODEL], transform);
+    if (material.shader.locs[SHADER_LOC_MATRIX_MODEL] != -1) SetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_MODEL], transform);
 
     // Accumulate several model transformations:
     //    transform: model transformation provided (includes DrawModel() params combined with model.transform)
-    //    rlGetMatrixTransform(): rlgl internal transform matrix due to push/pop matrix stack
-    matModel = MatrixMultiply(transform, rlGetMatrixTransform());
+    //    GetMatrixTransform(): rlgl internal transform matrix due to push/pop matrix stack
+    matModel = MatrixMultiply(transform, GetMatrixTransform());
 
     // Get model-view matrix
     matModelView = MatrixMultiply(matModel, matView);
 
     // Upload model normal matrix (if locations available)
-    if (material.shader.locs[SHADER_LOC_MATRIX_NORMAL] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_NORMAL], MatrixTranspose(MatrixInvert(matModel)));
+    if (material.shader.locs[SHADER_LOC_MATRIX_NORMAL] != -1) SetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_NORMAL], MatrixTranspose(MatrixInvert(matModel)));
     //-----------------------------------------------------
 
     // Bind active texture maps (if available)
-    for (int i = 0; i < MAX_MATERIAL_MAPS; i++)
+    for (int i = 0; i < RL_MAX_MATERIAL_MAPS; i++)
     {
         if (material.maps[i].texture.id > 0)
         {
             // Select current shader texture slot
-            rlActiveTextureSlot(i);
+            ActiveTextureSlot(i);
 
             // Enable texture for active slot
             if ((i == MATERIAL_MAP_IRRADIANCE) ||
                 (i == MATERIAL_MAP_PREFILTER) ||
-                (i == MATERIAL_MAP_CUBEMAP)) rlEnableTextureCubemap(material.maps[i].texture.id);
-            else rlEnableTexture(material.maps[i].texture.id);
+                (i == MATERIAL_MAP_CUBEMAP)) EnableTextureCubemap(material.maps[i].texture.id);
+            else EnableTexture(material.maps[i].texture.id);
 
-            rlSetUniform(material.shader.locs[SHADER_LOC_MAP_DIFFUSE + i], &i, SHADER_UNIFORM_INT, 1);
+            SetUniform(material.shader.locs[SHADER_LOC_MAP_DIFFUSE + i], &i, SHADER_UNIFORM_INT, 1);
         }
     }
 
@@ -1414,24 +1414,24 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
     // WARNING: UploadMesh() enables all vertex attributes available in mesh and sets default attribute values
     // for shader expected vertex attributes that are not provided by the mesh (i.e. colors)
     // This could be a dangerous approach because different meshes with different shaders can enable/disable some attributes
-    if (!rlEnableVertexArray(mesh.vaoId))
+    if (!EnableVertexArray(mesh.vaoId))
     {
         // Bind mesh VBO data: vertex position (shader-location = 0)
-        rlEnableVertexBuffer(mesh.vboId[0]);
-        rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION], 3, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION]);
+        EnableVertexBuffer(mesh.vboId[0]);
+        SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION], 3, RL_FLOAT, 0, 0, 0);
+        EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION]);
 
         // Bind mesh VBO data: vertex texcoords (shader-location = 1)
-        rlEnableVertexBuffer(mesh.vboId[1]);
-        rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01], 2, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01]);
+        EnableVertexBuffer(mesh.vboId[1]);
+        SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01], 2, RL_FLOAT, 0, 0, 0);
+        EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01]);
 
         if (material.shader.locs[SHADER_LOC_VERTEX_NORMAL] != -1)
         {
             // Bind mesh VBO data: vertex normals (shader-location = 2)
-            rlEnableVertexBuffer(mesh.vboId[2]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL], 3, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL]);
+            EnableVertexBuffer(mesh.vboId[2]);
+            SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL], 3, RL_FLOAT, 0, 0, 0);
+            EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL]);
         }
 
         // Bind mesh VBO data: vertex colors (shader-location = 3, if available)
@@ -1439,44 +1439,44 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
         {
             if (mesh.vboId[3] != 0)
             {
-                rlEnableVertexBuffer(mesh.vboId[3]);
-                rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR], 4, RL_UNSIGNED_BYTE, 1, 0, 0);
-                rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
+                EnableVertexBuffer(mesh.vboId[3]);
+                SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR], 4, RL_UNSIGNED_BYTE, 1, 0, 0);
+                EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
             }
             else
             {
                 // Set default value for defined vertex attribute in shader but not provided by mesh
                 // WARNING: It could result in GPU undefined behaviour
                 float value[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-                rlSetVertexAttributeDefault(material.shader.locs[SHADER_LOC_VERTEX_COLOR], value, SHADER_ATTRIB_VEC4, 4);
-                rlDisableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
+                SetVertexAttributeDefault(material.shader.locs[SHADER_LOC_VERTEX_COLOR], value, SHADER_ATTRIB_VEC4, 4);
+                DisableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
             }
         }
 
         // Bind mesh VBO data: vertex tangents (shader-location = 4, if available)
         if (material.shader.locs[SHADER_LOC_VERTEX_TANGENT] != -1)
         {
-            rlEnableVertexBuffer(mesh.vboId[4]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT], 4, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT]);
+            EnableVertexBuffer(mesh.vboId[4]);
+            SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT], 4, RL_FLOAT, 0, 0, 0);
+            EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT]);
         }
 
         // Bind mesh VBO data: vertex texcoords2 (shader-location = 5, if available)
         if (material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02] != -1)
         {
-            rlEnableVertexBuffer(mesh.vboId[5]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02], 2, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02]);
+            EnableVertexBuffer(mesh.vboId[5]);
+            SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02], 2, RL_FLOAT, 0, 0, 0);
+            EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02]);
         }
 
-        if (mesh.indices != NULL) rlEnableVertexBufferElement(mesh.vboId[6]);
+        if (mesh.indices != NULL) EnableVertexBufferElement(mesh.vboId[6]);
     }
 
     // WARNING: Disable vertex attribute color input if mesh can not provide that data (despite location being enabled in shader)
-    if (mesh.vboId[3] == 0) rlDisableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
+    if (mesh.vboId[3] == 0) DisableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
 
     int eyeCount = 1;
-    if (rlIsStereoRenderEnabled()) eyeCount = 2;
+    if (IsStereoRenderEnabled()) eyeCount = 2;
 
     for (int eye = 0; eye < eyeCount; eye++)
     {
@@ -1486,45 +1486,45 @@ void DrawMesh(Mesh mesh, Material material, Matrix transform)
         else
         {
             // Setup current eye viewport (half screen width)
-            rlViewport(eye*rlGetFramebufferWidth()/2, 0, rlGetFramebufferWidth()/2, rlGetFramebufferHeight());
-            matModelViewProjection = MatrixMultiply(MatrixMultiply(matModelView, rlGetMatrixViewOffsetStereo(eye)), rlGetMatrixProjectionStereo(eye));
+            Viewport(eye*GetFramebufferWidth()/2, 0, GetFramebufferWidth()/2, GetFramebufferHeight());
+            matModelViewProjection = MatrixMultiply(MatrixMultiply(matModelView, GetMatrixViewOffsetStereo(eye)), GetMatrixProjectionStereo(eye));
         }
 
         // Send combined model-view-projection matrix to shader
-        rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_MVP], matModelViewProjection);
+        SetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_MVP], matModelViewProjection);
 
         // Draw mesh
-        if (mesh.indices != NULL) rlDrawVertexArrayElements(0, mesh.triangleCount*3, 0);
-        else rlDrawVertexArray(0, mesh.vertexCount);
+        if (mesh.indices != NULL) DrawVertexArrayElements(0, mesh.triangleCount*3, 0);
+        else DrawVertexArray(0, mesh.vertexCount);
     }
 
     // Unbind all bound texture maps
-    for (int i = 0; i < MAX_MATERIAL_MAPS; i++)
+    for (int i = 0; i < RL_MAX_MATERIAL_MAPS; i++)
     {
         if (material.maps[i].texture.id > 0)
         {
             // Select current shader texture slot
-            rlActiveTextureSlot(i);
+            ActiveTextureSlot(i);
 
             // Disable texture for active slot
             if ((i == MATERIAL_MAP_IRRADIANCE) ||
                 (i == MATERIAL_MAP_PREFILTER) ||
-                (i == MATERIAL_MAP_CUBEMAP)) rlDisableTextureCubemap();
-            else rlDisableTexture();
+                (i == MATERIAL_MAP_CUBEMAP)) DisableTextureCubemap();
+            else DisableTexture();
         }
     }
 
     // Disable all possible vertex array objects (or VBOs)
-    rlDisableVertexArray();
-    rlDisableVertexBuffer();
-    rlDisableVertexBufferElement();
+    DisableVertexArray();
+    DisableVertexBuffer();
+    DisableVertexBufferElement();
 
     // Disable shader program
-    rlDisableShader();
+    DisableShader();
 
     // Restore rlgl internal modelview and projection matrices
-    rlSetMatrixModelview(matView);
-    rlSetMatrixProjection(matProjection);
+    SetMatrixModelview(matView);
+    SetMatrixProjection(matProjection);
 #endif
 }
 
@@ -1537,7 +1537,7 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
     unsigned int instancesVboId = 0;
 
     // Bind shader program
-    rlEnableShader(material.shader.id);
+    EnableShader(material.shader.id);
 
     // Send required data to shader (matrices, values)
     //-----------------------------------------------------
@@ -1551,7 +1551,7 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
             (float)material.maps[MATERIAL_MAP_DIFFUSE].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[SHADER_LOC_COLOR_DIFFUSE], values, SHADER_UNIFORM_VEC4, 1);
+        SetUniform(material.shader.locs[SHADER_LOC_COLOR_DIFFUSE], values, SHADER_UNIFORM_VEC4, 1);
     }
 
     // Upload to shader material.colSpecular (if location available)
@@ -1564,22 +1564,22 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
             (float)material.maps[SHADER_LOC_COLOR_SPECULAR].color.a/255.0f
         };
 
-        rlSetUniform(material.shader.locs[SHADER_LOC_COLOR_SPECULAR], values, SHADER_UNIFORM_VEC4, 1);
+        SetUniform(material.shader.locs[SHADER_LOC_COLOR_SPECULAR], values, SHADER_UNIFORM_VEC4, 1);
     }
 
     // Get a copy of current matrices to work with,
     // just in case stereo render is required, and we need to modify them
     // NOTE: At this point the modelview matrix just contains the view matrix (camera)
     // That's because BeginMode3D() sets it and there is no model-drawing function
-    // that modifies it, all use rlPushMatrix() and rlPopMatrix()
+    // that modifies it, all use PushMatrix() and PopMatrix()
     Matrix matModel = MatrixIdentity();
-    Matrix matView = rlGetMatrixModelview();
+    Matrix matView = GetMatrixModelview();
     Matrix matModelView = MatrixIdentity();
-    Matrix matProjection = rlGetMatrixProjection();
+    Matrix matProjection = GetMatrixProjection();
 
     // Upload view and projection matrices (if locations available)
-    if (material.shader.locs[SHADER_LOC_MATRIX_VIEW] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_VIEW], matView);
-    if (material.shader.locs[SHADER_LOC_MATRIX_PROJECTION] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_PROJECTION], matProjection);
+    if (material.shader.locs[SHADER_LOC_MATRIX_VIEW] != -1) SetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_VIEW], matView);
+    if (material.shader.locs[SHADER_LOC_MATRIX_PROJECTION] != -1) SetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_PROJECTION], matProjection);
 
     // Create instances buffer
     instanceTransforms = (float16 *)RL_MALLOC(instances*sizeof(float16));
@@ -1588,71 +1588,71 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
     for (int i = 0; i < instances; i++) instanceTransforms[i] = MatrixToFloatV(transforms[i]);
 
     // Enable mesh VAO to attach new buffer
-    rlEnableVertexArray(mesh.vaoId);
+    EnableVertexArray(mesh.vaoId);
 
     // This could alternatively use a static VBO and either glMapBuffer() or glBufferSubData().
     // It isn't clear which would be reliably faster in all cases and on all platforms,
     // anecdotally glMapBuffer() seems very slow (syncs) while glBufferSubData() seems
     // no faster, since we're transferring all the transform matrices anyway
-    instancesVboId = rlLoadVertexBuffer(instanceTransforms, instances*sizeof(float16), false);
+    instancesVboId = LoadVertexBuffer(instanceTransforms, instances*sizeof(float16), false);
 
     // Instances transformation matrices are send to shader attribute location: SHADER_LOC_MATRIX_MODEL
     for (unsigned int i = 0; i < 4; i++)
     {
-        rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_MATRIX_MODEL] + i);
-        rlSetVertexAttribute(material.shader.locs[SHADER_LOC_MATRIX_MODEL] + i, 4, RL_FLOAT, 0, sizeof(Matrix), (void *)(i*sizeof(Vector4)));
-        rlSetVertexAttributeDivisor(material.shader.locs[SHADER_LOC_MATRIX_MODEL] + i, 1);
+        EnableVertexAttribute(material.shader.locs[SHADER_LOC_MATRIX_MODEL] + i);
+        SetVertexAttribute(material.shader.locs[SHADER_LOC_MATRIX_MODEL] + i, 4, RL_FLOAT, 0, sizeof(Matrix), (void *)(i*sizeof(Vector4)));
+        SetVertexAttributeDivisor(material.shader.locs[SHADER_LOC_MATRIX_MODEL] + i, 1);
     }
 
-    rlDisableVertexBuffer();
-    rlDisableVertexArray();
+    DisableVertexBuffer();
+    DisableVertexArray();
 
     // Accumulate internal matrix transform (push/pop) and view matrix
     // NOTE: In this case, model instance transformation must be computed in the shader
-    matModelView = MatrixMultiply(rlGetMatrixTransform(), matView);
+    matModelView = MatrixMultiply(GetMatrixTransform(), matView);
 
     // Upload model normal matrix (if locations available)
-    if (material.shader.locs[SHADER_LOC_MATRIX_NORMAL] != -1) rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_NORMAL], MatrixTranspose(MatrixInvert(matModel)));
+    if (material.shader.locs[SHADER_LOC_MATRIX_NORMAL] != -1) SetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_NORMAL], MatrixTranspose(MatrixInvert(matModel)));
     //-----------------------------------------------------
 
     // Bind active texture maps (if available)
-    for (int i = 0; i < MAX_MATERIAL_MAPS; i++)
+    for (int i = 0; i < RL_MAX_MATERIAL_MAPS; i++)
     {
         if (material.maps[i].texture.id > 0)
         {
             // Select current shader texture slot
-            rlActiveTextureSlot(i);
+            ActiveTextureSlot(i);
 
             // Enable texture for active slot
             if ((i == MATERIAL_MAP_IRRADIANCE) ||
                 (i == MATERIAL_MAP_PREFILTER) ||
-                (i == MATERIAL_MAP_CUBEMAP)) rlEnableTextureCubemap(material.maps[i].texture.id);
-            else rlEnableTexture(material.maps[i].texture.id);
+                (i == MATERIAL_MAP_CUBEMAP)) EnableTextureCubemap(material.maps[i].texture.id);
+            else EnableTexture(material.maps[i].texture.id);
 
-            rlSetUniform(material.shader.locs[SHADER_LOC_MAP_DIFFUSE + i], &i, SHADER_UNIFORM_INT, 1);
+            SetUniform(material.shader.locs[SHADER_LOC_MAP_DIFFUSE + i], &i, SHADER_UNIFORM_INT, 1);
         }
     }
 
     // Try binding vertex array objects (VAO)
     // or use VBOs if not possible
-    if (!rlEnableVertexArray(mesh.vaoId))
+    if (!EnableVertexArray(mesh.vaoId))
     {
         // Bind mesh VBO data: vertex position (shader-location = 0)
-        rlEnableVertexBuffer(mesh.vboId[0]);
-        rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION], 3, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION]);
+        EnableVertexBuffer(mesh.vboId[0]);
+        SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION], 3, RL_FLOAT, 0, 0, 0);
+        EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_POSITION]);
 
         // Bind mesh VBO data: vertex texcoords (shader-location = 1)
-        rlEnableVertexBuffer(mesh.vboId[1]);
-        rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01], 2, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01]);
+        EnableVertexBuffer(mesh.vboId[1]);
+        SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01], 2, RL_FLOAT, 0, 0, 0);
+        EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD01]);
 
         if (material.shader.locs[SHADER_LOC_VERTEX_NORMAL] != -1)
         {
             // Bind mesh VBO data: vertex normals (shader-location = 2)
-            rlEnableVertexBuffer(mesh.vboId[2]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL], 3, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL]);
+            EnableVertexBuffer(mesh.vboId[2]);
+            SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL], 3, RL_FLOAT, 0, 0, 0);
+            EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_NORMAL]);
         }
 
         // Bind mesh VBO data: vertex colors (shader-location = 3, if available)
@@ -1660,44 +1660,44 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
         {
             if (mesh.vboId[3] != 0)
             {
-                rlEnableVertexBuffer(mesh.vboId[3]);
-                rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR], 4, RL_UNSIGNED_BYTE, 1, 0, 0);
-                rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
+                EnableVertexBuffer(mesh.vboId[3]);
+                SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR], 4, RL_UNSIGNED_BYTE, 1, 0, 0);
+                EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
             }
             else
             {
                 // Set default value for unused attribute
                 // NOTE: Required when using default shader and no VAO support
                 float value[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-                rlSetVertexAttributeDefault(material.shader.locs[SHADER_LOC_VERTEX_COLOR], value, SHADER_ATTRIB_VEC4, 4);
-                rlDisableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
+                SetVertexAttributeDefault(material.shader.locs[SHADER_LOC_VERTEX_COLOR], value, SHADER_ATTRIB_VEC4, 4);
+                DisableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
             }
         }
 
         // Bind mesh VBO data: vertex tangents (shader-location = 4, if available)
         if (material.shader.locs[SHADER_LOC_VERTEX_TANGENT] != -1)
         {
-            rlEnableVertexBuffer(mesh.vboId[4]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT], 4, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT]);
+            EnableVertexBuffer(mesh.vboId[4]);
+            SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT], 4, RL_FLOAT, 0, 0, 0);
+            EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TANGENT]);
         }
 
         // Bind mesh VBO data: vertex texcoords2 (shader-location = 5, if available)
         if (material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02] != -1)
         {
-            rlEnableVertexBuffer(mesh.vboId[5]);
-            rlSetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02], 2, RL_FLOAT, 0, 0, 0);
-            rlEnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02]);
+            EnableVertexBuffer(mesh.vboId[5]);
+            SetVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02], 2, RL_FLOAT, 0, 0, 0);
+            EnableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_TEXCOORD02]);
         }
 
-        if (mesh.indices != NULL) rlEnableVertexBufferElement(mesh.vboId[6]);
+        if (mesh.indices != NULL) EnableVertexBufferElement(mesh.vboId[6]);
     }
 
     // WARNING: Disable vertex attribute color input if mesh can not provide that data (despite location being enabled in shader)
-    if (mesh.vboId[3] == 0) rlDisableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
+    if (mesh.vboId[3] == 0) DisableVertexAttribute(material.shader.locs[SHADER_LOC_VERTEX_COLOR]);
 
     int eyeCount = 1;
-    if (rlIsStereoRenderEnabled()) eyeCount = 2;
+    if (IsStereoRenderEnabled()) eyeCount = 2;
 
     for (int eye = 0; eye < eyeCount; eye++)
     {
@@ -1707,44 +1707,44 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
         else
         {
             // Setup current eye viewport (half screen width)
-            rlViewport(eye*rlGetFramebufferWidth()/2, 0, rlGetFramebufferWidth()/2, rlGetFramebufferHeight());
-            matModelViewProjection = MatrixMultiply(MatrixMultiply(matModelView, rlGetMatrixViewOffsetStereo(eye)), rlGetMatrixProjectionStereo(eye));
+            Viewport(eye*GetFramebufferWidth()/2, 0, GetFramebufferWidth()/2, GetFramebufferHeight());
+            matModelViewProjection = MatrixMultiply(MatrixMultiply(matModelView, GetMatrixViewOffsetStereo(eye)), GetMatrixProjectionStereo(eye));
         }
 
         // Send combined model-view-projection matrix to shader
-        rlSetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_MVP], matModelViewProjection);
+        SetUniformMatrix(material.shader.locs[SHADER_LOC_MATRIX_MVP], matModelViewProjection);
 
         // Draw mesh instanced
-        if (mesh.indices != NULL) rlDrawVertexArrayElementsInstanced(0, mesh.triangleCount*3, 0, instances);
-        else rlDrawVertexArrayInstanced(0, mesh.vertexCount, instances);
+        if (mesh.indices != NULL) DrawVertexArrayElementsInstanced(0, mesh.triangleCount*3, 0, instances);
+        else DrawVertexArrayInstanced(0, mesh.vertexCount, instances);
     }
 
     // Unbind all bound texture maps
-    for (int i = 0; i < MAX_MATERIAL_MAPS; i++)
+    for (int i = 0; i < RL_MAX_MATERIAL_MAPS; i++)
     {
         if (material.maps[i].texture.id > 0)
         {
             // Select current shader texture slot
-            rlActiveTextureSlot(i);
+            ActiveTextureSlot(i);
 
             // Disable texture for active slot
             if ((i == MATERIAL_MAP_IRRADIANCE) ||
                 (i == MATERIAL_MAP_PREFILTER) ||
-                (i == MATERIAL_MAP_CUBEMAP)) rlDisableTextureCubemap();
-            else rlDisableTexture();
+                (i == MATERIAL_MAP_CUBEMAP)) DisableTextureCubemap();
+            else DisableTexture();
         }
     }
 
     // Disable all possible vertex array objects (or VBOs)
-    rlDisableVertexArray();
-    rlDisableVertexBuffer();
-    rlDisableVertexBufferElement();
+    DisableVertexArray();
+    DisableVertexBuffer();
+    DisableVertexBufferElement();
 
     // Disable shader program
-    rlDisableShader();
+    DisableShader();
 
     // Remove instance transforms buffer
-    rlUnloadVertexBuffer(instancesVboId);
+    UnloadVertexBuffer(instancesVboId);
     RL_FREE(instanceTransforms);
 #endif
 }
@@ -1753,9 +1753,9 @@ void DrawMeshInstanced(Mesh mesh, Material material, const Matrix *transforms, i
 void UnloadMesh(Mesh mesh)
 {
     // Unload rlgl mesh vboId data
-    rlUnloadVertexArray(mesh.vaoId);
+    UnloadVertexArray(mesh.vaoId);
 
-    if (mesh.vboId != NULL) for (int i = 0; i < MAX_MESH_VERTEX_BUFFERS; i++) rlUnloadVertexBuffer(mesh.vboId[i]);
+    if (mesh.vboId != NULL) for (int i = 0; i < RL_MAX_MESH_VERTEX_BUFFERS; i++) UnloadVertexBuffer(mesh.vboId[i]);
     RL_FREE(mesh.vboId);
 
     RL_FREE(mesh.vertices);
@@ -1852,7 +1852,7 @@ bool ExportMesh(Mesh mesh, const char *fileName)
     return success;
 }
 
-#if defined(SUPPORT_FILEFORMAT_OBJ) || defined(SUPPORT_FILEFORMAT_MTL)
+#if defined(RL_SUPPORT_FILEFORMAT_OBJ) || defined(RL_SUPPORT_FILEFORMAT_MTL)
 // Process obj materials
 static void ProcessMaterialsOBJ(Material *materials, tinyobj_material_t *mats, int materialCount)
 {
@@ -1865,7 +1865,7 @@ static void ProcessMaterialsOBJ(Material *materials, tinyobj_material_t *mats, i
 
         // Get default texture, in case no texture is defined
         // NOTE: rlgl default texture is a 1x1 pixel UNCOMPRESSED_R8G8B8A8
-        materials[m].maps[MATERIAL_MAP_DIFFUSE].texture = CAST(Texture2D){ rlGetTextureIdDefault(), 1, 1, 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
+        materials[m].maps[MATERIAL_MAP_DIFFUSE].texture = CAST(Texture2D){ GetTextureIdDefault(), 1, 1, 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
 
         if (mats[m].diffuse_texname != NULL) materials[m].maps[MATERIAL_MAP_DIFFUSE].texture = LoadTexture(mats[m].diffuse_texname);  //char *diffuse_texname; // map_Kd
         else materials[m].maps[MATERIAL_MAP_DIFFUSE].color = CAST(Color){ (unsigned char)(mats[m].diffuse[0]*255.0f), (unsigned char)(mats[m].diffuse[1]*255.0f), (unsigned char)(mats[m].diffuse[2] * 255.0f), 255 }; //float diffuse[3];
@@ -1876,7 +1876,7 @@ static void ProcessMaterialsOBJ(Material *materials, tinyobj_material_t *mats, i
         materials[m].maps[MATERIAL_MAP_SPECULAR].value = 0.0f;
 
         if (mats[m].bump_texname != NULL) materials[m].maps[MATERIAL_MAP_NORMAL].texture = LoadTexture(mats[m].bump_texname);  //char *bump_texname; // map_bump, bump
-        materials[m].maps[MATERIAL_MAP_NORMAL].color = WHITE;
+        materials[m].maps[MATERIAL_MAP_NORMAL].color = RL_WHITE;
         materials[m].maps[MATERIAL_MAP_NORMAL].value = mats[m].shininess;
 
         materials[m].maps[MATERIAL_MAP_EMISSION].color = CAST(Color){ (unsigned char)(mats[m].emission[0]*255.0f), (unsigned char)(mats[m].emission[1]*255.0f), (unsigned char)(mats[m].emission[2] * 255.0f), 255 }; //float emission[3];
@@ -1894,13 +1894,13 @@ Material *LoadMaterials(const char *fileName, int *materialCount)
 
     // TODO: Support IQM and GLTF for materials parsing
 
-#if defined(SUPPORT_FILEFORMAT_MTL)
+#if defined(RL_SUPPORT_FILEFORMAT_MTL)
     if (IsFileExtension(fileName, ".mtl"))
     {
         tinyobj_material_t *mats = NULL;
 
         int result = tinyobj_parse_mtl_file(&mats, &count, fileName);
-        if (result != TINYOBJ_SUCCESS) TRACELOG(LOG_WARNING, "MATERIAL: [%s] Failed to parse materials file", fileName);
+        if (result != TINYOBJ_SUCCESS) RL_TRACELOG(LOG_WARNING, "MATERIAL: [%s] Failed to parse materials file", fileName);
 
         materials = (Material*)RL_MALLOC(count*sizeof(Material));
         ProcessMaterialsOBJ(materials, mats, count);
@@ -1908,7 +1908,7 @@ Material *LoadMaterials(const char *fileName, int *materialCount)
         tinyobj_materials_free(mats, count);
     }
 #else
-    TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to load material file", fileName);
+    RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to load material file", fileName);
 #endif
 
     *materialCount = count;
@@ -1919,19 +1919,19 @@ Material *LoadMaterials(const char *fileName, int *materialCount)
 Material LoadMaterialDefault(void)
 {
     Material material = { 0 };
-    material.maps = (MaterialMap *)RL_CALLOC(MAX_MATERIAL_MAPS, sizeof(MaterialMap));
+    material.maps = (MaterialMap *)RL_CALLOC(RL_MAX_MATERIAL_MAPS, sizeof(MaterialMap));
 
     // Using rlgl default shader
-    material.shader.id = rlGetShaderIdDefault();
-    material.shader.locs = rlGetShaderLocsDefault();
+    material.shader.id = GetShaderIdDefault();
+    material.shader.locs = GetShaderLocsDefault();
 
     // Using rlgl default texture (1x1 pixel, UNCOMPRESSED_R8G8B8A8, 1 mipmap)
-    material.maps[MATERIAL_MAP_DIFFUSE].texture = CAST(Texture2D){ rlGetTextureIdDefault(), 1, 1, 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
+    material.maps[MATERIAL_MAP_DIFFUSE].texture = CAST(Texture2D){ GetTextureIdDefault(), 1, 1, 1, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 };
     //material.maps[MATERIAL_MAP_NORMAL].texture;         // NOTE: By default, not set
     //material.maps[MATERIAL_MAP_SPECULAR].texture;       // NOTE: By default, not set
 
-    material.maps[MATERIAL_MAP_DIFFUSE].color = WHITE;    // Diffuse color
-    material.maps[MATERIAL_MAP_SPECULAR].color = WHITE;   // Specular color
+    material.maps[MATERIAL_MAP_DIFFUSE].color = RL_WHITE;    // Diffuse color
+    material.maps[MATERIAL_MAP_SPECULAR].color = RL_WHITE;   // Specular color
 
     return material;
 }
@@ -1947,14 +1947,14 @@ bool IsMaterialReady(Material material)
 void UnloadMaterial(Material material)
 {
     // Unload material shader (avoid unloading default shader, managed by raylib)
-    if (material.shader.id != rlGetShaderIdDefault()) UnloadShader(material.shader);
+    if (material.shader.id != GetShaderIdDefault()) UnloadShader(material.shader);
 
     // Unload loaded texture maps (avoid unloading default texture, managed by raylib)
     if (material.maps != NULL)
     {
-        for (int i = 0; i < MAX_MATERIAL_MAPS; i++)
+        for (int i = 0; i < RL_MAX_MATERIAL_MAPS; i++)
         {
-            if (material.maps[i].texture.id != rlGetTextureIdDefault()) rlUnloadTexture(material.maps[i].texture.id);
+            if (material.maps[i].texture.id != GetTextureIdDefault()) UnloadTexture(material.maps[i].texture.id);
         }
     }
 
@@ -1971,8 +1971,8 @@ void SetMaterialTexture(Material *material, int mapType, Texture2D texture)
 // Set the material for a mesh
 void SetModelMeshMaterial(Model *model, int meshId, int materialId)
 {
-    if (meshId >= model->meshCount) TRACELOG(LOG_WARNING, "MESH: Id greater than mesh count");
-    else if (materialId >= model->materialCount) TRACELOG(LOG_WARNING, "MATERIAL: Id greater than material count");
+    if (meshId >= model->meshCount) RL_TRACELOG(LOG_WARNING, "MESH: Id greater than mesh count");
+    else if (materialId >= model->materialCount) RL_TRACELOG(LOG_WARNING, "MATERIAL: Id greater than material count");
     else  model->meshMaterial[meshId] = materialId;
 }
 
@@ -1981,13 +1981,13 @@ ModelAnimation *LoadModelAnimations(const char *fileName, int *animCount)
 {
     ModelAnimation *animations = NULL;
 
-#if defined(SUPPORT_FILEFORMAT_IQM)
+#if defined(RL_SUPPORT_FILEFORMAT_IQM)
     if (IsFileExtension(fileName, ".iqm")) animations = LoadModelAnimationsIQM(fileName, animCount);
 #endif
-#if defined(SUPPORT_FILEFORMAT_M3D)
+#if defined(RL_SUPPORT_FILEFORMAT_M3D)
     if (IsFileExtension(fileName, ".m3d")) animations = LoadModelAnimationsM3D(fileName, animCount);
 #endif
-#if defined(SUPPORT_FILEFORMAT_GLTF)
+#if defined(RL_SUPPORT_FILEFORMAT_GLTF)
     if (IsFileExtension(fileName, ".gltf;.glb")) animations = LoadModelAnimationsGLTF(fileName, animCount);
 #endif
 
@@ -2008,7 +2008,7 @@ void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
 
             if (mesh.boneIds == NULL || mesh.boneWeights == NULL)
             {
-                TRACELOG(LOG_WARNING, "MODEL: UpdateModelAnimation(): Mesh %i has no connection to bones", m);
+                RL_TRACELOG(LOG_WARNING, "MODEL: UpdateModelAnimation(): Mesh %i has no connection to bones", m);
                 continue;
             }
 
@@ -2089,8 +2089,8 @@ void UpdateModelAnimation(Model model, ModelAnimation anim, int frame)
             // NOTE: Only update data when values changed
             if (updated)
             {
-                rlUpdateVertexBuffer(mesh.vboId[0], mesh.animVertices, mesh.vertexCount*3*sizeof(float), 0); // Update vertex position
-                rlUpdateVertexBuffer(mesh.vboId[2], mesh.animNormals, mesh.vertexCount*3*sizeof(float), 0);  // Update vertex normals
+                UpdateVertexBuffer(mesh.vboId[0], mesh.animVertices, mesh.vertexCount*3*sizeof(float), 0); // Update vertex position
+                UpdateVertexBuffer(mesh.vboId[2], mesh.animNormals, mesh.vertexCount*3*sizeof(float), 0);  // Update vertex normals
             }
         }
     }
@@ -2130,7 +2130,7 @@ bool IsModelAnimationValid(Model model, ModelAnimation anim)
     return result;
 }
 
-#if defined(SUPPORT_MESH_GENERATION)
+#if defined(RL_SUPPORT_MESH_GENERATION)
 // Generate polygonal mesh
 Mesh GenMeshPoly(int sides, float radius)
 {
@@ -2147,8 +2147,8 @@ Mesh GenMeshPoly(int sides, float radius)
     for (int v = 0; v < vertexCount - 2; v += 3)
     {
         vertices[v] = CAST(Vector3){ 0.0f, 0.0f, 0.0f };
-        vertices[v + 1] = CAST(Vector3){ sinf(DEG2RAD*d)*radius, 0.0f, cosf(DEG2RAD*d)*radius };
-        vertices[v + 2] = CAST(Vector3){ sinf(DEG2RAD*(d+dStep))*radius, 0.0f, cosf(DEG2RAD*(d+dStep))*radius };
+        vertices[v + 1] = CAST(Vector3){ sinf(RL_DEG2RAD*d)*radius, 0.0f, cosf(RL_DEG2RAD*d)*radius };
+        vertices[v + 2] = CAST(Vector3){ sinf(RL_DEG2RAD*(d+dStep))*radius, 0.0f, cosf(RL_DEG2RAD*(d+dStep))*radius };
         d += dStep;
     }
 
@@ -2300,7 +2300,7 @@ Mesh GenMeshPlane(float width, float length, int resX, int resZ)
 
     par_shapes_mesh *plane = par_shapes_create_plane(resX, resZ);   // No normals/texcoords generated!!!
     par_shapes_scale(plane, width, length, 1.0f);
-    par_shapes_rotate(plane, -PI/2.0f, (float[]){ 1, 0, 0 });
+    par_shapes_rotate(plane, -RL_PI/2.0f, (float[]){ 1, 0, 0 });
     par_shapes_translate(plane, -width/2, 0.0f, length/2);
 
     mesh.vertices = (float *)RL_MALLOC(plane->ntriangles*3*3*sizeof(float));
@@ -2535,7 +2535,7 @@ Mesh GenMeshSphere(float radius, int rings, int slices)
         // Upload vertex data to GPU (static mesh)
         UploadMesh(&mesh, false);
     }
-    else TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: sphere");
+    else RL_TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: sphere");
 
     return mesh;
 }
@@ -2579,7 +2579,7 @@ Mesh GenMeshHemiSphere(float radius, int rings, int slices)
         // Upload vertex data to GPU (static mesh)
         UploadMesh(&mesh, false);
     }
-    else TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: hemisphere");
+    else RL_TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: hemisphere");
 
     return mesh;
 }
@@ -2604,22 +2604,22 @@ Mesh GenMeshCylinder(float radius, float height, int slices)
         float z_normal[]     = { 0, 0, 1 };
         float z_neg_normal[] = { 0, 0, -1 };
 
-        par_shapes_rotate(cylinder, -PI/2.0f, x_axis );
+        par_shapes_rotate(cylinder, -RL_PI/2.0f, x_axis );
 
         // Generate an orientable disk shape (top cap)
         par_shapes_mesh *capTop = par_shapes_create_disk(radius, slices, center, z_normal );
         capTop->tcoords = PAR_MALLOC(float, 2*capTop->npoints);
         for (int i = 0; i < 2*capTop->npoints; i++) capTop->tcoords[i] = 0.0f;
-        par_shapes_rotate(capTop, -PI/2.0f, x_axis);
-        par_shapes_rotate(capTop, 90*DEG2RAD, x_axis);
+        par_shapes_rotate(capTop, -RL_PI/2.0f, x_axis);
+        par_shapes_rotate(capTop, 90*RL_DEG2RAD, x_axis);
         par_shapes_translate(capTop, 0, height, 0);
 
         // Generate an orientable disk shape (bottom cap)
         par_shapes_mesh *capBottom = par_shapes_create_disk(radius, slices, center, z_neg_normal );
         capBottom->tcoords = PAR_MALLOC(float, 2*capBottom->npoints);
         for (int i = 0; i < 2*capBottom->npoints; i++) capBottom->tcoords[i] = 0.95f;
-        par_shapes_rotate(capBottom, PI/2.0f, x_axis);
-        par_shapes_rotate(capBottom, -90*DEG2RAD, y_axis);
+        par_shapes_rotate(capBottom, RL_PI/2.0f, x_axis);
+        par_shapes_rotate(capBottom, -90*RL_DEG2RAD, y_axis);
 
         par_shapes_merge_and_free(cylinder, capTop);
         par_shapes_merge_and_free(cylinder, capBottom);
@@ -2650,7 +2650,7 @@ Mesh GenMeshCylinder(float radius, float height, int slices)
         // Upload vertex data to GPU (static mesh)
         UploadMesh(&mesh, false);
     }
-    else TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: cylinder");
+    else RL_TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: cylinder");
 
     return mesh;
 }
@@ -2674,14 +2674,14 @@ Mesh GenMeshCone(float radius, float height, int slices)
         // Height and radius are both 1.0, but they can easily be changed with par_shapes_scale
         par_shapes_mesh *cone = par_shapes_create_cone(slices, 8);
         par_shapes_scale(cone, radius, radius, height);
-        par_shapes_rotate(cone, -PI/2.0f, x_axis);
-        par_shapes_rotate(cone, PI/2.0f, y_axis);
+        par_shapes_rotate(cone, -RL_PI/2.0f, x_axis);
+        par_shapes_rotate(cone, RL_PI/2.0f, y_axis);
 
         // Generate an orientable disk shape (bottom cap)
         par_shapes_mesh *capBottom = par_shapes_create_disk(radius, slices, center, z_neg_normal);
         capBottom->tcoords = PAR_MALLOC(float, 2*capBottom->npoints);
         for (int i = 0; i < 2*capBottom->npoints; i++) capBottom->tcoords[i] = 0.95f;
-        par_shapes_rotate(capBottom, PI/2.0f, x_axis);
+        par_shapes_rotate(capBottom, RL_PI/2.0f, x_axis);
 
         par_shapes_merge_and_free(cone, capBottom);
 
@@ -2711,7 +2711,7 @@ Mesh GenMeshCone(float radius, float height, int slices)
         // Upload vertex data to GPU (static mesh)
         UploadMesh(&mesh, false);
     }
-    else TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: cone");
+    else RL_TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: cone");
 
     return mesh;
 }
@@ -2757,7 +2757,7 @@ Mesh GenMeshTorus(float radius, float size, int radSeg, int sides)
         // Upload vertex data to GPU (static mesh)
         UploadMesh(&mesh, false);
     }
-    else TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: torus");
+    else RL_TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: torus");
 
     return mesh;
 }
@@ -2801,7 +2801,7 @@ Mesh GenMeshKnot(float radius, float size, int radSeg, int sides)
         // Upload vertex data to GPU (static mesh)
         UploadMesh(&mesh, false);
     }
-    else TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: knot");
+    else RL_TRACELOG(LOG_WARNING, "MESH: Failed to generate mesh: knot");
 
     return mesh;
 }
@@ -3000,14 +3000,14 @@ Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
             Vector3 v7 = { w*(x - 0.5f), 0, h*(z + 0.5f) };
             Vector3 v8 = { w*(x + 0.5f), 0, h*(z + 0.5f) };
 
-            // We check pixel color to be WHITE -> draw full cube
-            if (COLOR_EQUAL(pixels[z*cubicmap.width + x], WHITE))
+            // We check pixel color to be RL_WHITE -> draw full cube
+            if (COLOR_EQUAL(pixels[z*cubicmap.width + x], RL_WHITE))
             {
                 // Define triangles and checking collateral cubes
                 //------------------------------------------------
 
                 // Define top triangles (2 tris, 6 vertex --> v1-v2-v3, v1-v3-v4)
-                // WARNING: Not required for a WHITE cubes, created to allow seeing the map from outside
+                // WARNING: Not required for a RL_WHITE cubes, created to allow seeing the map from outside
                 mapVertices[vCounter] = v1;
                 mapVertices[vCounter + 1] = v2;
                 mapVertices[vCounter + 2] = v3;
@@ -3058,7 +3058,7 @@ Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
                 tcCounter += 6;
 
                 // Checking cube on bottom of current cube
-                if (((z < cubicmap.height - 1) && COLOR_EQUAL(pixels[(z + 1)*cubicmap.width + x], BLACK)) || (z == cubicmap.height - 1))
+                if (((z < cubicmap.height - 1) && COLOR_EQUAL(pixels[(z + 1)*cubicmap.width + x], RL_BLACK)) || (z == cubicmap.height - 1))
                 {
                     // Define front triangles (2 tris, 6 vertex) --> v2 v7 v3, v3 v7 v8
                     // NOTE: Collateral occluded faces are not generated
@@ -3088,7 +3088,7 @@ Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
                 }
 
                 // Checking cube on top of current cube
-                if (((z > 0) && COLOR_EQUAL(pixels[(z - 1)*cubicmap.width + x], BLACK)) || (z == 0))
+                if (((z > 0) && COLOR_EQUAL(pixels[(z - 1)*cubicmap.width + x], RL_BLACK)) || (z == 0))
                 {
                     // Define back triangles (2 tris, 6 vertex) --> v1 v5 v6, v1 v4 v5
                     // NOTE: Collateral occluded faces are not generated
@@ -3118,7 +3118,7 @@ Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
                 }
 
                 // Checking cube on right of current cube
-                if (((x < cubicmap.width - 1) && COLOR_EQUAL(pixels[z*cubicmap.width + (x + 1)], BLACK)) || (x == cubicmap.width - 1))
+                if (((x < cubicmap.width - 1) && COLOR_EQUAL(pixels[z*cubicmap.width + (x + 1)], RL_BLACK)) || (x == cubicmap.width - 1))
                 {
                     // Define right triangles (2 tris, 6 vertex) --> v3 v8 v4, v4 v8 v5
                     // NOTE: Collateral occluded faces are not generated
@@ -3148,7 +3148,7 @@ Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
                 }
 
                 // Checking cube on left of current cube
-                if (((x > 0) && COLOR_EQUAL(pixels[z*cubicmap.width + (x - 1)], BLACK)) || (x == 0))
+                if (((x > 0) && COLOR_EQUAL(pixels[z*cubicmap.width + (x - 1)], RL_BLACK)) || (x == 0))
                 {
                     // Define left triangles (2 tris, 6 vertex) --> v1 v7 v2, v1 v6 v7
                     // NOTE: Collateral occluded faces are not generated
@@ -3177,8 +3177,8 @@ Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
                     tcCounter += 6;
                 }
             }
-            // We check pixel color to be BLACK, we will only draw floor and roof
-            else if (COLOR_EQUAL(pixels[z*cubicmap.width + x], BLACK))
+            // We check pixel color to be RL_BLACK, we will only draw floor and roof
+            else if (COLOR_EQUAL(pixels[z*cubicmap.width + x], RL_BLACK))
             {
                 // Define top triangles (2 tris, 6 vertex --> v1-v2-v3, v1-v3-v4)
                 mapVertices[vCounter] = v1;
@@ -3285,7 +3285,7 @@ Mesh GenMeshCubicmap(Image cubicmap, Vector3 cubeSize)
 
     return mesh;
 }
-#endif      // SUPPORT_MESH_GENERATION
+#endif      // RL_SUPPORT_MESH_GENERATION
 
 // Compute mesh bounding box limits
 // NOTE: minVertex and maxVertex should be transformed by model transform matrix
@@ -3322,7 +3322,7 @@ void GenMeshTangents(Mesh *mesh)
 {
     if ((mesh->vertices == NULL) || (mesh->texcoords == NULL))
     {
-        TRACELOG(LOG_WARNING, "MESH: Tangents generation requires texcoord vertex attribute data");
+        RL_TRACELOG(LOG_WARNING, "MESH: Tangents generation requires texcoord vertex attribute data");
         return;
     }
 
@@ -3406,21 +3406,21 @@ void GenMeshTangents(Mesh *mesh)
         if (mesh->vboId[SHADER_LOC_VERTEX_TANGENT] != 0)
         {
             // Update existing vertex buffer
-            rlUpdateVertexBuffer(mesh->vboId[SHADER_LOC_VERTEX_TANGENT], mesh->tangents, mesh->vertexCount*4*sizeof(float), 0);
+            UpdateVertexBuffer(mesh->vboId[SHADER_LOC_VERTEX_TANGENT], mesh->tangents, mesh->vertexCount*4*sizeof(float), 0);
         }
         else
         {
             // Load a new tangent attributes buffer
-            mesh->vboId[SHADER_LOC_VERTEX_TANGENT] = rlLoadVertexBuffer(mesh->tangents, mesh->vertexCount*4*sizeof(float), false);
+            mesh->vboId[SHADER_LOC_VERTEX_TANGENT] = LoadVertexBuffer(mesh->tangents, mesh->vertexCount*4*sizeof(float), false);
         }
 
-        rlEnableVertexArray(mesh->vaoId);
-        rlSetVertexAttribute(4, 4, RL_FLOAT, 0, 0, 0);
-        rlEnableVertexAttribute(4);
-        rlDisableVertexArray();
+        EnableVertexArray(mesh->vaoId);
+        SetVertexAttribute(4, 4, RL_FLOAT, 0, 0, 0);
+        EnableVertexAttribute(4);
+        DisableVertexArray();
     }
 
-    TRACELOG(LOG_INFO, "MESH: Tangents data computed and uploaded for provided mesh");
+    RL_TRACELOG(LOG_INFO, "MESH: Tangents data computed and uploaded for provided mesh");
 }
 
 // Draw a model (with texture if set)
@@ -3438,7 +3438,7 @@ void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rota
     // Calculate transformation matrix from function parameters
     // Get transform matrix (rotation -> scale -> translation)
     Matrix matScale = MatrixScale(scale.x, scale.y, scale.z);
-    Matrix matRotation = MatrixRotate(rotationAxis, rotationAngle*DEG2RAD);
+    Matrix matRotation = MatrixRotate(rotationAxis, rotationAngle*RL_DEG2RAD);
     Matrix matTranslation = MatrixTranslate(position.x, position.y, position.z);
 
     Matrix matTransform = MatrixMultiply(MatrixMultiply(matScale, matRotation), matTranslation);
@@ -3450,7 +3450,7 @@ void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rota
     {
         Color color = model.materials[model.meshMaterial[i]].maps[MATERIAL_MAP_DIFFUSE].color;
 
-        Color colorTint = WHITE;
+        Color colorTint = RL_WHITE;
         colorTint.r = (unsigned char)((((float)color.r/255.0f)*((float)tint.r/255.0f))*255.0f);
         colorTint.g = (unsigned char)((((float)color.g/255.0f)*((float)tint.g/255.0f))*255.0f);
         colorTint.b = (unsigned char)((((float)color.b/255.0f)*((float)tint.b/255.0f))*255.0f);
@@ -3465,21 +3465,21 @@ void DrawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rota
 // Draw a model wires (with texture if set)
 void DrawModelWires(Model model, Vector3 position, float scale, Color tint)
 {
-    rlEnableWireMode();
+    EnableWireMode();
 
     DrawModel(model, position, scale, tint);
 
-    rlDisableWireMode();
+    DisableWireMode();
 }
 
 // Draw a model wires (with texture if set) with extended parameters
 void DrawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint)
 {
-    rlEnableWireMode();
+    EnableWireMode();
 
     DrawModelEx(model, position, rotationAxis, rotationAngle, scale, tint);
 
-    rlDisableWireMode();
+    DisableWireMode();
 }
 
 // Draw a billboard
@@ -3522,8 +3522,8 @@ void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector
 
     if (rotation != 0.0f)
     {
-        float sinRotation = sinf(rotation*DEG2RAD);
-        float cosRotation = cosf(rotation*DEG2RAD);
+        float sinRotation = sinf(rotation*RL_DEG2RAD);
+        float cosRotation = cosf(rotation*RL_DEG2RAD);
 
         // NOTE: (-1, 1) is the range where origin.x, origin.y is inside the texture
         float rotateAboutX = sizeRatio.x*origin.x/2;
@@ -3563,48 +3563,48 @@ void DrawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector
     bottomRight = Vector3Add(bottomRight, position);
     bottomLeft = Vector3Add(bottomLeft, position);
 
-    rlSetTexture(texture.id);
+    SetTexture(texture.id);
 
-    rlBegin(RL_QUADS);
-        rlColor4ub(tint.r, tint.g, tint.b, tint.a);
+    Begin(RL_QUADS);
+        Color4ub(tint.r, tint.g, tint.b, tint.a);
 
         if (sizeRatio.x * sizeRatio.y >= 0.0f)
         {
             // Bottom-left corner for texture and quad
-            rlTexCoord2f((float)source.x/texture.width, (float)source.y/texture.height);
-            rlVertex3f(topLeft.x, topLeft.y, topLeft.z);
+            TexCoord2f((float)source.x/texture.width, (float)source.y/texture.height);
+            Vertex3f(topLeft.x, topLeft.y, topLeft.z);
 
             // Top-left corner for texture and quad
-            rlTexCoord2f((float)source.x/texture.width, (float)(source.y + source.height)/texture.height);
-            rlVertex3f(bottomLeft.x, bottomLeft.y, bottomLeft.z);
+            TexCoord2f((float)source.x/texture.width, (float)(source.y + source.height)/texture.height);
+            Vertex3f(bottomLeft.x, bottomLeft.y, bottomLeft.z);
 
             // Top-right corner for texture and quad
-            rlTexCoord2f((float)(source.x + source.width)/texture.width, (float)(source.y + source.height)/texture.height);
-            rlVertex3f(bottomRight.x, bottomRight.y, bottomRight.z);
+            TexCoord2f((float)(source.x + source.width)/texture.width, (float)(source.y + source.height)/texture.height);
+            Vertex3f(bottomRight.x, bottomRight.y, bottomRight.z);
 
             // Bottom-right corner for texture and quad
-            rlTexCoord2f((float)(source.x + source.width)/texture.width, (float)source.y/texture.height);
-            rlVertex3f(topRight.x, topRight.y, topRight.z);
+            TexCoord2f((float)(source.x + source.width)/texture.width, (float)source.y/texture.height);
+            Vertex3f(topRight.x, topRight.y, topRight.z);
         }
         else
         {
             // Reverse vertex order if the size has only one negative dimension
-            rlTexCoord2f((float)(source.x + source.width)/texture.width, (float)source.y/texture.height);
-            rlVertex3f(topRight.x, topRight.y, topRight.z);
+            TexCoord2f((float)(source.x + source.width)/texture.width, (float)source.y/texture.height);
+            Vertex3f(topRight.x, topRight.y, topRight.z);
 
-            rlTexCoord2f((float)(source.x + source.width)/texture.width, (float)(source.y + source.height)/texture.height);
-            rlVertex3f(bottomRight.x, bottomRight.y, bottomRight.z);
+            TexCoord2f((float)(source.x + source.width)/texture.width, (float)(source.y + source.height)/texture.height);
+            Vertex3f(bottomRight.x, bottomRight.y, bottomRight.z);
 
-            rlTexCoord2f((float)source.x/texture.width, (float)(source.y + source.height)/texture.height);
-            rlVertex3f(bottomLeft.x, bottomLeft.y, bottomLeft.z);
+            TexCoord2f((float)source.x/texture.width, (float)(source.y + source.height)/texture.height);
+            Vertex3f(bottomLeft.x, bottomLeft.y, bottomLeft.z);
 
-            rlTexCoord2f((float)source.x/texture.width, (float)source.y/texture.height);
-            rlVertex3f(topLeft.x, topLeft.y, topLeft.z);
+            TexCoord2f((float)source.x/texture.width, (float)source.y/texture.height);
+            Vertex3f(topLeft.x, topLeft.y, topLeft.z);
         }
 
-    rlEnd();
+    End();
 
-    rlSetTexture(0);
+    SetTexture(0);
 }
 
 // Draw a bounding box with wires
@@ -3900,7 +3900,7 @@ RayCollision GetRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Ve
 //----------------------------------------------------------------------------------
 // Module specific Functions Definition
 //----------------------------------------------------------------------------------
-#if defined(SUPPORT_FILEFORMAT_IQM) || defined(SUPPORT_FILEFORMAT_GLTF)
+#if defined(RL_SUPPORT_FILEFORMAT_IQM) || defined(RL_SUPPORT_FILEFORMAT_GLTF)
 // Build pose from parent joints
 // NOTE: Required for animations loading (required by IQM and GLTF)
 static void BuildPoseFromParentJoints(BoneInfo *bones, int boneCount, Transform *transforms)
@@ -3911,7 +3911,7 @@ static void BuildPoseFromParentJoints(BoneInfo *bones, int boneCount, Transform 
         {
             if (bones[i].parent > i)
             {
-                TRACELOG(LOG_WARNING, "Assumes bones are toplogically sorted, but bone %d has parent %d. Skipping.", i, bones[i].parent);
+                RL_TRACELOG(LOG_WARNING, "Assumes bones are toplogically sorted, but bone %d has parent %d. Skipping.", i, bones[i].parent);
                 continue;
             }
             transforms[i].rotation = QuaternionMultiply(transforms[bones[i].parent].rotation, transforms[i].rotation);
@@ -3923,7 +3923,7 @@ static void BuildPoseFromParentJoints(BoneInfo *bones, int boneCount, Transform 
 }
 #endif
 
-#if defined(SUPPORT_FILEFORMAT_OBJ)
+#if defined(RL_SUPPORT_FILEFORMAT_OBJ)
 // Load OBJ mesh data
 //
 // Keep the following information in mind when reading this
@@ -3952,14 +3952,14 @@ static Model LoadOBJ(const char *fileName)
         const char *workingDir = GetDirectoryPath(fileName); // Switch to OBJ directory for material path correctness
         if (CHDIR(workingDir) != 0)
         {
-            TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to change working directory", workingDir);
+            RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to change working directory", workingDir);
         }
 
         unsigned int flags = TINYOBJ_FLAG_TRIANGULATE;
         int ret = tinyobj_parse_obj(&attrib, &meshes, &meshCount, &materials, &materialCount, fileText, dataSize, flags);
 
-        if (ret != TINYOBJ_SUCCESS) TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load OBJ data", fileName);
-        else TRACELOG(LOG_INFO, "MODEL: [%s] OBJ data loaded successfully: %i meshes/%i materials", fileName, meshCount, materialCount);
+        if (ret != TINYOBJ_SUCCESS) RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load OBJ data", fileName);
+        else RL_TRACELOG(LOG_INFO, "MODEL: [%s] OBJ data loaded successfully: %i meshes/%i materials", fileName, meshCount, materialCount);
 
         // WARNING: We are not splitting meshes by materials (previous implementation)
         // Depending on the provided OBJ that was not the best option and it just crashed
@@ -3973,7 +3973,7 @@ static Model LoadOBJ(const char *fileName)
         if (model.materialCount == 0)
         {
             model.materialCount = 1;
-            TRACELOG(LOG_INFO, "MODEL: No materials provided, setting one default material for all meshes");
+            RL_TRACELOG(LOG_INFO, "MODEL: No materials provided, setting one default material for all meshes");
         }
 
         // Init model meshes and materials
@@ -4048,7 +4048,7 @@ static Model LoadOBJ(const char *fileName)
         // Restore current working directory
         if (CHDIR(currentDir) != 0)
         {
-            TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to change working directory", currentDir);
+            RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to change working directory", currentDir);
         }
     }
 
@@ -4056,7 +4056,7 @@ static Model LoadOBJ(const char *fileName)
 }
 #endif
 
-#if defined(SUPPORT_FILEFORMAT_IQM)
+#if defined(RL_SUPPORT_FILEFORMAT_IQM)
 // Load IQM mesh data
 static Model LoadIQM(const char *fileName)
 {
@@ -4176,13 +4176,13 @@ static Model LoadIQM(const char *fileName)
 
     if (memcmp(iqmHeader->magic, IQM_MAGIC, sizeof(IQM_MAGIC)) != 0)
     {
-        TRACELOG(LOG_WARNING, "MODEL: [%s] IQM file is not a valid model", fileName);
+        RL_TRACELOG(LOG_WARNING, "MODEL: [%s] IQM file is not a valid model", fileName);
         return model;
     }
 
     if (iqmHeader->version != IQM_VERSION)
     {
-        TRACELOG(LOG_WARNING, "MODEL: [%s] IQM file version not supported (%i)", fileName, iqmHeader->version);
+        RL_TRACELOG(LOG_WARNING, "MODEL: [%s] IQM file version not supported (%i)", fileName, iqmHeader->version);
         return model;
     }
 
@@ -4216,7 +4216,7 @@ static Model LoadIQM(const char *fileName)
 
         model.materials[i] = LoadMaterialDefault();
 
-        TRACELOG(LOG_DEBUG, "MODEL: [%s] mesh name (%s), material (%s)", fileName, name, material);
+        RL_TRACELOG(LOG_DEBUG, "MODEL: [%s] mesh name (%s), material (%s)", fileName, name, material);
 
         model.meshes[i].vertexCount = imesh[i].num_vertexes;
 
@@ -4483,13 +4483,13 @@ static ModelAnimation *LoadModelAnimationsIQM(const char *fileName, int *animCou
 
     if (memcmp(iqmHeader->magic, IQM_MAGIC, sizeof(IQM_MAGIC)) != 0)
     {
-        TRACELOG(LOG_WARNING, "MODEL: [%s] IQM file is not a valid model", fileName);
+        RL_TRACELOG(LOG_WARNING, "MODEL: [%s] IQM file is not a valid model", fileName);
         return NULL;
     }
 
     if (iqmHeader->version != IQM_VERSION)
     {
-        TRACELOG(LOG_WARNING, "MODEL: [%s] IQM file version not supported (%i)", fileName, iqmHeader->version);
+        RL_TRACELOG(LOG_WARNING, "MODEL: [%s] IQM file version not supported (%i)", fileName, iqmHeader->version);
         return NULL;
     }
 
@@ -4656,7 +4656,7 @@ static ModelAnimation *LoadModelAnimationsIQM(const char *fileName, int *animCou
 
 #endif
 
-#if defined(SUPPORT_FILEFORMAT_GLTF)
+#if defined(RL_SUPPORT_FILEFORMAT_GLTF)
 // Load image from different glTF provided methods (uri, path, buffer_view)
 static Image LoadImageFromCgltfImage(cgltf_image *cgltfImage, const char *texPath)
 {
@@ -4677,7 +4677,7 @@ static Image LoadImageFromCgltfImage(cgltf_image *cgltfImage, const char *texPat
             int i = 0;
             while ((cgltfImage->uri[i] != ',') && (cgltfImage->uri[i] != 0)) i++;
 
-            if (cgltfImage->uri[i] == 0) TRACELOG(LOG_WARNING, "IMAGE: glTF data URI is not a valid image");
+            if (cgltfImage->uri[i] == 0) RL_TRACELOG(LOG_WARNING, "IMAGE: glTF data URI is not a valid image");
             else
             {
                 int base64Size = (int)strlen(cgltfImage->uri + i + 1);
@@ -4718,7 +4718,7 @@ static Image LoadImageFromCgltfImage(cgltf_image *cgltfImage, const char *texPat
             (strcmp(cgltfImage->mime_type, "image/png") == 0)) image = LoadImageFromMemory(".png", data, (int)cgltfImage->buffer_view->size);
         else if ((strcmp(cgltfImage->mime_type, "image\\/jpeg") == 0) ||
                  (strcmp(cgltfImage->mime_type, "image/jpeg") == 0)) image = LoadImageFromMemory(".jpg", data, (int)cgltfImage->buffer_view->size);
-        else TRACELOG(LOG_WARNING, "MODEL: glTF image data MIME type not recognized", TextFormat("%s/%s", texPath, cgltfImage->uri));
+        else RL_TRACELOG(LOG_WARNING, "MODEL: glTF image data MIME type not recognized", TextFormat("%s/%s", texPath, cgltfImage->uri));
 
         RL_FREE(data);
     }
@@ -4813,20 +4813,20 @@ static Model LoadGLTF(const char *fileName)
 
     if (result == cgltf_result_success)
     {
-        if (data->file_type == cgltf_file_type_glb) TRACELOG(LOG_INFO, "MODEL: [%s] Model basic data (glb) loaded successfully", fileName);
-        else if (data->file_type == cgltf_file_type_gltf) TRACELOG(LOG_INFO, "MODEL: [%s] Model basic data (glTF) loaded successfully", fileName);
-        else TRACELOG(LOG_WARNING, "MODEL: [%s] Model format not recognized", fileName);
+        if (data->file_type == cgltf_file_type_glb) RL_TRACELOG(LOG_INFO, "MODEL: [%s] Model basic data (glb) loaded successfully", fileName);
+        else if (data->file_type == cgltf_file_type_gltf) RL_TRACELOG(LOG_INFO, "MODEL: [%s] Model basic data (glTF) loaded successfully", fileName);
+        else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Model format not recognized", fileName);
 
-        TRACELOG(LOG_INFO, "    > Meshes count: %i", data->meshes_count);
-        TRACELOG(LOG_INFO, "    > Materials count: %i (+1 default)", data->materials_count);
-        TRACELOG(LOG_DEBUG, "    > Buffers count: %i", data->buffers_count);
-        TRACELOG(LOG_DEBUG, "    > Images count: %i", data->images_count);
-        TRACELOG(LOG_DEBUG, "    > Textures count: %i", data->textures_count);
+        RL_TRACELOG(LOG_INFO, "    > Meshes count: %i", data->meshes_count);
+        RL_TRACELOG(LOG_INFO, "    > Materials count: %i (+1 default)", data->materials_count);
+        RL_TRACELOG(LOG_DEBUG, "    > Buffers count: %i", data->buffers_count);
+        RL_TRACELOG(LOG_DEBUG, "    > Images count: %i", data->images_count);
+        RL_TRACELOG(LOG_DEBUG, "    > Textures count: %i", data->textures_count);
 
         // Force reading data buffers (fills buffer_view->buffer->data)
         // NOTE: If an uri is defined to base64 data or external path, it's automatically loaded
         result = cgltf_load_buffers(&options, data, fileName);
-        if (result != cgltf_result_success) TRACELOG(LOG_INFO, "MODEL: [%s] Failed to load mesh/material buffers", fileName);
+        if (result != cgltf_result_success) RL_TRACELOG(LOG_INFO, "MODEL: [%s] Failed to load mesh/material buffers", fileName);
 
         int primitivesCount = 0;
         // NOTE: We will load every primitive in the glTF as a separate raylib mesh
@@ -4966,7 +4966,7 @@ static Model LoadGLTF(const char *fileName)
                             // Load 3 components of float data type into mesh.vertices
                             LOAD_ATTRIBUTE(attribute, 3, float, model.meshes[meshIndex].vertices)
                         }
-                        else TRACELOG(LOG_WARNING, "MODEL: [%s] Vertices attribute data format not supported, use vec3 float", fileName);
+                        else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Vertices attribute data format not supported, use vec3 float", fileName);
                     }
                     else if (data->meshes[i].primitives[p].attributes[j].type == cgltf_attribute_type_normal)   // NORMAL
                     {
@@ -4980,7 +4980,7 @@ static Model LoadGLTF(const char *fileName)
                             // Load 3 components of float data type into mesh.normals
                             LOAD_ATTRIBUTE(attribute, 3, float, model.meshes[meshIndex].normals)
                         }
-                        else TRACELOG(LOG_WARNING, "MODEL: [%s] Normal attribute data format not supported, use vec3 float", fileName);
+                        else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Normal attribute data format not supported, use vec3 float", fileName);
                     }
                     else if (data->meshes[i].primitives[p].attributes[j].type == cgltf_attribute_type_tangent)   // TANGENT
                     {
@@ -4994,7 +4994,7 @@ static Model LoadGLTF(const char *fileName)
                             // Load 4 components of float data type into mesh.tangents
                             LOAD_ATTRIBUTE(attribute, 4, float, model.meshes[meshIndex].tangents)
                         }
-                        else TRACELOG(LOG_WARNING, "MODEL: [%s] Tangent attribute data format not supported, use vec4 float", fileName);
+                        else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Tangent attribute data format not supported, use vec4 float", fileName);
                     }
                     else if (data->meshes[i].primitives[p].attributes[j].type == cgltf_attribute_type_texcoord) // TEXCOORD_0
                     {
@@ -5010,7 +5010,7 @@ static Model LoadGLTF(const char *fileName)
                             // Load 3 components of float data type into mesh.texcoords
                             LOAD_ATTRIBUTE(attribute, 2, float, model.meshes[meshIndex].texcoords)
                         }
-                        else TRACELOG(LOG_WARNING, "MODEL: [%s] Texcoords attribute data format not supported, use vec2 float", fileName);
+                        else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Texcoords attribute data format not supported, use vec2 float", fileName);
                     }
                     else if (data->meshes[i].primitives[p].attributes[j].type == cgltf_attribute_type_color)    // COLOR_0
                     {
@@ -5054,7 +5054,7 @@ static Model LoadGLTF(const char *fileName)
 
                             RL_FREE(temp);
                         }
-                        else TRACELOG(LOG_WARNING, "MODEL: [%s] Color attribute data format not supported", fileName);
+                        else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Color attribute data format not supported", fileName);
                     }
 
                     // NOTE: Attributes related to animations are processed separately
@@ -5087,11 +5087,11 @@ static Model LoadGLTF(const char *fileName)
                         // Convert data to raylib indices data type (unsigned short)
                         for (unsigned int d = 0; d < attribute->count; d++) model.meshes[meshIndex].indices[d] = (unsigned short)temp[d];
 
-                        TRACELOG(LOG_WARNING, "MODEL: [%s] Indices data converted from u32 to u16, possible loss of data", fileName);
+                        RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Indices data converted from u32 to u16, possible loss of data", fileName);
 
                         RL_FREE(temp);
                     }
-                    else TRACELOG(LOG_WARNING, "MODEL: [%s] Indices data format not supported, use u16", fileName);
+                    else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Indices data format not supported, use u16", fileName);
                 }
                 else model.meshes[meshIndex].triangleCount = model.meshes[meshIndex].vertexCount/3;    // Unindexed mesh
 
@@ -5150,7 +5150,7 @@ static Model LoadGLTF(const char *fileName)
         }
         else if (data->skins_count > 1)
         {
-            TRACELOG(LOG_ERROR, "MODEL: [%s] can only load one skin (armature) per model, but gltf skins_count == %i", fileName, data->skins_count);
+            RL_TRACELOG(LOG_ERROR, "MODEL: [%s] can only load one skin (armature) per model, but gltf skins_count == %i", fileName, data->skins_count);
         }
 
         for (unsigned int i = 0, meshIndex = 0; i < data->meshes_count; i++)
@@ -5179,7 +5179,7 @@ static Model LoadGLTF(const char *fileName)
                             //   - 256 values, provided as cgltf_type_vec4 of bytes (4 byte per joint, stride 4)
                             LOAD_ATTRIBUTE(attribute, 4, unsigned char, model.meshes[meshIndex].boneIds)
                         }
-                        else TRACELOG(LOG_WARNING, "MODEL: [%s] Joint attribute data format not supported, use vec4 u8", fileName);
+                        else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Joint attribute data format not supported, use vec4 u8", fileName);
                     }
                     else if (data->meshes[i].primitives[p].attributes[j].type == cgltf_attribute_type_weights)  // WEIGHTS_n (vec4 / u8, u16, f32)
                     {
@@ -5196,7 +5196,7 @@ static Model LoadGLTF(const char *fileName)
                             //   - 256 values, provided as cgltf_type_vec4 of float (4 byte per joint, stride 16)
                             LOAD_ATTRIBUTE(attribute, 4, float, model.meshes[meshIndex].boneWeights)
                         }
-                        else TRACELOG(LOG_WARNING, "MODEL: [%s] Joint weight attribute data format not supported, use vec4 float", fileName);
+                        else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Joint weight attribute data format not supported, use vec4 float", fileName);
                     }
                 }
 
@@ -5216,7 +5216,7 @@ static Model LoadGLTF(const char *fileName)
         // Free all cgltf loaded data
         cgltf_free(data);
     }
-    else TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load glTF data", fileName);
+    else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load glTF data", fileName);
 
     // WARNING: cgltf requires the file pointer available while reading data
     UnloadFileData(fileData);
@@ -5296,13 +5296,13 @@ static ModelAnimation *LoadModelAnimationsGLTF(const char *fileName, int *animCo
 
     if (result != cgltf_result_success)
     {
-        TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load glTF data", fileName);
+        RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load glTF data", fileName);
         *animCount = 0;
         return NULL;
     }
 
     result = cgltf_load_buffers(&options, data, fileName);
-    if (result != cgltf_result_success) TRACELOG(LOG_INFO, "MODEL: [%s] Failed to load animation buffers", fileName);
+    if (result != cgltf_result_success) RL_TRACELOG(LOG_INFO, "MODEL: [%s] Failed to load animation buffers", fileName);
 
     if (result == cgltf_result_success)
     {
@@ -5363,17 +5363,17 @@ static ModelAnimation *LoadModelAnimationsGLTF(const char *fileName, int *animCo
                         }
                         else
                         {
-                            TRACELOG(LOG_WARNING, "MODEL: [%s] Unsupported target_path on channel %d's sampler for animation %d. Skipping.", fileName, j, i);
+                            RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Unsupported target_path on channel %d's sampler for animation %d. Skipping.", fileName, j, i);
                         }
                     }
-                    else TRACELOG(LOG_WARNING, "MODEL: [%s] Only linear interpolation curves are supported for GLTF animation.", fileName);
+                    else RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Only linear interpolation curves are supported for GLTF animation.", fileName);
 
                     float t = 0.0f;
                     cgltf_bool r = cgltf_accessor_read_float(channel.sampler->input, channel.sampler->input->count - 1, &t, 1);
 
                     if (!r)
                     {
-                        TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load input time", fileName);
+                        RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load input time", fileName);
                         continue;
                     }
 
@@ -5401,7 +5401,7 @@ static ModelAnimation *LoadModelAnimationsGLTF(const char *fileName, int *animCo
                         {
                             if (!GetPoseAtTimeGLTF(boneChannels[k].translate->sampler->input, boneChannels[k].translate->sampler->output, time, &translation))
                             {
-                                TRACELOG(LOG_INFO, "MODEL: [%s] Failed to load translate pose data for bone %s", fileName, animations[i].bones[k].name);
+                                RL_TRACELOG(LOG_INFO, "MODEL: [%s] Failed to load translate pose data for bone %s", fileName, animations[i].bones[k].name);
                             }
                         }
 
@@ -5409,7 +5409,7 @@ static ModelAnimation *LoadModelAnimationsGLTF(const char *fileName, int *animCo
                         {
                             if (!GetPoseAtTimeGLTF(boneChannels[k].rotate->sampler->input, boneChannels[k].rotate->sampler->output, time, &rotation))
                             {
-                                TRACELOG(LOG_INFO, "MODEL: [%s] Failed to load rotate pose data for bone %s", fileName, animations[i].bones[k].name);
+                                RL_TRACELOG(LOG_INFO, "MODEL: [%s] Failed to load rotate pose data for bone %s", fileName, animations[i].bones[k].name);
                             }
                         }
 
@@ -5417,7 +5417,7 @@ static ModelAnimation *LoadModelAnimationsGLTF(const char *fileName, int *animCo
                         {
                             if (!GetPoseAtTimeGLTF(boneChannels[k].scale->sampler->input, boneChannels[k].scale->sampler->output, time, &scale))
                             {
-                                TRACELOG(LOG_INFO, "MODEL: [%s] Failed to load scale pose data for bone %s", fileName, animations[i].bones[k].name);
+                                RL_TRACELOG(LOG_INFO, "MODEL: [%s] Failed to load scale pose data for bone %s", fileName, animations[i].bones[k].name);
                             }
                         }
 
@@ -5437,11 +5437,11 @@ static ModelAnimation *LoadModelAnimationsGLTF(const char *fileName, int *animCo
                     BuildPoseFromParentJoints(animations[i].bones, animations[i].boneCount, animations[i].framePoses[j]);
                 }
 
-                TRACELOG(LOG_INFO, "MODEL: [%s] Loaded animation: %s (%d frames, %fs)", fileName, animData.name, animations[i].frameCount, animDuration);
+                RL_TRACELOG(LOG_INFO, "MODEL: [%s] Loaded animation: %s (%d frames, %fs)", fileName, animData.name, animations[i].frameCount, animDuration);
                 RL_FREE(boneChannels);
             }
         }
-        else TRACELOG(LOG_ERROR, "MODEL: [%s] expected exactly one skin to load animation data from, but found %i", fileName, data->skins_count);
+        else RL_TRACELOG(LOG_ERROR, "MODEL: [%s] expected exactly one skin to load animation data from, but found %i", fileName, data->skins_count);
 
         cgltf_free(data);
     }
@@ -5450,7 +5450,7 @@ static ModelAnimation *LoadModelAnimationsGLTF(const char *fileName, int *animCo
 }
 #endif
 
-#if defined(SUPPORT_FILEFORMAT_VOX)
+#if defined(RL_SUPPORT_FILEFORMAT_VOX)
 // Load VOX (MagicaVoxel) mesh data
 static Model LoadVOX(const char *fileName)
 {
@@ -5465,7 +5465,7 @@ static Model LoadVOX(const char *fileName)
 
     if (fileData == 0)
     {
-        TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load VOX file", fileName);
+        RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load VOX file", fileName);
         return model;
     }
 
@@ -5478,7 +5478,7 @@ static Model LoadVOX(const char *fileName)
         // Error
         UnloadFileData(fileData);
 
-        TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load VOX data", fileName);
+        RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load VOX data", fileName);
         return model;
     }
     else
@@ -5487,7 +5487,7 @@ static Model LoadVOX(const char *fileName)
         nbvertices = voxarray.vertices.used;
         meshescount = 1 + (nbvertices/65536);
 
-        TRACELOG(LOG_INFO, "MODEL: [%s] VOX data loaded successfully : %i vertices/%i meshes", fileName, nbvertices, meshescount);
+        RL_TRACELOG(LOG_INFO, "MODEL: [%s] VOX data loaded successfully : %i vertices/%i meshes", fileName, nbvertices, meshescount);
     }
 
     // Build models from meshes
@@ -5554,7 +5554,7 @@ static Model LoadVOX(const char *fileName)
 }
 #endif
 
-#if defined(SUPPORT_FILEFORMAT_M3D)
+#if defined(RL_SUPPORT_FILEFORMAT_M3D)
 // Hook LoadFileData()/UnloadFileData() calls to M3D loaders
 unsigned char *m3d_loaderhook(char *fn, unsigned int *len) { return LoadFileData((const char *)fn, (int *)len); }
 void m3d_freehook(void *data) { UnloadFileData((unsigned char *)data); }
@@ -5577,12 +5577,12 @@ static Model LoadM3D(const char *fileName)
 
         if (!m3d || M3D_ERR_ISFATAL(m3d->errcode))
         {
-            TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load M3D data, error code %d", fileName, m3d? m3d->errcode : -2);
+            RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load M3D data, error code %d", fileName, m3d? m3d->errcode : -2);
             if (m3d) m3d_free(m3d);
             UnloadFileData(fileData);
             return model;
         }
-        else TRACELOG(LOG_INFO, "MODEL: [%s] M3D data loaded successfully: %i faces/%i materials", fileName, m3d->numface, m3d->nummaterial);
+        else RL_TRACELOG(LOG_INFO, "MODEL: [%s] M3D data loaded successfully: %i faces/%i materials", fileName, m3d->numface, m3d->nummaterial);
 
         // no face? this is probably just a material library
         if (!m3d->numface)
@@ -5595,12 +5595,12 @@ static Model LoadM3D(const char *fileName)
         if (m3d->nummaterial > 0)
         {
             model.meshCount = model.materialCount = m3d->nummaterial;
-            TRACELOG(LOG_INFO, "MODEL: model has %i material meshes", model.materialCount);
+            RL_TRACELOG(LOG_INFO, "MODEL: model has %i material meshes", model.materialCount);
         }
         else
         {
             model.meshCount = 1; model.materialCount = 0;
-            TRACELOG(LOG_INFO, "MODEL: No materials, putting all meshes in a default material");
+            RL_TRACELOG(LOG_INFO, "MODEL: No materials, putting all meshes in a default material");
         }
 
         // We always need a default material, so we add +1
@@ -5795,7 +5795,7 @@ static Model LoadM3D(const char *fileName)
                     } break;
                     case m3dp_Ps:
                     {
-                        model.materials[i + 1].maps[MATERIAL_MAP_NORMAL].color = WHITE;
+                        model.materials[i + 1].maps[MATERIAL_MAP_NORMAL].color = RL_WHITE;
                         model.materials[i + 1].maps[MATERIAL_MAP_NORMAL].value = prop->value.fnum;
                     } break;
                     default:
@@ -5911,11 +5911,11 @@ static ModelAnimation *LoadModelAnimationsM3D(const char *fileName, int *animCou
 
         if (!m3d || M3D_ERR_ISFATAL(m3d->errcode))
         {
-            TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load M3D data, error code %d", fileName, m3d? m3d->errcode : -2);
+            RL_TRACELOG(LOG_WARNING, "MODEL: [%s] Failed to load M3D data, error code %d", fileName, m3d? m3d->errcode : -2);
             UnloadFileData(fileData);
             return NULL;
         }
-        else TRACELOG(LOG_INFO, "MODEL: [%s] M3D data loaded successfully: %i animations, %i bones, %i skins", fileName,
+        else RL_TRACELOG(LOG_INFO, "MODEL: [%s] M3D data loaded successfully: %i animations, %i bones, %i skins", fileName,
             m3d->numaction, m3d->numbone, m3d->numskin);
 
         // No animation or bone+skin?
@@ -5936,7 +5936,7 @@ static ModelAnimation *LoadModelAnimationsM3D(const char *fileName, int *animCou
             animations[a].bones = (BoneInfo*)RL_MALLOC((m3d->numbone + 1)*sizeof(BoneInfo));
             animations[a].framePoses = (Transform**)RL_MALLOC(animations[a].frameCount*sizeof(Transform *));
             // strncpy(animations[a].name, m3d->action[a].name, sizeof(animations[a].name));
-            TRACELOG(LOG_INFO, "MODEL: [%s] animation #%i: %i msec, %i frames", fileName, a, m3d->action[a].durationmsec, animations[a].frameCount);
+            RL_TRACELOG(LOG_INFO, "MODEL: [%s] animation #%i: %i msec, %i frames", fileName, a, m3d->action[a].durationmsec, animations[a].frameCount);
 
             for (i = 0; i < (int)m3d->numbone; i++)
             {
@@ -6004,4 +6004,4 @@ static ModelAnimation *LoadModelAnimationsM3D(const char *fileName, int *animCou
 
 RL_NS_END
 
-#endif      // SUPPORT_MODULE_RMODELS
+#endif      // RL_SUPPORT_MODULE_RMODELS

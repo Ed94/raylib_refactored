@@ -14,7 +14,7 @@
 *     - Functions input parameters are always received by value (2 unavoidable exceptions)
 *     - Functions use always a "result" variable for return
 *     - Functions are always defined inline
-*     - Angles are always in radians (DEG2RAD/RAD2DEG macros provided for convenience)
+*     - Angles are always in radians (RL_DEG2RAD/RL_RAD2DEG macros provided for convenience)
 *     - No compound literals used to make sure libray is compatible with C++
 *
 *   CONFIGURATION:
@@ -58,9 +58,9 @@
 
 // Function specifiers definition
 #if defined(RAYMATH_IMPLEMENTATION)
-    #if defined(_WIN32) && defined(BUILD_LIBTYPE_SHARED)
+    #if defined(_WIN32) && defined(RL_BUILD_LIBTYPE_SHARED)
         #define RMAPI __declspec(dllexport) extern inline // We are building raylib as a Win32 shared library (.dll).
-    #elif defined(_WIN32) && defined(USE_LIBTYPE_SHARED)
+    #elif defined(_WIN32) && defined(RL_USE_LIBTYPE_SHARED)
         #define RMAPI __declspec(dllimport)         // We are using raylib as a Win32 shared library (.dll)
     #else
         #define RMAPI extern inline // Provide external definition
@@ -78,20 +78,20 @@
 //----------------------------------------------------------------------------------
 // Defines and Macros
 //----------------------------------------------------------------------------------
-#ifndef PI
-    #define PI 3.14159265358979323846f
+#ifndef RL_PI
+    #define RL_PI 3.14159265358979323846f
 #endif
 
 #ifndef EPSILON
     #define EPSILON 0.000001f
 #endif
 
-#ifndef DEG2RAD
-    #define DEG2RAD (PI/180.0f)
+#ifndef RL_DEG2RAD
+    #define RL_DEG2RAD (RL_PI/180.0f)
 #endif
 
-#ifndef RAD2DEG
-    #define RAD2DEG (180.0f/PI)
+#ifndef RL_RAD2DEG
+    #define RL_RAD2DEG (180.0f/RL_PI)
 #endif
 
 // Get float vector for Matrix

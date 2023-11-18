@@ -3,7 +3,7 @@
 *   raylib.utils - Some common utility functions
 *
 *   CONFIGURATION:
-*       #define SUPPORT_TRACELOG
+*       #define RL_SUPPORT_TRACELOG
 *           Show TraceLog() output messages
 *           NOTE: By default LOG_DEBUG traces not shown
 *
@@ -52,8 +52,8 @@
 //----------------------------------------------------------------------------------
 // Defines and Macros
 //----------------------------------------------------------------------------------
-#ifndef MAX_TRACELOG_MSG_LENGTH
-    #define MAX_TRACELOG_MSG_LENGTH     256         // Max length of one trace-log message
+#ifndef RL_MAX_TRACELOG_MSG_LENGTH
+    #define RL_MAX_TRACELOG_MSG_LENGTH     256         // Max length of one trace-log message
 #endif
 
 RL_NS_BEGIN
@@ -107,7 +107,7 @@ void SetTraceLogLevel(int logType) { logTypeLevel = logType; }
 // Show trace log messages (LOG_INFO, LOG_WARNING, LOG_ERROR, LOG_DEBUG)
 void TraceLog(int logType, const char *text, ...)
 {
-#if defined(SUPPORT_TRACELOG)
+#if defined(RL_SUPPORT_TRACELOG)
     // Message has level below current threshold, don't emit
     if (logType < logTypeLevel) return;
 
@@ -133,7 +133,7 @@ void TraceLog(int logType, const char *text, ...)
         default: break;
     }
 #else
-    char buffer[MAX_TRACELOG_MSG_LENGTH] = { 0 };
+    char buffer[RL_MAX_TRACELOG_MSG_LENGTH] = { 0 };
 
     switch (logType)
     {
@@ -147,7 +147,7 @@ void TraceLog(int logType, const char *text, ...)
     }
 
     unsigned int textSize = (unsigned int)strlen(text);
-    memcpy(buffer + strlen(buffer), text, (textSize < (MAX_TRACELOG_MSG_LENGTH - 12))? textSize : (MAX_TRACELOG_MSG_LENGTH - 12));
+    memcpy(buffer + strlen(buffer), text, (textSize < (RL_MAX_TRACELOG_MSG_LENGTH - 12))? textSize : (RL_MAX_TRACELOG_MSG_LENGTH - 12));
     strcat(buffer, "\n");
     vprintf(buffer, args);
     fflush(stdout);
@@ -157,7 +157,7 @@ void TraceLog(int logType, const char *text, ...)
 
     if (logType == LOG_FATAL) exit(EXIT_FAILURE);  // If fatal logging, exit program
 
-#endif  // SUPPORT_TRACELOG
+#endif  // RL_SUPPORT_TRACELOG
 }
 
 // Internal memory allocator
@@ -194,7 +194,7 @@ unsigned char *LoadFileData(const char *fileName, int *dataSize)
             data = loadFileData(fileName, dataSize);
             return data;
         }
-#if defined(SUPPORT_STANDARD_FILEIO)
+#if defined(RL_SUPPORT_STANDARD_FILEIO)
         FILE *file = fopen(fileName, "rb");
 
         if (file != NULL)
@@ -218,7 +218,7 @@ unsigned char *LoadFileData(const char *fileName, int *dataSize)
                     // dataSize is unified along raylib as a 'int' type, so, for file-sizes > INT_MAX (2147483647 bytes) we have a limitation
                     if (count > 2147483647)
                     {
-                        TRACELOG(LOG_WARNING, "FILEIO: [%s] File is bigger than 2147483647 bytes, avoid using LoadFileData()", fileName);
+                        RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] File is bigger than 2147483647 bytes, avoid using LoadFileData()", fileName);
                         
                         RL_FREE(data);
                         data = NULL;
@@ -227,22 +227,22 @@ unsigned char *LoadFileData(const char *fileName, int *dataSize)
                     {
                         *dataSize = (int)count;
 
-                        if ((*dataSize) != size) TRACELOG(LOG_WARNING, "FILEIO: [%s] File partially loaded (%i bytes out of %i)", fileName, dataSize, count);
-                        else TRACELOG(LOG_INFO, "FILEIO: [%s] File loaded successfully", fileName);
+                        if ((*dataSize) != size) RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] File partially loaded (%i bytes out of %i)", fileName, dataSize, count);
+                        else RL_TRACELOG(LOG_INFO, "FILEIO: [%s] File loaded successfully", fileName);
                     }
                 }
-                else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to allocated memory for file reading", fileName);
+                else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to allocated memory for file reading", fileName);
             }
-            else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to read file", fileName);
+            else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to read file", fileName);
 
             fclose(file);
         }
-        else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open file", fileName);
+        else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open file", fileName);
 #else
-    TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
+    RL_TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
 #endif
     }
-    else TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
+    else RL_TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
 
     return data;
 }
@@ -264,7 +264,7 @@ bool SaveFileData(const char *fileName, void *data, int dataSize)
         {
             return saveFileData(fileName, data, dataSize);
         }
-#if defined(SUPPORT_STANDARD_FILEIO)
+#if defined(RL_SUPPORT_STANDARD_FILEIO)
         FILE *file = fopen(fileName, "wb");
 
         if (file != NULL)
@@ -273,19 +273,19 @@ bool SaveFileData(const char *fileName, void *data, int dataSize)
             // and expects a size_t input value but as dataSize is limited to INT_MAX (2147483647 bytes), there shouldn't be a problem
             int count = (int)fwrite(data, sizeof(unsigned char), dataSize, file);
 
-            if (count == 0) TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to write file", fileName);
-            else if (count != dataSize) TRACELOG(LOG_WARNING, "FILEIO: [%s] File partially written", fileName);
-            else TRACELOG(LOG_INFO, "FILEIO: [%s] File saved successfully", fileName);
+            if (count == 0) RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to write file", fileName);
+            else if (count != dataSize) RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] File partially written", fileName);
+            else RL_TRACELOG(LOG_INFO, "FILEIO: [%s] File saved successfully", fileName);
 
             int result = fclose(file);
             if (result == 0) success = true;
         }
-        else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open file", fileName);
+        else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open file", fileName);
 #else
-    TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
+    RL_TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
 #endif
     }
-    else TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
+    else RL_TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
 
     return success;
 }
@@ -331,8 +331,8 @@ bool ExportDataAsCode(const unsigned char *data, int dataSize, const char *fileN
 
     RL_FREE(txtData);
 
-    if (success != 0) TRACELOG(LOG_INFO, "FILEIO: [%s] Data as code exported successfully", fileName);
-    else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to export data as code", fileName);
+    if (success != 0) RL_TRACELOG(LOG_INFO, "FILEIO: [%s] Data as code exported successfully", fileName);
+    else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to export data as code", fileName);
 
     return success;
 }
@@ -350,7 +350,7 @@ char *LoadFileText(const char *fileName)
             text = loadFileText(fileName);
             return text;
         }
-#if defined(SUPPORT_STANDARD_FILEIO)
+#if defined(RL_SUPPORT_STANDARD_FILEIO)
         FILE *file = fopen(fileName, "rt");
 
         if (file != NULL)
@@ -378,20 +378,20 @@ char *LoadFileText(const char *fileName)
                     // Zero-terminate the string
                     text[count] = '\0';
 
-                    TRACELOG(LOG_INFO, "FILEIO: [%s] Text file loaded successfully", fileName);
+                    RL_TRACELOG(LOG_INFO, "FILEIO: [%s] Text file loaded successfully", fileName);
                 }
-                else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to allocated memory for file reading", fileName);
+                else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to allocated memory for file reading", fileName);
             }
-            else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to read text file", fileName);
+            else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to read text file", fileName);
 
             fclose(file);
         }
-        else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open text file", fileName);
+        else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open text file", fileName);
 #else
-    TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
+    RL_TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
 #endif
     }
-    else TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
+    else RL_TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
 
     return text;
 }
@@ -413,25 +413,25 @@ bool SaveFileText(const char *fileName, char *text)
         {
             return saveFileText(fileName, text);
         }
-#if defined(SUPPORT_STANDARD_FILEIO)
+#if defined(RL_SUPPORT_STANDARD_FILEIO)
         FILE *file = fopen(fileName, "wt");
 
         if (file != NULL)
         {
             int count = fprintf(file, "%s", text);
 
-            if (count < 0) TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to write text file", fileName);
-            else TRACELOG(LOG_INFO, "FILEIO: [%s] Text file saved successfully", fileName);
+            if (count < 0) RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to write text file", fileName);
+            else RL_TRACELOG(LOG_INFO, "FILEIO: [%s] Text file saved successfully", fileName);
 
             int result = fclose(file);
             if (result == 0) success = true;
         }
-        else TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open text file", fileName);
+        else RL_TRACELOG(LOG_WARNING, "FILEIO: [%s] Failed to open text file", fileName);
 #else
-    TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
+    RL_TRACELOG(LOG_WARNING, "FILEIO: Standard file io not supported, use custom file callback");
 #endif
     }
-    else TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
+    else RL_TRACELOG(LOG_WARNING, "FILEIO: File name provided is not valid");
 
     return success;
 }
@@ -490,7 +490,7 @@ static int android_read(void *cookie, char *data, int dataSize)
 
 static int android_write(void *cookie, const char *data, int dataSize)
 {
-    TRACELOG(LOG_WARNING, "ANDROID: Failed to provide write access to APK");
+    RL_TRACELOG(LOG_WARNING, "ANDROID: Failed to provide write access to APK");
 
     return EACCES;
 }

@@ -22,9 +22,9 @@
 *
 *   NOTES:
 *       - One default Font is loaded on InitWindow()->LoadFontDefault() [core, text]
-*       - One default Texture2D is loaded on rlglInit(), 1x1 white pixel R8G8B8A8 [rlgl] (OpenGL 3.3 or ES2)
-*       - One default Shader is loaded on rlglInit()->rlLoadShaderDefault() [rlgl] (OpenGL 3.3 or ES2)
-*       - One default RenderBatch is loaded on rlglInit()->rlLoadRenderBatch() [rlgl] (OpenGL 3.3 or ES2)
+*       - One default Texture2D is loaded on glInit(), 1x1 white pixel R8G8B8A8 [rlgl] (OpenGL 3.3 or ES2)
+*       - One default Shader is loaded on glInit()->LoadShaderDefault() [rlgl] (OpenGL 3.3 or ES2)
+*       - One default RenderBatch is loaded on glInit()->LoadRenderBatch() [rlgl] (OpenGL 3.3 or ES2)
 *
 *   DEPENDENCIES (included):
 *       [rcore] rglfw (Camilla Löwy - github.com/glfw/glfw) for window/context management and input (PLATFORM_DESKTOP)
@@ -89,12 +89,12 @@
 // Function specifiers in case library is build/used as a shared library (Windows)
 // NOTE: Microsoft specifiers to tell compiler that symbols are imported/exported from a .dll
 #if defined(_WIN32)
-    #if defined(BUILD_LIBTYPE_SHARED)
+    #if defined(RL_BUILD_LIBTYPE_SHARED)
         #if defined(__TINYC__)
             #define __declspec(x) __attribute__((x))
         #endif
         #define RLAPI __declspec(dllexport)     // We are building the library as a Win32 shared library (.dll)
-    #elif defined(USE_LIBTYPE_SHARED)
+    #elif defined(RL_USE_LIBTYPE_SHARED)
         #define RLAPI __declspec(dllimport)     // We are using the library as a Win32 shared library (.dll)
     #endif
 #endif
@@ -106,14 +106,14 @@
 //----------------------------------------------------------------------------------
 // Some basic Defines
 //----------------------------------------------------------------------------------
-#ifndef PI
-    #define PI 3.14159265358979323846f
+#ifndef RL_PI
+    #define RL_PI 3.14159265358979323846f
 #endif
-#ifndef DEG2RAD
-    #define DEG2RAD (PI/180.0f)
+#ifndef RL_DEG2RAD
+    #define RL_DEG2RAD (RL_PI/180.0f)
 #endif
-#ifndef RAD2DEG
-    #define RAD2DEG (180.0f/PI)
+#ifndef RL_RAD2DEG
+    #define RL_RAD2DEG (180.0f/RL_PI)
 #endif
 
 // Allow custom memory allocators
@@ -135,9 +135,9 @@
 // Plain structures in C++ (without constructors) can be initialized with { }
 // This is called aggregate initialization (C++11 feature)
 #if defined(__cplusplus)
-    #define CLITERAL(type)      type
+    #define RL_CLITERAL(type)      type
 #else
-    #define CLITERAL(type)      (type)
+    #define RL_CLITERAL(type)      (type)
 #endif
 
 // Used for initializer nonsense on cpp.
@@ -168,34 +168,34 @@
 #define RL_MATRIX_TYPE
 
 // Some Basic Colors
-// NOTE: Custom raylib color palette for amazing visuals on WHITE background
-#define LIGHTGRAY  CLITERAL(Color){ 200, 200, 200, 255 }   // Light Gray
-#define GRAY       CLITERAL(Color){ 130, 130, 130, 255 }   // Gray
-#define DARKGRAY   CLITERAL(Color){ 80, 80, 80, 255 }      // Dark Gray
-#define YELLOW     CLITERAL(Color){ 253, 249, 0, 255 }     // Yellow
-#define GOLD       CLITERAL(Color){ 255, 203, 0, 255 }     // Gold
-#define ORANGE     CLITERAL(Color){ 255, 161, 0, 255 }     // Orange
-#define PINK       CLITERAL(Color){ 255, 109, 194, 255 }   // Pink
-#define RED        CLITERAL(Color){ 230, 41, 55, 255 }     // Red
-#define MAROON     CLITERAL(Color){ 190, 33, 55, 255 }     // Maroon
-#define GREEN      CLITERAL(Color){ 0, 228, 48, 255 }      // Green
-#define LIME       CLITERAL(Color){ 0, 158, 47, 255 }      // Lime
-#define DARKGREEN  CLITERAL(Color){ 0, 117, 44, 255 }      // Dark Green
-#define SKYBLUE    CLITERAL(Color){ 102, 191, 255, 255 }   // Sky Blue
-#define BLUE       CLITERAL(Color){ 0, 121, 241, 255 }     // Blue
-#define DARKBLUE   CLITERAL(Color){ 0, 82, 172, 255 }      // Dark Blue
-#define PURPLE     CLITERAL(Color){ 200, 122, 255, 255 }   // Purple
-#define VIOLET     CLITERAL(Color){ 135, 60, 190, 255 }    // Violet
-#define DARKPURPLE CLITERAL(Color){ 112, 31, 126, 255 }    // Dark Purple
-#define BEIGE      CLITERAL(Color){ 211, 176, 131, 255 }   // Beige
-#define BROWN      CLITERAL(Color){ 127, 106, 79, 255 }    // Brown
-#define DARKBROWN  CLITERAL(Color){ 76, 63, 47, 255 }      // Dark Brown
+// NOTE: Custom raylib color palette for amazing visuals on RL_WHITE background
+#define RL_LIGHTGRAY  RL_CLITERAL(Color){ 200, 200, 200, 255 }   // Light Gray
+#define RL_GRAY       RL_CLITERAL(Color){ 130, 130, 130, 255 }   // Gray
+#define RL_DARKGRAY   RL_CLITERAL(Color){ 80, 80, 80, 255 }      // Dark Gray
+#define RL_YELLOW     RL_CLITERAL(Color){ 253, 249, 0, 255 }     // Yellow
+#define RL_GOLD       RL_CLITERAL(Color){ 255, 203, 0, 255 }     // Gold
+#define RL_ORANGE     RL_CLITERAL(Color){ 255, 161, 0, 255 }     // Orange
+#define RL_PINK       RL_CLITERAL(Color){ 255, 109, 194, 255 }   // Pink
+#define RL_RED        RL_CLITERAL(Color){ 230, 41, 55, 255 }     // Red
+#define RL_MAROON     RL_CLITERAL(Color){ 190, 33, 55, 255 }     // Maroon
+#define RL_GREEN      RL_CLITERAL(Color){ 0, 228, 48, 255 }      // Green
+#define RL_LIME       RL_CLITERAL(Color){ 0, 158, 47, 255 }      // Lime
+#define RL_DARKGREEN  RL_CLITERAL(Color){ 0, 117, 44, 255 }      // Dark Green
+#define RL_SKYBLUE    RL_CLITERAL(Color){ 102, 191, 255, 255 }   // Sky Blue
+#define RL_BLUE       RL_CLITERAL(Color){ 0, 121, 241, 255 }     // Blue
+#define RL_DARKBLUE   RL_CLITERAL(Color){ 0, 82, 172, 255 }      // Dark Blue
+#define RL_PURPLE     RL_CLITERAL(Color){ 200, 122, 255, 255 }   // Purple
+#define RL_VIOLET     RL_CLITERAL(Color){ 135, 60, 190, 255 }    // Violet
+#define RL_DARKPURPLE RL_CLITERAL(Color){ 112, 31, 126, 255 }    // Dark Purple
+#define RL_BEIGE      RL_CLITERAL(Color){ 211, 176, 131, 255 }   // Beige
+#define RL_BROWN      RL_CLITERAL(Color){ 127, 106, 79, 255 }    // Brown
+#define RL_DARKBROWN  RL_CLITERAL(Color){ 76, 63, 47, 255 }      // Dark Brown
 
-#define WHITE      CLITERAL(Color){ 255, 255, 255, 255 }   // White
-#define BLACK      CLITERAL(Color){ 0, 0, 0, 255 }         // Black
-#define BLANK      CLITERAL(Color){ 0, 0, 0, 0 }           // Blank (Transparent)
-#define MAGENTA    CLITERAL(Color){ 255, 0, 255, 255 }     // Magenta
-#define RAYWHITE   CLITERAL(Color){ 245, 245, 245, 255 }   // My own White (raylib logo)
+#define RL_WHITE      RL_CLITERAL(Color){ 255, 255, 255, 255 }   // White
+#define RL_BLACK      RL_CLITERAL(Color){ 0, 0, 0, 255 }         // Black
+#define RL_BLANK      RL_CLITERAL(Color){ 0, 0, 0, 0 }           // Blank (Transparent)
+#define RL_MAGENTA    RL_CLITERAL(Color){ 255, 0, 255, 255 }     // Magenta
+#define RL_RAYWHITE   RL_CLITERAL(Color){ 245, 245, 245, 255 }   // My own White (raylib logo)
 
 //----------------------------------------------------------------------------------
 // Structures Definition
@@ -383,7 +383,7 @@ typedef struct MaterialMap {
 // Material, includes shader and maps
 typedef struct Material {
     Shader shader;          // Material shader
-    MaterialMap *maps;      // Material maps array (MAX_MATERIAL_MAPS)
+    MaterialMap *maps;      // Material maps array (RL_MAX_MATERIAL_MAPS)
     float params[4];        // Material generic parameters (if required)
 } Material;
 
@@ -527,7 +527,7 @@ typedef struct AutomationEvent {
 
 // Automation event list
 typedef struct AutomationEventList {
-    unsigned int capacity;          // Events max entries (MAX_AUTOMATION_EVENTS)
+    unsigned int capacity;          // Events max entries (RL_MAX_AUTOMATION_EVENTS)
     unsigned int count;             // Events entries count
     AutomationEvent *events;        // Events entries
 } AutomationEventList;
@@ -899,8 +899,8 @@ typedef enum {
     BLEND_ADD_COLORS,               // Blend textures adding colors (alternative)
     BLEND_SUBTRACT_COLORS,          // Blend textures subtracting colors (alternative)
     BLEND_ALPHA_PREMULTIPLY,        // Blend premultiplied textures considering alpha
-    BLEND_CUSTOM,                   // Blend textures using custom src/dst factors (use rlSetBlendFactors())
-    BLEND_CUSTOM_SEPARATE           // Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendFactorsSeparate())
+    BLEND_CUSTOM,                   // Blend textures using custom src/dst factors (use SetBlendFactors())
+    BLEND_CUSTOM_SEPARATE           // Blend textures using custom rgb/alpha separate src/dst factors (use SetBlendFactorsSeparate())
 } BlendMode;
 
 // Gesture
@@ -1072,7 +1072,7 @@ RLAPI int GetFPS(void);                                           // Get current
 // Custom frame control functions
 // NOTE: Those functions are intended for advance users that want full control over the frame processing
 // By default EndDrawing() does this job: draws everything + SwapScreenBuffer() + manage frame timing + PollInputEvents()
-// To avoid that behaviour and control frame processes manually, enable in config.h: SUPPORT_CUSTOM_FRAME_CONTROL
+// To avoid that behaviour and control frame processes manually, enable in config.h: RL_SUPPORT_CUSTOM_FRAME_CONTROL
 RLAPI void SwapScreenBuffer(void);                                // Swap back buffer with front buffer (screen drawing)
 RLAPI void PollInputEvents(void);                                 // Register all input events
 RLAPI void WaitTime(double seconds);                              // Wait for some time (halt program execution)
@@ -1143,7 +1143,7 @@ RLAPI char *EncodeDataBase64(const unsigned char *data, int dataSize, int *outpu
 RLAPI unsigned char *DecodeDataBase64(const unsigned char *data, int *outputSize);                    // Decode Base64 string data, memory must be MemFree()
 
 // Automation events functionality
-RLAPI AutomationEventList LoadAutomationEventList(const char *fileName);                // Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS
+RLAPI AutomationEventList LoadAutomationEventList(const char *fileName);                // Load automation events list from file, NULL for empty list, capacity = RL_MAX_AUTOMATION_EVENTS
 RLAPI void UnloadAutomationEventList(AutomationEventList *list);                        // Unload automation events list from file
 RLAPI bool ExportAutomationEventList(AutomationEventList list, const char *fileName);   // Export automation events list as text file
 RLAPI void SetAutomationEventList(AutomationEventList *list);                           // Set automation event list to record to

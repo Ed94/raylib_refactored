@@ -43,15 +43,15 @@
 #ifndef RGESTURES_H
 #define RGESTURES_H
 
-#ifndef PI
-    #define PI 3.14159265358979323846
+#ifndef RL_PI
+    #define RL_PI 3.14159265358979323846
 #endif
 
 //----------------------------------------------------------------------------------
 // Defines and Macros
 //----------------------------------------------------------------------------------
-#ifndef MAX_TOUCH_POINTS
-    #define MAX_TOUCH_POINTS        8        // Maximum number of touch points supported
+#ifndef RL_MAX_TOUCH_POINTS
+    #define RL_MAX_TOUCH_POINTS        8        // Maximum number of touch points supported
 #endif
 
 //----------------------------------------------------------------------------------
@@ -106,8 +106,8 @@ typedef enum {
 typedef struct {
     int touchAction;
     int pointCount;
-    int pointId[MAX_TOUCH_POINTS];
-    Vector2 position[MAX_TOUCH_POINTS];
+    int pointId[RL_MAX_TOUCH_POINTS];
+    Vector2 position[RL_MAX_TOUCH_POINTS];
 } GestureEvent;
 
 //----------------------------------------------------------------------------------
@@ -180,13 +180,13 @@ RL_NS_END
 //----------------------------------------------------------------------------------
 // Defines and Macros
 //----------------------------------------------------------------------------------
-#define FORCE_TO_SWIPE      0.2f        // Swipe force, measured in normalized screen units/time
-#define MINIMUM_DRAG        0.015f      // Drag minimum force, measured in normalized screen units (0.0f to 1.0f)
-#define DRAG_TIMEOUT        0.3f        // Drag minimum time for web, measured in seconds
-#define MINIMUM_PINCH       0.005f      // Pinch minimum force, measured in normalized screen units (0.0f to 1.0f)
-#define TAP_TIMEOUT         0.3f        // Tap minimum time, measured in seconds
-#define PINCH_TIMEOUT       0.3f        // Pinch minimum time, measured in seconds
-#define DOUBLETAP_RANGE     0.03f       // DoubleTap range, measured in normalized screen units (0.0f to 1.0f)
+#define RL_FORCE_TO_SWIPE      0.2f        // Swipe force, measured in normalized screen units/time
+#define RL_MINIMUM_DRAG        0.015f      // Drag minimum force, measured in normalized screen units (0.0f to 1.0f)
+#define RL_DRAG_TIMEOUT        0.3f        // Drag minimum time for web, measured in seconds
+#define RL_MINIMUM_PINCH       0.005f      // Pinch minimum force, measured in normalized screen units (0.0f to 1.0f)
+#define RL_TAP_TIMEOUT         0.3f        // Tap minimum time, measured in seconds
+#define RL_PINCH_TIMEOUT       0.3f        // Pinch minimum time, measured in seconds
+#define RL_DOUBLETAP_RANGE     0.03f       // DoubleTap range, measured in normalized screen units (0.0f to 1.0f)
 
 RL_NS_BEGIN
 
@@ -284,7 +284,7 @@ void ProcessGestureEvent(GestureEvent event)
             GESTURES.Touch.tapCounter++;    // Tap counter
 
             // Detect GESTURE_DOUBLE_TAP
-            if ((GESTURES.current == GESTURE_NONE) && (GESTURES.Touch.tapCounter >= 2) && ((rgGetCurrentTime() - GESTURES.Touch.eventTime) < TAP_TIMEOUT) && (rgVector2Distance(GESTURES.Touch.downPositionA, event.position[0]) < DOUBLETAP_RANGE))
+            if ((GESTURES.current == GESTURE_NONE) && (GESTURES.Touch.tapCounter >= 2) && ((rgGetCurrentTime() - GESTURES.Touch.eventTime) < RL_TAP_TIMEOUT) && (rgVector2Distance(GESTURES.Touch.downPositionA, event.position[0]) < RL_DOUBLETAP_RANGE))
             {
                 GESTURES.current = GESTURE_DOUBLETAP;
                 GESTURES.Touch.tapCounter = 0;
@@ -319,7 +319,7 @@ void ProcessGestureEvent(GestureEvent event)
             GESTURES.Drag.intensity = GESTURES.Drag.distance/(float)((rgGetCurrentTime() - GESTURES.Swipe.startTime));
 
             // Detect GESTURE_SWIPE
-            if ((GESTURES.Drag.intensity > FORCE_TO_SWIPE) && (GESTURES.current != GESTURE_DRAG))
+            if ((GESTURES.Drag.intensity > RL_FORCE_TO_SWIPE) && (GESTURES.current != GESTURE_DRAG))
             {
                 // NOTE: Angle should be inverted in Y
                 GESTURES.Drag.angle = 360.0f - rgVector2Angle(GESTURES.Touch.downPositionA, GESTURES.Touch.upPosition);
@@ -357,7 +357,7 @@ void ProcessGestureEvent(GestureEvent event)
                 GESTURES.Hold.resetRequired = false;
 
                 // Detect GESTURE_DRAG
-                if ((rgGetCurrentTime() - GESTURES.Touch.eventTime) > DRAG_TIMEOUT)
+                if ((rgGetCurrentTime() - GESTURES.Touch.eventTime) > RL_DRAG_TIMEOUT)
                 {
                     GESTURES.Touch.eventTime = rgGetCurrentTime();
                     GESTURES.current = GESTURE_DRAG;
@@ -396,7 +396,7 @@ void ProcessGestureEvent(GestureEvent event)
             GESTURES.Pinch.vector.x = GESTURES.Touch.moveDownPositionB.x - GESTURES.Touch.moveDownPositionA.x;
             GESTURES.Pinch.vector.y = GESTURES.Touch.moveDownPositionB.y - GESTURES.Touch.moveDownPositionA.y;
 
-            if ((rgVector2Distance(GESTURES.Touch.previousPositionA, GESTURES.Touch.moveDownPositionA) >= MINIMUM_PINCH) || (rgVector2Distance(GESTURES.Touch.previousPositionB, GESTURES.Touch.moveDownPositionB) >= MINIMUM_PINCH))
+            if ((rgVector2Distance(GESTURES.Touch.previousPositionA, GESTURES.Touch.moveDownPositionA) >= RL_MINIMUM_PINCH) || (rgVector2Distance(GESTURES.Touch.previousPositionB, GESTURES.Touch.moveDownPositionB) >= RL_MINIMUM_PINCH))
             {
                 if ( rgVector2Distance(GESTURES.Touch.previousPositionA, GESTURES.Touch.previousPositionB) > rgVector2Distance(GESTURES.Touch.moveDownPositionA, GESTURES.Touch.moveDownPositionB) ) GESTURES.current = GESTURE_PINCH_IN;
                 else GESTURES.current = GESTURE_PINCH_OUT;
@@ -508,7 +508,7 @@ float GetGesturePinchAngle(void)
 // Get angle from two-points vector with X-axis
 static float rgVector2Angle(Vector2 v1, Vector2 v2)
 {
-    float angle = atan2f(v2.y - v1.y, v2.x - v1.x)*(180.0f/PI);
+    float angle = atan2f(v2.y - v1.y, v2.x - v1.x)*(180.0f/RL_PI);
 
     if (angle < 0) angle += 360.0f;
 

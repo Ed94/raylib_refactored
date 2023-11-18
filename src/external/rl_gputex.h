@@ -1,6 +1,6 @@
 /**********************************************************************************************
 *
-*   rl_gputex v1.0 - GPU compressed textures loading and saving
+*   gputex v1.0 - GPU compressed textures loading and saving
 *
 *   DESCRIPTION:
 *
@@ -11,8 +11,8 @@
 *     In those cases data is loaded uncompressed and format is returned.
 *
 *   TODO:
-*     - Implement raylib function: rlGetGlTextureFormats(), required by rl_save_ktx_to_memory()
-*     - Review rl_load_ktx_from_memory() to support KTX v2.2 specs
+*     - Implement raylib function: GetGlTextureFormats(), required by save_ktx_to_memory()
+*     - Review load_ktx_from_memory() to support KTX v2.2 specs
 *
 *   CONFIGURATION:
 *
@@ -61,13 +61,13 @@ RL_NS_BEGIN
 RL_EXTERN_C_BEGIN
 
 // Load image data from memory data files
-RLAPI void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
-RLAPI void *rl_load_pkm_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
-RLAPI void *rl_load_ktx_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
-RLAPI void *rl_load_pvr_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
-RLAPI void *rl_load_astc_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
+RLAPI void *load_dds_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
+RLAPI void *load_pkm_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
+RLAPI void *load_ktx_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
+RLAPI void *load_pvr_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
+RLAPI void *load_astc_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
 
-RLAPI int rl_save_ktx_to_memory(const char *fileName, void *data, int width, int height, int format, int mipmaps);  // Save image data as KTX file
+RLAPI int save_ktx_to_memory(const char *fileName, void *data, int width, int height, int format, int mipmaps);  // Save image data as KTX file
 
 RL_EXTERN_C_END
 RL_NS_END
@@ -105,7 +105,7 @@ static int get_pixel_data_size(int width, int height, int format);
 //----------------------------------------------------------------------------------
 #if defined(RL_GPUTEX_SUPPORT_DDS)
 // Loading DDS from memory image data (compressed or uncompressed)
-void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
+void *load_dds_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
 {
     void *image_data = NULL;        // Image data pointer
     int image_pixel_size = 0;       // Image pixel size
@@ -294,7 +294,7 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
 // Loading PKM image data (ETC1/ETC2 compression)
 // NOTE: KTX is the standard Khronos Group compression format (ETC1/ETC2, mipmaps)
 // PKM is a much simpler file format used mainly to contain a single ETC1/ETC2 compressed image (no mipmaps)
-void *rl_load_pkm_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
+void *load_pkm_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
 {
     void *image_data = NULL;        // Image data pointer
 
@@ -370,7 +370,7 @@ void *rl_load_pkm_from_memory(const unsigned char *file_data, unsigned int file_
 #if defined(RL_GPUTEX_SUPPORT_KTX)
 // Load KTX compressed image data (ETC1/ETC2 compression)
 // TODO: Review KTX loading, many things changed!
-void *rl_load_ktx_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
+void *load_ktx_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
 {
     void *image_data = NULL;        // Image data pointer
 
@@ -450,7 +450,7 @@ void *rl_load_ktx_from_memory(const unsigned char *file_data, unsigned int file_
 // Save image data as KTX file
 // NOTE: By default KTX 1.1 spec is used, 2.0 is still on draft (01Oct2018)
 // TODO: Review KTX saving, many things changed!
-int rl_save_ktx(const char *file_name, void *data, int width, int height, int format, int mipmaps)
+int save_ktx(const char *file_name, void *data, int width, int height, int format, int mipmaps)
 {
     // KTX file Header (64 bytes)
     // v1.1 - https://www.khronos.org/opengles/sdk/tools/KTX/file_format_spec/
@@ -510,7 +510,7 @@ int rl_save_ktx(const char *file_name, void *data, int width, int height, int fo
     header.mipmap_levels = mipmaps;         // If it was 0, it means mipmaps should be generated on loading (not for compressed formats)
     header.key_value_data_size = 0;         // No extra data after the header
 
-    rlGetGlTextureFormats(format, &header.gl_internal_format, &header.gl_format, &header.gl_type);   // rlgl module function
+    GetGlTextureFormats(format, &header.gl_internal_format, &header.gl_format, &header.gl_type);   // rlgl module function
     header.gl_base_internal_format = header.gl_format;    // KTX 1.1 only
 
     // NOTE: We can save into a .ktx all PixelFormats supported by raylib, including compressed formats like DXT, ETC or ASTC
@@ -567,7 +567,7 @@ int rl_save_ktx(const char *file_name, void *data, int width, int height, int fo
 #if defined(RL_GPUTEX_SUPPORT_PVR)
 // Loading PVR image data (uncompressed or PVRT compression)
 // NOTE: PVR v2 not supported, use PVR v3 instead
-void *rl_load_pvr_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
+void *load_pvr_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
 {
     void *image_data = NULL;        // Image data pointer
 
@@ -702,7 +702,7 @@ void *rl_load_pvr_from_memory(const unsigned char *file_data, unsigned int file_
 
 #if defined(RL_GPUTEX_SUPPORT_ASTC)
 // Load ASTC compressed image data (ASTC compression)
-void *rl_load_astc_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
+void *load_astc_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
 {
     void *image_data = NULL;        // Image data pointer
 
