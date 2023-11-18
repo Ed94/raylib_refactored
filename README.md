@@ -10,6 +10,10 @@ Goal is to offer a C refactor and a C++ refactor. The C++ will wrap the library 
 
 The repo will also soon provide refactor scripts for alternative naming conventions from pascal case to lower snake case for functions.
 
+Run the refactor_c.ps1 or refactor_cpp.ps1 (make sure a refactor binary is defined in your env path). Then just attempt to build for your target platform.
+
+---
+
 **raylib is a simple and easy-to-use library to enjoy videogames programming.**
 
 raylib is highly inspired by Borland BGI graphics lib and by XNA framework and it's especially well suited for prototyping, tooling, graphical applications, embedded systems and education.
