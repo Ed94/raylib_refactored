@@ -1,8 +1,12 @@
 // rlgl.h
 
-namespace rlgl, RL_
-namespace rl,   RL_
-namespace RL_,  RLGL_
+//namespace rlgl, RL_
+namespace rl,   RLGL_
+//namespace RL_,  RLGL_
+
+namespace RL_OPENGL, RLGL_OPENGL
+
+//word RLAPI, RLGLAPI
 
 not include rlgl.h
 
@@ -19,3 +23,12 @@ not word RL_QUADS
 not word RL_FLOAT
 not word RL_UNSIGNED_BYTE
 not word RL_MATRIX
+
+word RLGL, RLGL_GLOBAL_DATA
+
+word Matrix, RL_Matrix
+
+word LOG_WARNING, RL_LOG_WARNING
+
+word rlglInit, RLGL_Init
+word rlglClose, RLGL_Close
