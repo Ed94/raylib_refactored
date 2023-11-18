@@ -104,6 +104,10 @@
     #define Vector3ToFloat(vec) (Vector3ToFloatV(vec).v)
 #endif
 
+#include "config.h"
+
+RL_NS_BEGIN
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
@@ -728,7 +732,7 @@ RMAPI Vector3 Vector3Normalize(Vector3 v)
 RMAPI Vector3 Vector3Project(Vector3 v1, Vector3 v2)
 {
     Vector3 result = { 0 };
-    
+
     float v1dv2 = (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z);
     float v2dv2 = (v2.x*v2.x + v2.y*v2.y + v2.z*v2.z);
 
@@ -745,7 +749,7 @@ RMAPI Vector3 Vector3Project(Vector3 v1, Vector3 v2)
 RMAPI Vector3 Vector3Reject(Vector3 v1, Vector3 v2)
 {
     Vector3 result = { 0 };
-    
+
     float v1dv2 = (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z);
     float v2dv2 = (v2.x*v2.x + v2.y*v2.y + v2.z*v2.z);
 
@@ -2186,5 +2190,7 @@ RMAPI int QuaternionEquals(Quaternion p, Quaternion q)
 
     return result;
 }
+
+RL_NS_END
 
 #endif  // RAYMATH_H

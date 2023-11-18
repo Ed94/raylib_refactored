@@ -1,0 +1,142 @@
+ __VERSION 1
+
+
+// Config.h
+word CONFIG_H, rlCONFIG_H
+
+namespace SUPPORT_, RL_SUPPORT_
+namespace MAX_,     RL_MAX_
+namespace AUDIO_,   RL_AUDIO_
+
+// raylib.h
+
+word BUILD_LIBTYPE_SHARED, RL_BUILD_LIBTYPE_SHARED
+word USE_LIBTYPE_SHARED,   RL_USE_LIBTYPE_SHARED
+word PI,                   RL_PI
+word DEG2RAD,              RL_DEG2RAD
+word RAD2DEG,              RL_RAD2DEG
+
+word CLITERAL, RL_CLITERAL
+
+word LIGHTGRAY,  RL_LIGHTGRAY
+word GRAY,       RL_GRAY
+word DARKGRAY,   RL_DARKGRAY
+word YELLOW,     RL_YELLOW
+word GOLD,       RL_GOLD
+word ORANGE,     RL_ORANGE
+word PINK,       RL_PINK
+word RED,        RL_RED
+word MAROON,     RL_MAROON
+word GREEN,      RL_GREEN
+word LIME,       RL_LIME
+word DARKGREEN,  RL_DARKGREEN
+word SKYBLUE,    RL_SKYBLUE
+word BLUE,       RL_BLUE
+word DARKBLUE,   RL_DARKBLUE
+word PURPLE,     RL_PURPLE
+word VIOLET,     RL_VIOLET
+word DARKPURPLE, RL_DARKPURPLE
+word BEIGE,      RL_BEIGE
+word BROWN,      RL_BROWN
+word DARKBROWN,  RL_DARKBROWN
+
+word WHITE,    RL_WHITE
+word BLACK,    RL_BLACK
+word BLANK,    RL_BLANK
+word MAGENTA,  RL_MAGENTA
+word RAYWHITE, RL_RAYWHITE
+
+// raymath.h
+
+// rcamera.h
+
+word CAMERA_CULL_DISTANCE_NEAR, rlCAMERA_CULL_DISTANCE_NEAR
+word CAMERA_CULL_DISTANCE_FAR,  rlCAMERA_CULL_DISTANCE_FAR
+
+word GetCameraForward,          rlGetCameraForward
+word GetCameraUp,               rlGetCameraUp
+word GetCameraRight,            rlGetCameraRight
+word CameraMoveForward,         rlCameraMoveForward
+word CameraMoveUp,              rlCameraMoveUp
+word CameraMoveRight,           rlCameraMoveRight
+word CameraMoveToTarget,        rlCameraMoveToTarget
+word CameraYaw,                 rlCameraYaw
+word CameraPitch,               rlCameraPitch
+word CameraRoll,                rlCameraRoll
+word GetCameraViewMatrix,       rlGetCameraViewMatrix
+word GetCameraProjectionMatrix, rlGetCameraProjectionMatrix
+
+word CAMERA_MOVE_SPEED,                              RL_CAMERA_MOVE_SPEED
+word CAMERA_ROTATION_SPEED,                          RL_CAMERA_ROTATION_SPEED
+word CAMERA_PAN_SPEED,                               RL_CAMERA_PAN_SPEED
+word CAMERA_MOUSE_MOVE_SENSITIVITY,                  RL_CAMERA_MOUSE_MOVE_SENSITIVITY
+word CAMERA_MOUSE_SCROLL_SENSITIVITY,                RL_CAMERA_MOUSE_SCROLL_SENSITIVITY
+word CAMERA_ORBITAL_SPEED,                           RL_CAMERA_ORBITAL_SPEED
+word CAMERA_FIRST_PERSON_STEP_TRIGONOMETRIC_DIVIDER, RL_CAMERA_FIRST_PERSON_STEP_TRIGONOMETRIC_DIVIDER
+word CAMERA_FIRST_PERSON_STEP_DIVIDER,               RL_CAMERA_FIRST_PERSON_STEP_DIVIDER
+word CAMERA_FIRST_PERSON_WAVING_DIVIDER,             RL_CAMERA_FIRST_PERSON_WAVING_DIVIDER
+word PLAYER_MOVEMENT_SENSITIVITY,                    RL_PLAYER_MOVEMENT_SENSITIVITY
+
+// rcore.h
+
+// config header has these covered
+// MAX_FILEPATH_CAPACITY
+// MAX_FILEPATH_LENGTH
+// MAX_KEYBOARD_KEYS
+// MAX_MOUSE_BUTTONS
+// MAX_GAMEPADS
+// MAX_GAMEPAD_AXIS
+// MAX_GAMEPAD_BUTTONS
+// MAX_TOUCH_POINTS
+// MAX_KEY_PRESSED_QUEUE
+// MAX_CHAR_PRESSED_QUEUE
+// MAX_DECOMPRESSION_SIZE
+// MAX_AUTOMATION_EVENTS
+
+word FLAG_SET,    RL_FLAG_SET
+word FLAG_CLEAR,  RL_FLAG_CLEAR
+word FLAG_TOGGLE, RL_FLAG_TOGGLE
+word FLAG_CHECK,  RL_FLAG_CHECK
+
+// rgestures.h
+
+// MAX_TOUCH_POINTS
+
+word FORCE_TO_SWIPE,  RL_FORCE_TO_SWIPE
+word MINIMUM_DRAG,    RL_MINIMUM_DRAG
+word DRAG_TIMEOUT,    RL_DRAG_TIMEOUT
+word MINIMUM_PINCH,   RL_MINIMUM_PINCH
+word TAP_TIMEOUT,     RL_TAP_TIMEOUT
+word PINCH_TIMEOUT,   RL_PINCH_TIMEOUT
+word DOUBLETAP_RANGE, RL_DOUBLETAP_RANGE
+
+// word rgVector2Angle,    rlVector2Angle
+// word rgVector2Distance, rlVector2Distance
+// word rgGetCurrentTime,  rlGetCurrentTime
+
+// rlgl.h
+// This file has badly defined definitions, so I have to do a separate pass for it later.
+
+namespace rl, 
+namespace rlgl, 
+
+//namespace rlOPENGL, RLGL_OPENGL
+
+// word rlTEXTURE_MIN_FILTER,    RLGL_TEXTURE_MIN_FILTE
+// word rlTEXTURE_MAG_FILTER,    RLGL_TEXTURE_MAG_FILTER
+// word rlTEXTURE_FILTER_LINEAR, RLGL_TEXTURE_FILTER_LINEAR
+// word rlPROJECTION,            RLGL_PROJECTION
+// word rlMODELVIEW,             RLGL_MODELVIEW
+
+not include rlgl.h
+
+word TRACELOG, rlTRACELOG
+
+//word rlglInit, RLGL_Init
+//word rlglClose, RLGL_Close
+
+// utils.h
+
+// TRACELOG
+
+not include external/rl_gputex.h

@@ -94,6 +94,13 @@
     #define GLFW_MOUSE_PASSTHROUGH      0x0002000D
 #endif
 
+#ifndef RL_NS_BEGIN
+#define RL_NS_BEGIN
+#define RL_NS_END
+#endif
+
+RL_NS_BEGIN
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
@@ -1824,5 +1831,7 @@ static void JoystickCallback(int jid, int event)
         memset(CORE.Input.Gamepad.name[jid], 0, 64);
     }
 }
+
+RL_NS_END
 
 // EOF

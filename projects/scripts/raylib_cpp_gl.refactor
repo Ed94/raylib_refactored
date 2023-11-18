@@ -1,0 +1,12 @@
+// rlgl.h
+
+namespace rl, 
+namespace rlgl, 
+
+not include rlgl.h
+
+word TRACELOG, RL_TRACELOG
+
+word RLGL, GLOBAL_DATA
+
+namespace LOG_, RL_LOG

@@ -1,26 +1,18 @@
 // rlgl.h
-
-//namespace rlgl, rl
-namespace rl, rlgl
-not namespace rlgl
-//namespace rl,  RLGL_
-
-//namespace rlOPENGL, RLGL_OPENGL
-
-//word RLAPI, RLGLAPI
-
 not include rlgl.h
 
-word TRACELOG, RL_TRACELOG
+    namespace rl, rlgl
+not namespace rlgl
 
-word RLGL, RLGL_GLOBAL_DATA
+// namespace rlOPENGL, RLGL_OPENGL
 
-word Matrix, rlMatrix
+// word RLAPI, RLGLAPI
 
 namespace LOG_, RL_LOG
 
+word TRACELOG, RL_TRACELOG
+word RLGL,     RLGL_GLOBAL_DATA
+
+word Matrix, rlMatrix
 //word rlglInit, RLGL_Init
 //word rlglClose, RLGL_Close
-
-//word rlLoadTexture, rlglLoadTexture
-//word rlLoadTextureCubemap, rlglLoadTextureCubemap

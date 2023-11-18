@@ -52,12 +52,13 @@
     #define RLAPI       // Functions defined as 'extern' by default (implicit specifiers)
 #endif
 
+#include "config.h"
+
 //----------------------------------------------------------------------------------
 // Module Functions Declaration
 //----------------------------------------------------------------------------------
-#if defined(__cplusplus)
-extern "C" {            // Prevents name mangling of functions
-#endif
+RL_NS_BEGIN
+RL_EXTERN_C_BEGIN
 
 // Load image data from memory data files
 RLAPI void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
@@ -68,9 +69,8 @@ RLAPI void *rl_load_astc_from_memory(const unsigned char *file_data, unsigned in
 
 RLAPI int rl_save_ktx_to_memory(const char *fileName, void *data, int width, int height, int format, int mipmaps);  // Save image data as KTX file
 
-#if defined(__cplusplus)
-}
-#endif
+RL_EXTERN_C_END
+RL_NS_END
 
 #endif // RL_GPUTEX_H
 
@@ -91,6 +91,8 @@ RLAPI int rl_save_ktx_to_memory(const char *fileName, void *data, int width, int
 #else
 #define LOG(...)
 #endif
+
+RL_NS_BEGIN
 
 //----------------------------------------------------------------------------------
 // Module Internal Functions Declaration
@@ -812,4 +814,7 @@ static int get_pixel_data_size(int width, int height, int format)
 
     return data_size;
 }
+
+RL_NS_END
+
 #endif // RL_GPUTEX_IMPLEMENTATION

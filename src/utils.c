@@ -56,6 +56,8 @@
     #define MAX_TRACELOG_MSG_LENGTH     256         // Max length of one trace-log message
 #endif
 
+RL_NS_BEGIN
+
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
@@ -503,3 +505,5 @@ static int android_close(void *cookie)
     return 0;
 }
 #endif  // PLATFORM_ANDROID
+
+RL_NS_END

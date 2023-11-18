@@ -130,10 +130,13 @@
 #define NODEFERWINDOWPOS  // DeferWindowPos routines
 #define NOMCX             // Modem Configuration Extensions
 
+
 // Type required before windows.h inclusion
 typedef struct tagMSG *LPMSG;
 
 #include <windows.h>        // Windows functionality (miniaudio)
+
+RL_NS_BEGIN
 
 // Type required by some unused function...
 typedef struct tagBITMAPINFOHEADER {
@@ -149,6 +152,8 @@ typedef struct tagBITMAPINFOHEADER {
   DWORD biClrUsed;
   DWORD biClrImportant;
 } BITMAPINFOHEADER, *PBITMAPINFOHEADER;
+
+RL_NS_END
 
 #include <objbase.h>        // Component Object Model (COM) header
 #include <mmreg.h>          // Windows Multimedia, defines some WAVE structs
@@ -294,6 +299,8 @@ typedef struct tagBITMAPINFOHEADER {
 #ifndef MAX_AUDIO_BUFFER_POOL_CHANNELS
     #define MAX_AUDIO_BUFFER_POOL_CHANNELS    16    // Audio pool channels
 #endif
+
+RL_NS_BEGIN
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
@@ -2721,5 +2728,7 @@ static bool SaveFileText(const char *fileName, char *text)
 #endif
 
 #undef AudioBuffer
+
+RL_NS_END
 
 #endif      // SUPPORT_MODULE_RAUDIO

@@ -53,6 +53,13 @@
 
 #include <EGL/egl.h>                    // Native platform windowing system interface
 
+#ifndef RL_NS_BEGIN
+#define RL_NS_BEGIN
+#define RL_NS_END
+#endif
+
+RL_NS_BEGIN
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
@@ -1131,5 +1138,7 @@ static int32_t AndroidInputCallback(struct android_app *app, AInputEvent *event)
 
     return 0;
 }
+
+RL_NS_END
 
 // EOF

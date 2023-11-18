@@ -68,6 +68,13 @@
     #define _POSIX_C_SOURCE 199309L     // Required for: CLOCK_MONOTONIC if compiled with c99 without gnu ext.
 #endif
 
+#ifndef RL_NS_BEGIN
+#define RL_NS_BEGIN
+#define RL_NS_END
+#endif
+
+RL_NS_BEGIN
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
@@ -1312,5 +1319,7 @@ static EM_BOOL EmscriptenTouchCallback(int eventType, const EmscriptenTouchEvent
 
     return 1; // The event was consumed by the callback handler
 }
+
+RL_NS_END
 
 // EOF

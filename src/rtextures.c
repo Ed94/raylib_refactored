@@ -234,6 +234,8 @@
     #define GAUSSIAN_BLUR_ITERATIONS  4    // Number of box blur iterations to approximate gaussian blur
 #endif
 
+RL_NS_BEGIN
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
@@ -4966,5 +4968,7 @@ static Vector4 *LoadImageDataNormalized(Image image)
 
     return pixels;
 }
+
+RL_NS_END
 
 #endif      // SUPPORT_MODULE_RTEXTURES

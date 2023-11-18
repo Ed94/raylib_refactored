@@ -72,6 +72,8 @@
     #define CAMERA_CULL_DISTANCE_FAR    RL_CULL_DISTANCE_FAR
 #endif
 
+RL_NS_BEGIN
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 // NOTE: Below types are required for standalone usage
@@ -134,9 +136,7 @@
 // Module Functions Declaration
 //----------------------------------------------------------------------------------
 
-#if defined(__cplusplus)
-extern "C" {            // Prevents name mangling of functions
-#endif
+RL_EXTERN_C_BEGIN
 
 RLAPI Vector3 GetCameraForward(Camera *camera);
 RLAPI Vector3 GetCameraUp(Camera *camera);
@@ -156,9 +156,9 @@ RLAPI void CameraRoll(Camera *camera, float angle);
 RLAPI Matrix GetCameraViewMatrix(Camera *camera);
 RLAPI Matrix GetCameraProjectionMatrix(Camera* camera, float aspect);
 
-#if defined(__cplusplus)
-}
-#endif
+RL_EXTERN_C_END
+
+RL_NS_END
 
 #endif // RCAMERA_H
 
@@ -228,6 +228,8 @@ RLAPI Matrix GetCameraProjectionMatrix(Camera* camera, float aspect);
 // Module specific Functions Declaration
 //----------------------------------------------------------------------------------
 //...
+
+RL_NS_BEGIN
 
 //----------------------------------------------------------------------------------
 // Module Functions Definition
@@ -554,5 +556,7 @@ void UpdateCameraPro(Camera *camera, Vector3 movement, Vector3 rotation, float z
     // Zoom target distance
     CameraMoveToTarget(camera, zoom);
 }
+
+RL_NS_END
 
 #endif // RCAMERA_IMPLEMENTATION

@@ -51,6 +51,13 @@
 #include "SDL.h"            // SDL base library (window/rendered, input, timming... functionality)
 #include "SDL_opengl.h"     // SDL OpenGL functionality (if required, instead of internal renderer)
 
+#ifndef RL_NS_BEGIN
+#define RL_NS_BEGIN
+#define RL_NS_END
+#endif
+
+#define RL_NS_BEGIN
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
@@ -1388,4 +1395,7 @@ static KeyboardKey ConvertScancodeToKey(SDL_Scancode sdlScancode)
     }
     return KEY_NULL; // No equivalent key in Raylib
 }
+
+RL_NS_END
+
 // EOF

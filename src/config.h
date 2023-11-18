@@ -253,10 +253,23 @@
 
 #endif // CONFIG_H
 
-#if defined(__cplusplus)
+#define RL_USE_CPP_NAMESPACE 1
+#define RL_USE_CPP_MANGLING  1
+
+#if RL_USE_CPP_NAMESPACE && defined(__cplusplus)
     #define RL_NS_BEGIN namespace raylib {
     #define RL_NS_END }
 #else
     #define RL_NS_BEGIN
     #define RL_NS_END
+#endif
+
+#if RL_USE_CPP_MANGLING && defined(__cplusplus)
+    #define RL_EXTERN_C_BEGIN
+    #define RL_EXTERN_C_END
+#else
+    // Prevents cpp name mangling
+    #define RL_EXTERN_C_BEGIN extern "C" {
+    // Prevents cpp name mangling
+    #define RL_EXTERN_C_END   }
 #endif

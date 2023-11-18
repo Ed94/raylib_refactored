@@ -65,6 +65,10 @@
     typedef enum bool { false = 0, true = !false } bool;
 #endif
 
+#include "config.h"
+
+RL_NS_BEGIN
+
 #if !defined(RL_VECTOR2_TYPE)
 // Vector2 type
 typedef struct Vector2 {
@@ -115,9 +119,7 @@ typedef struct {
 // Module Functions Declaration
 //----------------------------------------------------------------------------------
 
-#if defined(__cplusplus)
-extern "C" {            // Prevents name mangling of functions
-#endif
+RL_EXTERN_C_BEGIN
 
 void ProcessGestureEvent(GestureEvent event);           // Process gesture event and translate it into gestures
 void UpdateGestures(void);                              // Update gestures detected (must be called every frame)
@@ -134,9 +136,9 @@ Vector2 GetGesturePinchVector(void);                    // Get gesture pinch del
 float GetGesturePinchAngle(void);                       // Get gesture pinch angle
 #endif
 
-#if defined(__cplusplus)
-}
-#endif
+RL_EXTERN_C_END
+
+RL_NS_END
 
 #endif // RGESTURES_H
 
@@ -185,6 +187,8 @@ float GetGesturePinchAngle(void);                       // Get gesture pinch ang
 #define TAP_TIMEOUT         0.3f        // Tap minimum time, measured in seconds
 #define PINCH_TIMEOUT       0.3f        // Pinch minimum time, measured in seconds
 #define DOUBLETAP_RANGE     0.03f       // DoubleTap range, measured in normalized screen units (0.0f to 1.0f)
+
+RL_NS_BEGIN
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
@@ -551,5 +555,7 @@ static double rgGetCurrentTime(void)
 
     return time;
 }
+
+RL_NS_END
 
 #endif // RGESTURES_IMPLEMENTATION

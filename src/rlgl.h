@@ -126,6 +126,28 @@
 #endif
 #endif
 
+#define RLGL_USE_CPP_NAMESPACE 1
+#define RLGL_USE_CPP_MANGLING  1
+
+#if RLGL_USE_CPP_NAMESPACE && defined(__cplusplus)
+    #define RLGL_NS_BEGIN namespace rlgl {
+    #define RLGL_NS_END }
+#else
+    #define RLGL_NS_BEGIN
+    #define RLGL_NS_END
+#endif
+
+#if RLGL_USE_CPP_MANGLING && defined(__cplusplus)
+    #define RLGL_EXTERN_C_BEGIN
+    #define RLGL_EXTERN_C_END
+#else
+    // Prevents cpp name mangling
+    #define RLGL_EXTERN_C_BEGIN extern "C" {
+    // Prevents cpp name mangling
+    #define RLGL_EXTERN_C_END   }
+#endif
+
+
 // Support TRACELOG macros
 #ifndef TRACELOG
     #define TRACELOG(level, ...) (void)0
@@ -330,6 +352,8 @@
     // Boolean type
 typedef enum bool { false = 0, true = !false } bool;
 #endif
+
+RLGL_NS_BEGIN
 
 #if !defined(RL_MATRIX_TYPE)
 // Matrix, 4x4 components, column major, OpenGL style, right handed
@@ -556,9 +580,7 @@ typedef enum {
 // Functions Declaration - Matrix operations
 //------------------------------------------------------------------------------------
 
-#if defined(__cplusplus)
-extern "C" {            // Prevents name mangling of functions
-#endif
+RLGL_EXTERN_C_BEGIN
 
 RLAPI void rlMatrixMode(int mode);                    // Choose the current matrix to be transformed
 RLAPI void rlPushMatrix(void);                        // Push the current matrix to stack
@@ -764,9 +786,7 @@ RLAPI void rlSetMatrixViewOffsetStereo(Matrix right, Matrix left);        // Set
 RLAPI void rlLoadDrawCube(void);     // Load and draw a cube
 RLAPI void rlLoadDrawQuad(void);     // Load and draw a quad
 
-#if defined(__cplusplus)
-}
-#endif
+RLGL_EXTERN_C_END
 
 #endif // RLGL_H
 
@@ -962,6 +982,8 @@ RLAPI void rlLoadDrawQuad(void);     // Load and draw a quad
 #ifndef RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE2
     #define RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE2  "texture2"          // texture2 (texture slot active 2)
 #endif
+
+RLGL_NS_BEGIN
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
@@ -4860,5 +4882,7 @@ static Matrix rlMatrixMultiply(Matrix left, Matrix right)
 
     return result;
 }
+
+RLGL_EXTERN_C_END
 
 #endif  // RLGL_IMPLEMENTATION

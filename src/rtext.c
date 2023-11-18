@@ -102,6 +102,8 @@
     #define MAX_TEXTSPLIT_COUNT                  128        // Maximum number of substrings to split: TextSplit()
 #endif
 
+RL_NS_BEGIN
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
@@ -2050,7 +2052,7 @@ static Font LoadBMFont(const char *fileName)
     searchPoint = strstr(buffer, "lineHeight");
     readVars = sscanf(searchPoint, "lineHeight=%i base=%i scaleW=%i scaleH=%i", &fontSize, &base, &imWidth, &imHeight);
     fileTextPtr += (readBytes + 1);
-    
+
     if (readVars < 4) { UnloadFileText(fileText); return font; } // Some data not available, file malformed
 
     readBytes = GetLine(fileTextPtr, buffer, MAX_BUFFER_SIZE);
@@ -2127,7 +2129,7 @@ static Font LoadBMFont(const char *fileName)
         readVars = sscanf(buffer, "char id=%i x=%i y=%i width=%i height=%i xoffset=%i yoffset=%i xadvance=%i",
                        &charId, &charX, &charY, &charWidth, &charHeight, &charOffsetX, &charOffsetY, &charAdvanceX);
         fileTextPtr += (readBytes + 1);
-        
+
         if (readVars == 8)  // Make sure all char data has been properly read
         {
             // Get character rectangle in the font atlas texture
@@ -2159,5 +2161,7 @@ static Font LoadBMFont(const char *fileName)
     return font;
 }
 #endif
+
+RL_NS_END
 
 #endif      // SUPPORT_MODULE_RTEXT

@@ -74,6 +74,13 @@
 #define DEFAULT_GAMEPAD_DEV    "/dev/input/js"      // Gamepad input (base dev for all gamepads: js0, js1, ...)
 #define DEFAULT_EVDEV_PATH       "/dev/input/"      // Path to the linux input events
 
+#ifndef RL_NS_BEGIN
+#define RL_NS_BEGIN
+#define RL_NS_END
+#endif
+
+RL_NS_BEGIN
+
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
@@ -2116,5 +2123,7 @@ static int FindNearestConnectorMode(const drmModeConnector *connector, uint widt
 
     return nearestIndex;
 }
+
+RL_NS_END
 
 // EOF

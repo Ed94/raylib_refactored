@@ -200,6 +200,10 @@
     #define RL_BOOL_TYPE
 #endif
 
+#include "config.h"
+
+RL_NS_BEGIN
+
 // Vector2, 2 components
 typedef struct Vector2 {
     float x;                // Vector x component
@@ -946,9 +950,7 @@ typedef bool (*SaveFileTextCallback)(const char *fileName, char *text); // FileI
 // Window and Graphics Device Functions (Module: core)
 //------------------------------------------------------------------------------------
 
-#if defined(__cplusplus)
-extern "C" {            // Prevents name mangling of functions
-#endif
+RL_EXTERN_C_BEGIN
 
 // Window-related functions
 RLAPI void InitWindow(int width, int height, const char *title);  // Initialize window and OpenGL context
@@ -1655,8 +1657,7 @@ RLAPI void DetachAudioStreamProcessor(AudioStream stream, AudioCallback processo
 RLAPI void AttachAudioMixedProcessor(AudioCallback processor); // Attach audio stream processor to the entire audio pipeline, receives the samples as <float>s
 RLAPI void DetachAudioMixedProcessor(AudioCallback processor); // Detach audio stream processor from the entire audio pipeline
 
-#if defined(__cplusplus)
-}
-#endif
+RL_EXTERN_C_END
+RL_NS_END
 
 #endif // RAYLIB_H

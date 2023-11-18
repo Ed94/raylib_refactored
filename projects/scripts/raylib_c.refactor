@@ -1,6 +1,5 @@
  __VERSION 1
 
-
 // Config.h
 word CONFIG_H, rlCONFIG_H
 
@@ -686,62 +685,6 @@ word DetachAudioStreamProcessor,      rlDetachAudioStreamProcessor
 word AttachAudioMixedProcessor,       rlAttachAudioMixedProcessor
 word DetachAudioMixedProcessor,       rlDetachAudioMixedProcessor
 
-// raudio.c
-// Since its a TU, only going to refactor if there is a symbol conflict
-
-// word NOGDICAPMASKS,     rlNOGDICAPMASKS
-// word NOVIRTUALKEYCODES, rlNOVIRTUALKEYCODES
-// word NOWINMESSAGES,     rlNOWINMESSAGES
-// word NOWINSTYLES,       rlNOWINSTYLES
-// word NOSYSMETRICS,      rlNOSYSMETRICS
-// word NOMENUS,           rlNOMENUS
-// word NOICONS,           rlNOICONS
-// word NOKEYSTATES,       rlNOKEYSTATES
-// word NOSYSCOMMANDS,     rlNOSYSCOMMANDS
-// word NORASTEROPS,       rlNORASTEROPS
-// word NOSHOWWINDOW,      rlNOSHOWWINDOW
-// word OEMRESOURCE,       rlOEMRESOURCE
-// word NOATOM,            rlNOATOM
-// word NOCLIPBOARD,       rlNOCLIPBOARD
-// word NOCOLOR,           rlNOCOLOR
-// word NOCTLMGR,          rlNOCTLMGR
-// word NODRAWTEXT,        rlNODRAWTEXT
-// word NOGDI,             rlNOGDI
-// word NOKERNEL,          rlNOKERNEL
-// word NOUSER,            rlNOUSER
-// word NONLS,             rlNONLS
-// word NOMB,              rlNOMB
-// word NOMEMMGR,          rlNOMEMMGR
-// word NOMETAFILE,        rlNOMETAFILE
-// word NOMINMAX,          rlNOMINMAX
-// word NOMSG,             rlNOMSG
-// word NOOPENFILE,        rlNOOPENFILE
-// word NOSCROLL,          rlNOSCROLL
-// word NOSERVICE,         rlNOSERVICE
-// word NOSOUND,           rlNOSOUND
-// word NOTEXTMETRIC,      rlNOTEXTMETRIC
-// word NOWH,              rlNOWH
-// word NOWINOFFSETS,      rlNOWINOFFSETS
-// word NOCOMM,            rlNOCOMM
-// word NOKANJI,           rlNOKANJI
-// word NOHELP,            rlNOHELP
-// word NOPROFILER,        rlNOPROFILER
-// word NODEFERWINDOWPOS,  rlNODEFERWINDOWPOS
-// word NOMCX,             rlNOMCX
-
-// word tagMSG, rltagMSG;
-// word tagBITMAPINFOHEADER, rltagBITMAPINFOHEADER;
-// word BITMAPINFOHEADER, rlBITMAPINFOHEADER;
-// word PBITMAPINFOHEADER, rlBITMAPINFOHEADER;
-
-// word MA_MALLOC rlMALLOC, rlMA_MALLOC rlMALLOC
-// word MA_FREE rlFREE,     rlMA_FREE rlFREE
-// word MA_NO_JACK,          rlMA_NO_JACK
-// word MA_NO_WAV,           rlMA_NO_WAV
-// word MA_NO_FLAC,          rlMA_NO_FLAC
-// word MA_NO_MP3,           rlMA_NO_MP3
-// word MA_COINIT_VALUE,     rlMA_COINIT_VALUE
-
 // raymath.h
 
 word MatrixToFloat,  rlMatrixToFloat
@@ -867,8 +810,8 @@ word QuaternionEquals,               rlQuaternionEquals
 
 // rcamera.hMAX_MOUSE_BUTTONS
 
-word CAMERA_CULL_DISTANCE_NEAR, rlCAMERA_CULL_DISTANCE_NEAR
-word CAMERA_CULL_DISTANCE_FAR,  rlCAMERA_CULL_DISTANCE_FAR
+word CAMERA_CULL_DISTANCE_NEAR, RL_CAMERA_CULL_DISTANCE_NEAR
+word CAMERA_CULL_DISTANCE_FAR,  RL_CAMERA_CULL_DISTANCE_FAR
 
 word GetCameraForward,          rlGetCameraForward
 word GetCameraUp,               rlGetCameraUp
@@ -960,9 +903,9 @@ word GESTURES, RL_GESTURES
 // This file has badly defined definitions, so I have to do a separate pass for it later.
 
 not namespace rlgl
-namespace rl,   rlgl
+    namespace rl, rlgl
 
-//namespace rlOPENGL, RLGL_OPENGL
+// namespace rlOPENGL, RLGL_OPENGL
 
 // word rlTEXTURE_MIN_FILTER,    RLGL_TEXTURE_MIN_FILTE
 // word rlTEXTURE_MAG_FILTER,    RLGL_TEXTURE_MAG_FILTER
@@ -974,8 +917,8 @@ not include rlgl.h
 
 word TRACELOG, rlTRACELOG
 
-//word rlglInit, RLGL_Init
-//word rlglClose, RLGL_Close
+// word rlglInit,  RLGL_Init
+// word rlglClose, RLGL_Close
 
 // utils.h
 
