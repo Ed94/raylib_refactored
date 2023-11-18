@@ -1,6 +1,6 @@
 /**********************************************************************************************
 *
-*   rl_gputex v1.0 - GPU compressed textures loading and saving
+*   rlgl_gputex v1.0 - GPU compressed textures loading and saving
 *
 *   DESCRIPTION:
 *
@@ -11,8 +11,8 @@
 *     In those cases data is loaded uncompressed and format is returned.
 *
 *   TODO:
-*     - Implement raylib function: rlGetGlTextureFormats(), required by rl_save_ktx_to_memory()
-*     - Review rl_load_ktx_from_memory() to support KTX v2.2 specs
+*     - Implement raylib function: rlglGetGlTextureFormats(), required by rlgl_save_ktx_to_memory()
+*     - Review rlgl_load_ktx_from_memory() to support KTX v2.2 specs
 *
 *   CONFIGURATION:
 *
@@ -61,13 +61,13 @@ RL_NS_BEGIN
 RL_EXTERN_C_BEGIN
 
 // Load image data from memory data files
-RLAPI void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
-RLAPI void *rl_load_pkm_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
-RLAPI void *rl_load_ktx_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
-RLAPI void *rl_load_pvr_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
-RLAPI void *rl_load_astc_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
+RLAPI void *rlgl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
+RLAPI void *rlgl_load_pkm_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
+RLAPI void *rlgl_load_ktx_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
+RLAPI void *rlgl_load_pvr_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
+RLAPI void *rlgl_load_astc_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips);
 
-RLAPI int rl_save_ktx_to_memory(const char *fileName, void *data, int width, int height, int format, int mipmaps);  // Save image data as KTX file
+RLAPI int rlgl_save_ktx_to_memory(const char *fileName, void *data, int width, int height, int format, int mipmaps);  // Save image data as KTX file
 
 RL_EXTERN_C_END
 RL_NS_END
@@ -105,10 +105,10 @@ static int get_pixel_data_size(int width, int height, int format);
 //----------------------------------------------------------------------------------
 #if defined(RL_GPUTEX_SUPPORT_DDS)
 // Loading DDS from memory image data (compressed or uncompressed)
-void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
+void *rlgl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
 {
-    void *image_data = NULL;        // Image data pointer
-    int image_pixel_size = 0;       // Image pixel size
+    void *image_data = NULL;        // rlglImage data pointer
+    int image_pixel_size = 0;       // rlglImage pixel size
 
     unsigned char *file_data_ptr = (unsigned char *)file_data;
 
@@ -187,7 +187,7 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
 
                     memcpy(image_data, file_data_ptr, data_size);
 
-                    *format = PIXELFORMAT_UNCOMPRESSED_R5G6B5;
+                    *format = RL_PIXELFORMAT_UNCOMPRESSED_R5G6B5;
                 }
                 else if (header->ddspf.flags == 0x41)           // With alpha channel
                 {
@@ -208,7 +208,7 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
                             ((unsigned short *)image_data)[i] += alpha;
                         }
 
-                        *format = PIXELFORMAT_UNCOMPRESSED_R5G5B5A1;
+                        *format = RL_PIXELFORMAT_UNCOMPRESSED_R5G5B5A1;
                     }
                     else if (header->ddspf.a_bit_mask == 0xf000)   // 4bit alpha
                     {
@@ -227,7 +227,7 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
                             ((unsigned short *)image_data)[i] += alpha;
                         }
 
-                        *format = PIXELFORMAT_UNCOMPRESSED_R4G4B4A4;
+                        *format = RL_PIXELFORMAT_UNCOMPRESSED_R4G4B4A4;
                     }
                 }
             }
@@ -238,7 +238,7 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
 
                 memcpy(image_data, file_data_ptr, data_size);
 
-                *format = PIXELFORMAT_UNCOMPRESSED_R8G8B8;
+                *format = RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8;
             }
             else if (header->ddspf.flags == 0x41 && header->ddspf.rgb_bit_count == 32) // DDS_RGBA, no compressed
             {
@@ -259,7 +259,7 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
                     ((unsigned char *)image_data)[i + 2] = blue;
                 }
 
-                *format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+                *format = RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
             }
             else if (((header->ddspf.flags == 0x04) || (header->ddspf.flags == 0x05)) && (header->ddspf.fourcc > 0)) // Compressed
             {
@@ -275,11 +275,11 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
                 {
                     case FOURCC_DXT1:
                     {
-                        if (header->ddspf.flags == 0x04) *format = PIXELFORMAT_COMPRESSED_DXT1_RGB;
-                        else *format = PIXELFORMAT_COMPRESSED_DXT1_RGBA;
+                        if (header->ddspf.flags == 0x04) *format = RL_PIXELFORMAT_COMPRESSED_DXT1_RGB;
+                        else *format = RL_PIXELFORMAT_COMPRESSED_DXT1_RGBA;
                     } break;
-                    case FOURCC_DXT3: *format = PIXELFORMAT_COMPRESSED_DXT3_RGBA; break;
-                    case FOURCC_DXT5: *format = PIXELFORMAT_COMPRESSED_DXT5_RGBA; break;
+                    case FOURCC_DXT3: *format = RL_PIXELFORMAT_COMPRESSED_DXT3_RGBA; break;
+                    case FOURCC_DXT5: *format = RL_PIXELFORMAT_COMPRESSED_DXT5_RGBA; break;
                     default: break;
                 }
             }
@@ -294,9 +294,9 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
 // Loading PKM image data (ETC1/ETC2 compression)
 // NOTE: KTX is the standard Khronos Group compression format (ETC1/ETC2, mipmaps)
 // PKM is a much simpler file format used mainly to contain a single ETC1/ETC2 compressed image (no mipmaps)
-void *rl_load_pkm_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
+void *rlgl_load_pkm_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
 {
-    void *image_data = NULL;        // Image data pointer
+    void *image_data = NULL;        // rlglImage data pointer
 
     unsigned char *file_data_ptr = (unsigned char *)file_data;
 
@@ -314,8 +314,8 @@ void *rl_load_pkm_from_memory(const unsigned char *file_data, unsigned int file_
         char id[4];                 // "PKM "
         char version[2];            // "10" or "20"
         unsigned short format;      // Data format (big-endian) (Check list below)
-        unsigned short width;       // Texture width (big-endian) (orig_width rounded to multiple of 4)
-        unsigned short height;      // Texture height (big-endian) (orig_height rounded to multiple of 4)
+        unsigned short width;       // rlglTexture width (big-endian) (orig_width rounded to multiple of 4)
+        unsigned short height;      // rlglTexture height (big-endian) (orig_height rounded to multiple of 4)
         unsigned short orig_width;   // Original width (big-endian)
         unsigned short orig_height;  // Original height (big-endian)
     } pkm_header;
@@ -357,9 +357,9 @@ void *rl_load_pkm_from_memory(const unsigned char *file_data, unsigned int file_
 
             memcpy(image_data, file_data_ptr, data_size);
 
-            if (header->format == 0) *format = PIXELFORMAT_COMPRESSED_ETC1_RGB;
-            else if (header->format == 1) *format = PIXELFORMAT_COMPRESSED_ETC2_RGB;
-            else if (header->format == 3) *format = PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA;
+            if (header->format == 0) *format = RL_PIXELFORMAT_COMPRESSED_ETC1_RGB;
+            else if (header->format == 1) *format = RL_PIXELFORMAT_COMPRESSED_ETC2_RGB;
+            else if (header->format == 3) *format = RL_PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA;
         }
     }
 
@@ -370,9 +370,9 @@ void *rl_load_pkm_from_memory(const unsigned char *file_data, unsigned int file_
 #if defined(RL_GPUTEX_SUPPORT_KTX)
 // Load KTX compressed image data (ETC1/ETC2 compression)
 // TODO: Review KTX loading, many things changed!
-void *rl_load_ktx_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
+void *rlgl_load_ktx_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
 {
-    void *image_data = NULL;        // Image data pointer
+    void *image_data = NULL;        // rlglImage data pointer
 
     unsigned char *file_data_ptr = (unsigned char *)file_data;
 
@@ -399,8 +399,8 @@ void *rl_load_ktx_from_memory(const unsigned char *file_data, unsigned int file_
         unsigned int gl_format;                 // For compressed textures is 0
         unsigned int gl_internal_format;        // Compressed internal format
         unsigned int gl_base_internal_format;   // Same as glFormat (RGB, RGBA, ALPHA...)
-        unsigned int width;                     // Texture image width in pixels
-        unsigned int height;                    // Texture image height in pixels
+        unsigned int width;                     // rlglTexture image width in pixels
+        unsigned int height;                    // rlglTexture image height in pixels
         unsigned int depth;                     // For 2D textures is 0
         unsigned int elements;                  // Number of array elements, usually 0
         unsigned int faces;                     // Cubemap faces, for no-cubemap = 1
@@ -436,9 +436,9 @@ void *rl_load_ktx_from_memory(const unsigned char *file_data, unsigned int file_
 
             memcpy(image_data, file_data_ptr, data_size);
 
-            if (header->gl_internal_format == 0x8D64) *format = PIXELFORMAT_COMPRESSED_ETC1_RGB;
-            else if (header->gl_internal_format == 0x9274) *format = PIXELFORMAT_COMPRESSED_ETC2_RGB;
-            else if (header->gl_internal_format == 0x9278) *format = PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA;
+            if (header->gl_internal_format == 0x8D64) *format = RL_PIXELFORMAT_COMPRESSED_ETC1_RGB;
+            else if (header->gl_internal_format == 0x9274) *format = RL_PIXELFORMAT_COMPRESSED_ETC2_RGB;
+            else if (header->gl_internal_format == 0x9278) *format = RL_PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA;
 
             // TODO: Support uncompressed data formats? Right now it returns format = 0!
         }
@@ -450,7 +450,7 @@ void *rl_load_ktx_from_memory(const unsigned char *file_data, unsigned int file_
 // Save image data as KTX file
 // NOTE: By default KTX 1.1 spec is used, 2.0 is still on draft (01Oct2018)
 // TODO: Review KTX saving, many things changed!
-int rl_save_ktx(const char *file_name, void *data, int width, int height, int format, int mipmaps)
+int rlgl_save_ktx(const char *file_name, void *data, int width, int height, int format, int mipmaps)
 {
     // KTX file Header (64 bytes)
     // v1.1 - https://www.khronos.org/opengles/sdk/tools/KTX/file_format_spec/
@@ -463,8 +463,8 @@ int rl_save_ktx(const char *file_name, void *data, int width, int height, int fo
         unsigned int gl_format;                 // For compressed textures is 0
         unsigned int gl_internal_format;        // Compressed internal format
         unsigned int gl_base_internal_format;   // Same as glFormat (RGB, RGBA, ALPHA...)   // KTX 2.0: UInt32 vkFormat
-        unsigned int width;                     // Texture image width in pixels
-        unsigned int height;                    // Texture image height in pixels
+        unsigned int width;                     // rlglTexture image width in pixels
+        unsigned int height;                    // rlglTexture image height in pixels
         unsigned int depth;                     // For 2D textures is 0
         unsigned int elements;                  // Number of array elements, usually 0
         unsigned int faces;                     // Cubemap faces, for no-cubemap = 1
@@ -510,7 +510,7 @@ int rl_save_ktx(const char *file_name, void *data, int width, int height, int fo
     header.mipmap_levels = mipmaps;         // If it was 0, it means mipmaps should be generated on loading (not for compressed formats)
     header.key_value_data_size = 0;         // No extra data after the header
 
-    rlGetGlTextureFormats(format, &header.gl_internal_format, &header.gl_format, &header.gl_type);   // rlgl module function
+    rlglGetGlTextureFormats(format, &header.gl_internal_format, &header.gl_format, &header.gl_type);   // rlgl module function
     header.gl_base_internal_format = header.gl_format;    // KTX 1.1 only
 
     // NOTE: We can save into a .ktx all PixelFormats supported by raylib, including compressed formats like DXT, ETC or ASTC
@@ -567,9 +567,9 @@ int rl_save_ktx(const char *file_name, void *data, int width, int height, int fo
 #if defined(RL_GPUTEX_SUPPORT_PVR)
 // Loading PVR image data (uncompressed or PVRT compression)
 // NOTE: PVR v2 not supported, use PVR v3 instead
-void *rl_load_pvr_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
+void *rlgl_load_pvr_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
 {
-    void *image_data = NULL;        // Image data pointer
+    void *image_data = NULL;        // rlglImage data pointer
 
     unsigned char *file_data_ptr = (unsigned char *)file_data;
 
@@ -650,24 +650,24 @@ void *rl_load_pvr_from_memory(const unsigned char *file_data, unsigned int file_
                 *mips = header->num_mipmaps;
 
                 // Check data format
-                if (((header->channels[0] == 'l') && (header->channels[1] == 0)) && (header->channel_depth[0] == 8)) *format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
-                else if (((header->channels[0] == 'l') && (header->channels[1] == 'a')) && ((header->channel_depth[0] == 8) && (header->channel_depth[1] == 8))) *format = PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA;
+                if (((header->channels[0] == 'l') && (header->channels[1] == 0)) && (header->channel_depth[0] == 8)) *format = RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
+                else if (((header->channels[0] == 'l') && (header->channels[1] == 'a')) && ((header->channel_depth[0] == 8) && (header->channel_depth[1] == 8))) *format = RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA;
                 else if ((header->channels[0] == 'r') && (header->channels[1] == 'g') && (header->channels[2] == 'b'))
                 {
                     if (header->channels[3] == 'a')
                     {
-                        if ((header->channel_depth[0] == 5) && (header->channel_depth[1] == 5) && (header->channel_depth[2] == 5) && (header->channel_depth[3] == 1)) *format = PIXELFORMAT_UNCOMPRESSED_R5G5B5A1;
-                        else if ((header->channel_depth[0] == 4) && (header->channel_depth[1] == 4) && (header->channel_depth[2] == 4) && (header->channel_depth[3] == 4)) *format = PIXELFORMAT_UNCOMPRESSED_R4G4B4A4;
-                        else if ((header->channel_depth[0] == 8) && (header->channel_depth[1] == 8) && (header->channel_depth[2] == 8) && (header->channel_depth[3] == 8)) *format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+                        if ((header->channel_depth[0] == 5) && (header->channel_depth[1] == 5) && (header->channel_depth[2] == 5) && (header->channel_depth[3] == 1)) *format = RL_PIXELFORMAT_UNCOMPRESSED_R5G5B5A1;
+                        else if ((header->channel_depth[0] == 4) && (header->channel_depth[1] == 4) && (header->channel_depth[2] == 4) && (header->channel_depth[3] == 4)) *format = RL_PIXELFORMAT_UNCOMPRESSED_R4G4B4A4;
+                        else if ((header->channel_depth[0] == 8) && (header->channel_depth[1] == 8) && (header->channel_depth[2] == 8) && (header->channel_depth[3] == 8)) *format = RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
                     }
                     else if (header->channels[3] == 0)
                     {
-                        if ((header->channel_depth[0] == 5) && (header->channel_depth[1] == 6) && (header->channel_depth[2] == 5)) *format = PIXELFORMAT_UNCOMPRESSED_R5G6B5;
-                        else if ((header->channel_depth[0] == 8) && (header->channel_depth[1] == 8) && (header->channel_depth[2] == 8)) *format = PIXELFORMAT_UNCOMPRESSED_R8G8B8;
+                        if ((header->channel_depth[0] == 5) && (header->channel_depth[1] == 6) && (header->channel_depth[2] == 5)) *format = RL_PIXELFORMAT_UNCOMPRESSED_R5G6B5;
+                        else if ((header->channel_depth[0] == 8) && (header->channel_depth[1] == 8) && (header->channel_depth[2] == 8)) *format = RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8;
                     }
                 }
-                else if (header->channels[0] == 2) *format = PIXELFORMAT_COMPRESSED_PVRT_RGB;
-                else if (header->channels[0] == 3) *format = PIXELFORMAT_COMPRESSED_PVRT_RGBA;
+                else if (header->channels[0] == 2) *format = RL_PIXELFORMAT_COMPRESSED_PVRT_RGB;
+                else if (header->channels[0] == 3) *format = RL_PIXELFORMAT_COMPRESSED_PVRT_RGBA;
 
                 file_data_ptr += header->metadata_size;    // Skip meta data header
 
@@ -675,15 +675,15 @@ void *rl_load_pvr_from_memory(const unsigned char *file_data, unsigned int file_
                 int bpp = 0;
                 switch (*format)
                 {
-                    case PIXELFORMAT_UNCOMPRESSED_GRAYSCALE: bpp = 8; break;
-                    case PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA:
-                    case PIXELFORMAT_UNCOMPRESSED_R5G5B5A1:
-                    case PIXELFORMAT_UNCOMPRESSED_R5G6B5:
-                    case PIXELFORMAT_UNCOMPRESSED_R4G4B4A4: bpp = 16; break;
-                    case PIXELFORMAT_UNCOMPRESSED_R8G8B8A8: bpp = 32; break;
-                    case PIXELFORMAT_UNCOMPRESSED_R8G8B8: bpp = 24; break;
-                    case PIXELFORMAT_COMPRESSED_PVRT_RGB:
-                    case PIXELFORMAT_COMPRESSED_PVRT_RGBA: bpp = 4; break;
+                    case RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE: bpp = 8; break;
+                    case RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA:
+                    case RL_PIXELFORMAT_UNCOMPRESSED_R5G5B5A1:
+                    case RL_PIXELFORMAT_UNCOMPRESSED_R5G6B5:
+                    case RL_PIXELFORMAT_UNCOMPRESSED_R4G4B4A4: bpp = 16; break;
+                    case RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8: bpp = 32; break;
+                    case RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8: bpp = 24; break;
+                    case RL_PIXELFORMAT_COMPRESSED_PVRT_RGB:
+                    case RL_PIXELFORMAT_COMPRESSED_PVRT_RGBA: bpp = 4; break;
                     default: break;
                 }
 
@@ -702,9 +702,9 @@ void *rl_load_pvr_from_memory(const unsigned char *file_data, unsigned int file_
 
 #if defined(RL_GPUTEX_SUPPORT_ASTC)
 // Load ASTC compressed image data (ASTC compression)
-void *rl_load_astc_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
+void *rlgl_load_astc_from_memory(const unsigned char *file_data, unsigned int file_size, int *width, int *height, int *format, int *mips)
 {
-    void *image_data = NULL;        // Image data pointer
+    void *image_data = NULL;        // rlglImage data pointer
 
     unsigned char *file_data_ptr = (unsigned char *)file_data;
 
@@ -756,8 +756,8 @@ void *rl_load_astc_from_memory(const unsigned char *file_data, unsigned int file
 
                 memcpy(image_data, file_data_ptr, data_size);
 
-                if (bpp == 8) *format = PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA;
-                else if (bpp == 2) *format = PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA;
+                if (bpp == 8) *format = RL_PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA;
+                else if (bpp == 2) *format = RL_PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA;
             }
             else LOG("WARNING: IMAGE: ASTC block size configuration not supported");
         }
@@ -773,32 +773,32 @@ void *rl_load_astc_from_memory(const unsigned char *file_data, unsigned int file
 // Get pixel data size in bytes for certain pixel format
 static int get_pixel_data_size(int width, int height, int format)
 {
-    int data_size = 0;       // Size in bytes
+    int data_size = 0;       // rlglSize in bytes
     int bpp = 0;            // Bits per pixel
 
     switch (format)
     {
-        case PIXELFORMAT_UNCOMPRESSED_GRAYSCALE: bpp = 8; break;
-        case PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA:
-        case PIXELFORMAT_UNCOMPRESSED_R5G6B5:
-        case PIXELFORMAT_UNCOMPRESSED_R5G5B5A1:
-        case PIXELFORMAT_UNCOMPRESSED_R4G4B4A4: bpp = 16; break;
-        case PIXELFORMAT_UNCOMPRESSED_R8G8B8A8: bpp = 32; break;
-        case PIXELFORMAT_UNCOMPRESSED_R8G8B8: bpp = 24; break;
-        case PIXELFORMAT_UNCOMPRESSED_R32: bpp = 32; break;
-        case PIXELFORMAT_UNCOMPRESSED_R32G32B32: bpp = 32*3; break;
-        case PIXELFORMAT_UNCOMPRESSED_R32G32B32A32: bpp = 32*4; break;
-        case PIXELFORMAT_COMPRESSED_DXT1_RGB:
-        case PIXELFORMAT_COMPRESSED_DXT1_RGBA:
-        case PIXELFORMAT_COMPRESSED_ETC1_RGB:
-        case PIXELFORMAT_COMPRESSED_ETC2_RGB:
-        case PIXELFORMAT_COMPRESSED_PVRT_RGB:
-        case PIXELFORMAT_COMPRESSED_PVRT_RGBA: bpp = 4; break;
-        case PIXELFORMAT_COMPRESSED_DXT3_RGBA:
-        case PIXELFORMAT_COMPRESSED_DXT5_RGBA:
-        case PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA:
-        case PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA: bpp = 8; break;
-        case PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA: bpp = 2; break;
+        case RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE: bpp = 8; break;
+        case RL_PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA:
+        case RL_PIXELFORMAT_UNCOMPRESSED_R5G6B5:
+        case RL_PIXELFORMAT_UNCOMPRESSED_R5G5B5A1:
+        case RL_PIXELFORMAT_UNCOMPRESSED_R4G4B4A4: bpp = 16; break;
+        case RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8: bpp = 32; break;
+        case RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8: bpp = 24; break;
+        case RL_PIXELFORMAT_UNCOMPRESSED_R32: bpp = 32; break;
+        case RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32: bpp = 32*3; break;
+        case RL_PIXELFORMAT_UNCOMPRESSED_R32G32B32A32: bpp = 32*4; break;
+        case RL_PIXELFORMAT_COMPRESSED_DXT1_RGB:
+        case RL_PIXELFORMAT_COMPRESSED_DXT1_RGBA:
+        case RL_PIXELFORMAT_COMPRESSED_ETC1_RGB:
+        case RL_PIXELFORMAT_COMPRESSED_ETC2_RGB:
+        case RL_PIXELFORMAT_COMPRESSED_PVRT_RGB:
+        case RL_PIXELFORMAT_COMPRESSED_PVRT_RGBA: bpp = 4; break;
+        case RL_PIXELFORMAT_COMPRESSED_DXT3_RGBA:
+        case RL_PIXELFORMAT_COMPRESSED_DXT5_RGBA:
+        case RL_PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA:
+        case RL_PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA: bpp = 8; break;
+        case RL_PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA: bpp = 2; break;
         default: break;
     }
 
@@ -808,8 +808,8 @@ static int get_pixel_data_size(int width, int height, int format)
     // if texture is smaller, minimum dataSize is 8 or 16
     if ((width < 4) && (height < 4))
     {
-        if ((format >= PIXELFORMAT_COMPRESSED_DXT1_RGB) && (format < PIXELFORMAT_COMPRESSED_DXT3_RGBA)) data_size = 8;
-        else if ((format >= PIXELFORMAT_COMPRESSED_DXT3_RGBA) && (format < PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA)) data_size = 16;
+        if ((format >= RL_PIXELFORMAT_COMPRESSED_DXT1_RGB) && (format < RL_PIXELFORMAT_COMPRESSED_DXT3_RGBA)) data_size = 8;
+        else if ((format >= RL_PIXELFORMAT_COMPRESSED_DXT3_RGBA) && (format < RL_PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA)) data_size = 16;
     }
 
     return data_size;
