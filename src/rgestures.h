@@ -236,9 +236,15 @@ typedef struct {
 // Global Variables Definition
 //----------------------------------------------------------------------------------
 static GesturesData GESTURES = {
+#ifdef __cplusplus
+    -1,
+    GESTURE_NONE,
+    0b0000001111111111
+#else
     .Touch.firstId = -1,
     .current = GESTURE_NONE,        // No current gesture detected
     .enabledFlags = 0b0000001111111111  // All gestures supported by default
+#endif
 };
 
 //----------------------------------------------------------------------------------
@@ -297,7 +303,11 @@ void ProcessGestureEvent(GestureEvent event)
 
             GESTURES.Swipe.startTime = rgGetCurrentTime();
 
+        #ifdef __cplusplus
+            GESTURES.Drag.vector = Vector2{ 0.0f, 0.0f };
+        #else
             GESTURES.Drag.vector = (Vector2){ 0.0f, 0.0f };
+        #endif
         }
         else if (event.touchAction == TOUCH_ACTION_UP)
         {
@@ -329,7 +339,11 @@ void ProcessGestureEvent(GestureEvent event)
                 GESTURES.current = GESTURE_NONE;
             }
 
+        #if __cplusplus
+            GESTURES.Touch.downDragPosition = Vector2{ 0.0f, 0.0f };
+        #else
             GESTURES.Touch.downDragPosition = (Vector2){ 0.0f, 0.0f };
+        #endif
             GESTURES.Touch.pointCount = 0;
         }
         else if (event.touchAction == TOUCH_ACTION_MOVE)
@@ -400,7 +414,11 @@ void ProcessGestureEvent(GestureEvent event)
         {
             GESTURES.Pinch.distance = 0.0f;
             GESTURES.Pinch.angle = 0.0f;
+        #if __cplusplus
+            GESTURES.Pinch.vector = Vector2{ 0.0f, 0.0f };
+        #else
             GESTURES.Pinch.vector = (Vector2){ 0.0f, 0.0f };
+        #endif
             GESTURES.Touch.pointCount = 0;
 
             GESTURES.current = GESTURE_NONE;

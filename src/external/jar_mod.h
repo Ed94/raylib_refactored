@@ -1535,7 +1535,7 @@ mulong jar_mod_load_file(jar_mod_context_t * modctx, const char* filename)
         
         if(fsize && fsize < 32*1024*1024)
         {
-            modctx->modfile = JARMOD_MALLOC(fsize);
+            modctx->modfile = (muchar*)JARMOD_MALLOC(fsize);
             modctx->modfilesize = fsize;
             memset(modctx->modfile, 0, fsize);
             fread(modctx->modfile, fsize, 1, f);

@@ -253,8 +253,8 @@
 
 #endif // CONFIG_H
 
-#define RL_USE_CPP_NAMESPACE 1
-#define RL_USE_CPP_MANGLING  1
+#define RL_USE_CPP_NAMESPACE 0
+#define RL_USE_CPP_MANGLING  0
 
 #if RL_USE_CPP_NAMESPACE && defined(__cplusplus)
     #pragma message("USING CPP NAMESPACE")

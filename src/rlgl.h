@@ -126,11 +126,11 @@
 #endif
 #endif
 
-#define RLGL_USE_CPP_NAMESPACE 1
-#define RLGL_USE_CPP_MANGLING  1
+#define RLGL_USE_CPP_NAMESPACE 0
+#define RLGL_USE_CPP_MANGLING  0
 
 #if RLGL_USE_CPP_NAMESPACE && defined(__cplusplus)
-    #pragma message("USING CPP NAMESPACE")
+    #pragma message("USING CPP ")
     #define RLGL_NS_BEGIN namespace rlgl {
     #define RLGL_NS_END }
 #else
@@ -1090,6 +1090,8 @@ static PFNGLDRAWARRAYSINSTANCEDEXTPROC glDrawArraysInstanced = NULL;
 static PFNGLDRAWELEMENTSINSTANCEDEXTPROC glDrawElementsInstanced = NULL;
 static PFNGLVERTEXATTRIBDIVISOREXTPROC glVertexAttribDivisor = NULL;
 #endif
+
+RLGL_EXTERN_C_BEGIN
 
 //----------------------------------------------------------------------------------
 // Module specific Functions Declaration

@@ -577,7 +577,7 @@ void SetWindowIcons(Image *images, int count)
     else
     {
         int valid = 0;
-        GLFWimage *icons = RL_CALLOC(count, sizeof(GLFWimage));
+        GLFWimage *icons = (GLFWimage*)RL_CALLOC(count, sizeof(GLFWimage));
 
         for (int i = 0; i < count; i++)
         {
@@ -833,10 +833,19 @@ Vector2 GetMonitorPosition(int monitor)
         int x, y;
         glfwGetMonitorPos(monitors[monitor], &x, &y);
 
+    #ifdef __cplusplus
+        return Vector2{ (float)x, (float)y };
+    #else
         return (Vector2){ (float)x, (float)y };
+    #endif
     }
     else TRACELOG(LOG_WARNING, "GLFW: Failed to find selected monitor");
-    return (Vector2){ 0, 0 };
+
+    #ifdef __cplusplus
+        return Vector2{ 0, 0 };
+    #else
+        return (Vector2){ 0, 0 };
+    #endif
 }
 
 // Get selected monitor width (currently used by monitor)
@@ -942,7 +951,13 @@ Vector2 GetWindowPosition(void)
 
     glfwGetWindowPos(platform.handle, &x, &y);
 
+
+
+#if __cplusplus
+    return Vector2{ (float)x, (float)y };
+#else
     return (Vector2){ (float)x, (float)y };
+#endif
 }
 
 // Get window scale DPI factor for current monitor
@@ -1082,7 +1097,11 @@ int SetGamepadMappings(const char *mappings)
 // Set mouse position XY
 void SetMousePosition(int x, int y)
 {
+#if __cplusplus
+    CORE.Input.Mouse.currentPosition = Vector2{ (float)x, (float)y };
+#else
     CORE.Input.Mouse.currentPosition = (Vector2){ (float)x, (float)y };
+#endif
     CORE.Input.Mouse.previousPosition = CORE.Input.Mouse.currentPosition;
 
     // NOTE: emscripten not implemented
@@ -1132,7 +1151,12 @@ void PollInputEvents(void)
 
     // Register previous mouse wheel state
     CORE.Input.Mouse.previousWheelMove = CORE.Input.Mouse.currentWheelMove;
+
+#if __cplusplus
+    CORE.Input.Mouse.currentWheelMove = Vector2{ 0.0f, 0.0f };
+#else
     CORE.Input.Mouse.currentWheelMove = (Vector2){ 0.0f, 0.0f };
+#endif
 
     // Register previous mouse position
     CORE.Input.Mouse.previousPosition = CORE.Input.Mouse.currentPosition;
@@ -1809,7 +1833,11 @@ static void MouseCursorPosCallback(GLFWwindow *window, double x, double y)
 // GLFW3 Scrolling Callback, runs on mouse wheel
 static void MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset)
 {
+#if __cplusplus
+    CORE.Input.Mouse.currentWheelMove = Vector2{ (float)xoffset, (float)yoffset };
+#else
     CORE.Input.Mouse.currentWheelMove = (Vector2){ (float)xoffset, (float)yoffset };
+#endif
 }
 
 // GLFW3 CursorEnter Callback, when cursor enters the window
