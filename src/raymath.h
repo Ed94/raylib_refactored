@@ -96,12 +96,12 @@
 
 // Get float vector for Matrix
 #ifndef MatrixToFloat
-    #define MatrixToFloat(mat) (MatrixToFloatV(mat).v)
+    #define MatrixToFloat(mat) (RL_NS(MatrixToFloatV)(mat).v)
 #endif
 
 // Get float vector for Vector3
 #ifndef Vector3ToFloat
-    #define Vector3ToFloat(vec) (Vector3ToFloatV(vec).v)
+    #define Vector3ToFloat(vec) (RL_NS(Vector3ToFloatV)(vec).v)
 #endif
 
 #include "config.h"

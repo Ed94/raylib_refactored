@@ -517,8 +517,8 @@ typedef enum {
     RL_SHADER_LOC_MAP_BRDF              // Shader location: sampler2d texture: brdf
 } rlShaderLocationIndex;
 
-#define RL_SHADER_LOC_MAP_DIFFUSE       RL_SHADER_LOC_MAP_ALBEDO
-#define RL_SHADER_LOC_MAP_SPECULAR      RL_SHADER_LOC_MAP_METALNESS
+#define RL_SHADER_LOC_MAP_DIFFUSE       RL_NS(RL_SHADER_LOC_MAP_ALBEDO)
+#define RL_SHADER_LOC_MAP_SPECULAR      RL_NS(RL_SHADER_LOC_MAP_METALNESS)
 
 // Shader uniform data type
 typedef enum {

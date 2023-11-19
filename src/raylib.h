@@ -145,8 +145,10 @@
 // Used for initializer nonsense on cpp.
 #if __cplusplus
 #define CAST(type) type
+#define RL_NS(id)  rl::id
 #else
 #define CAST(type) (type)
+#define RL_NS(id)  id
 #endif
 
 
@@ -171,33 +173,33 @@
 
 // Some Basic Colors
 // NOTE: Custom raylib color palette for amazing visuals on WHITE background
-#define LIGHTGRAY  CLITERAL(Color){ 200, 200, 200, 255 }   // Light Gray
-#define GRAY       CLITERAL(Color){ 130, 130, 130, 255 }   // Gray
-#define DARKGRAY   CLITERAL(Color){ 80, 80, 80, 255 }      // Dark Gray
-#define YELLOW     CLITERAL(Color){ 253, 249, 0, 255 }     // Yellow
-#define GOLD       CLITERAL(Color){ 255, 203, 0, 255 }     // Gold
-#define ORANGE     CLITERAL(Color){ 255, 161, 0, 255 }     // Orange
-#define PINK       CLITERAL(Color){ 255, 109, 194, 255 }   // Pink
-#define RED        CLITERAL(Color){ 230, 41, 55, 255 }     // Red
-#define MAROON     CLITERAL(Color){ 190, 33, 55, 255 }     // Maroon
-#define GREEN      CLITERAL(Color){ 0, 228, 48, 255 }      // Green
-#define LIME       CLITERAL(Color){ 0, 158, 47, 255 }      // Lime
-#define DARKGREEN  CLITERAL(Color){ 0, 117, 44, 255 }      // Dark Green
-#define SKYBLUE    CLITERAL(Color){ 102, 191, 255, 255 }   // Sky Blue
-#define BLUE       CLITERAL(Color){ 0, 121, 241, 255 }     // Blue
-#define DARKBLUE   CLITERAL(Color){ 0, 82, 172, 255 }      // Dark Blue
-#define PURPLE     CLITERAL(Color){ 200, 122, 255, 255 }   // Purple
-#define VIOLET     CLITERAL(Color){ 135, 60, 190, 255 }    // Violet
-#define DARKPURPLE CLITERAL(Color){ 112, 31, 126, 255 }    // Dark Purple
-#define BEIGE      CLITERAL(Color){ 211, 176, 131, 255 }   // Beige
-#define BROWN      CLITERAL(Color){ 127, 106, 79, 255 }    // Brown
-#define DARKBROWN  CLITERAL(Color){ 76, 63, 47, 255 }      // Dark Brown
+#define LIGHTGRAY  CLITERAL(RL_NS(Color)){ 200, 200, 200, 255 }   // Light Gray
+#define GRAY       CLITERAL(RL_NS(Color)){ 130, 130, 130, 255 }   // Gray
+#define DARKGRAY   CLITERAL(RL_NS(Color)){ 80, 80, 80, 255 }      // Dark Gray
+#define YELLOW     CLITERAL(RL_NS(Color)){ 253, 249, 0, 255 }     // Yellow
+#define GOLD       CLITERAL(RL_NS(Color)){ 255, 203, 0, 255 }     // Gold
+#define ORANGE     CLITERAL(RL_NS(Color)){ 255, 161, 0, 255 }     // Orange
+#define PINK       CLITERAL(RL_NS(Color)){ 255, 109, 194, 255 }   // Pink
+#define RED        CLITERAL(RL_NS(Color)){ 230, 41, 55, 255 }     // Red
+#define MAROON     CLITERAL(RL_NS(Color)){ 190, 33, 55, 255 }     // Maroon
+#define GREEN      CLITERAL(RL_NS(Color)){ 0, 228, 48, 255 }      // Green
+#define LIME       CLITERAL(RL_NS(Color)){ 0, 158, 47, 255 }      // Lime
+#define DARKGREEN  CLITERAL(RL_NS(Color)){ 0, 117, 44, 255 }      // Dark Green
+#define SKYBLUE    CLITERAL(RL_NS(Color)){ 102, 191, 255, 255 }   // Sky Blue
+#define BLUE       CLITERAL(RL_NS(Color)){ 0, 121, 241, 255 }     // Blue
+#define DARKBLUE   CLITERAL(RL_NS(Color)){ 0, 82, 172, 255 }      // Dark Blue
+#define PURPLE     CLITERAL(RL_NS(Color)){ 200, 122, 255, 255 }   // Purple
+#define VIOLET     CLITERAL(RL_NS(Color)){ 135, 60, 190, 255 }    // Violet
+#define DARKPURPLE CLITERAL(RL_NS(Color)){ 112, 31, 126, 255 }    // Dark Purple
+#define BEIGE      CLITERAL(RL_NS(Color)){ 211, 176, 131, 255 }   // Beige
+#define BROWN      CLITERAL(RL_NS(Color)){ 127, 106, 79, 255 }    // Brown
+#define DARKBROWN  CLITERAL(RL_NS(Color)){ 76, 63, 47, 255 }      // Dark Brown
 
-#define WHITE      CLITERAL(Color){ 255, 255, 255, 255 }   // White
-#define BLACK      CLITERAL(Color){ 0, 0, 0, 255 }         // Black
-#define BLANK      CLITERAL(Color){ 0, 0, 0, 0 }           // Blank (Transparent)
-#define MAGENTA    CLITERAL(Color){ 255, 0, 255, 255 }     // Magenta
-#define RAYWHITE   CLITERAL(Color){ 245, 245, 245, 255 }   // My own White (raylib logo)
+#define WHITE      CLITERAL(RL_NS(Color)){ 255, 255, 255, 255 }   // White
+#define BLACK      CLITERAL(RL_NS(Color)){ 0, 0, 0, 255 }         // Black
+#define BLANK      CLITERAL(RL_NS(Color)){ 0, 0, 0, 0 }           // Blank (Transparent)
+#define MAGENTA    CLITERAL(RL_NS(Color)){ 255, 0, 255, 255 }     // Magenta
+#define RAYWHITE   CLITERAL(RL_NS(Color)){ 245, 245, 245, 255 }   // My own White (raylib logo)
 
 //----------------------------------------------------------------------------------
 // Structures Definition
@@ -693,9 +695,9 @@ typedef enum {
 } KeyboardKey;
 
 // Add backwards compatibility support for deprecated names
-#define MOUSE_LEFT_BUTTON   MOUSE_BUTTON_LEFT
-#define MOUSE_RIGHT_BUTTON  MOUSE_BUTTON_RIGHT
-#define MOUSE_MIDDLE_BUTTON MOUSE_BUTTON_MIDDLE
+#define MOUSE_LEFT_BUTTON   RL_NS(MOUSE_BUTTON_LEFT)
+#define MOUSE_RIGHT_BUTTON  RL_NS(MOUSE_BUTTON_RIGHT)
+#define MOUSE_MIDDLE_BUTTON RL_NS(MOUSE_BUTTON_MIDDLE)
 
 // Mouse buttons
 typedef enum {
@@ -770,8 +772,8 @@ typedef enum {
     MATERIAL_MAP_BRDF               // Brdf material
 } MaterialMapIndex;
 
-#define MATERIAL_MAP_DIFFUSE      MATERIAL_MAP_ALBEDO
-#define MATERIAL_MAP_SPECULAR     MATERIAL_MAP_METALNESS
+#define MATERIAL_MAP_DIFFUSE      RL_NS(MATERIAL_MAP_ALBEDO)
+#define MATERIAL_MAP_SPECULAR     RL_NS(MATERIAL_MAP_METALNESS)
 
 // Shader location index
 typedef enum {
@@ -803,8 +805,8 @@ typedef enum {
     SHADER_LOC_MAP_BRDF             // Shader location: sampler2d texture: brdf
 } ShaderLocationIndex;
 
-#define SHADER_LOC_MAP_DIFFUSE      SHADER_LOC_MAP_ALBEDO
-#define SHADER_LOC_MAP_SPECULAR     SHADER_LOC_MAP_METALNESS
+#define SHADER_LOC_MAP_DIFFUSE      RL_NS(SHADER_LOC_MAP_ALBEDO)
+#define SHADER_LOC_MAP_SPECULAR     RL_NS(SHADER_LOC_MAP_METALNESS)
 
 // Shader uniform data type
 typedef enum {
