@@ -1006,9 +1006,9 @@ word rlLoadDrawCube,                     load_draw_cube
 word rlLoadDrawQuad,                     load_draw_quad
 word rlLoadShaderDefault,                load_shader_default
 word rlUnloadShaderDefault,              unload_shader_default
-word rlGetPixelDataSize,                 get_pixel_data_size
-word rlMatrixIdentity,                   matrix_identity
-word rlMatrixMultiply,                   matrix_multiply
+word rlGetPixelDataSize,                 internal_get_pixel_data_size
+word rlMatrixIdentity,                   internal_matrix_identity
+word rlMatrixMultiply,                   internal_matrix_multiply
 word rlCheckRenderBatchLimit,            check_render_batch_limit
 word rlLoadShaderDefault,                load_shader_default
 word rlSetMatrixProjection,              set_matrix_projection

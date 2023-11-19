@@ -1245,6 +1245,8 @@ RMAPI Matrix MatrixInvert(Matrix mat)
     return result;
 }
 
+// #if !defined(RL_REFACTORED_C) && !defined(RL_REFACTORED_CPP) || !defined(RLGL_H)
+// #if !defined(RLGL_H) && !defined(RL_REFACTORED_C) && !defined(RL_REFACTORED_CPP)
 // Get identity matrix
 RMAPI Matrix MatrixIdentity(void)
 {
@@ -1255,6 +1257,7 @@ RMAPI Matrix MatrixIdentity(void)
 
     return result;
 }
+// #endif
 
 // Add two matrices
 RMAPI Matrix MatrixAdd(Matrix left, Matrix right)
@@ -1306,6 +1309,8 @@ RMAPI Matrix MatrixSubtract(Matrix left, Matrix right)
     return result;
 }
 
+// #if !defined(RL_REFACTORED_C) && !defined(RL_REFACTORED_CPP) || !defined(RLGL_H)
+// #if !defined(RLGL_H) && !defined(RL_REFACTORED_C) && !defined(RL_REFACTORED_CPP)
 // Get two matrix multiplication
 // NOTE: When multiplying matrices... the order matters!
 RMAPI Matrix MatrixMultiply(Matrix left, Matrix right)
@@ -1331,6 +1336,7 @@ RMAPI Matrix MatrixMultiply(Matrix left, Matrix right)
 
     return result;
 }
+// #endif
 
 // Get translation matrix
 RMAPI Matrix MatrixTranslate(float x, float y, float z)

@@ -1,5 +1,8 @@
 // rlgl.h
 
+word BUILD_LIBTYPE_SHARED, RL_BUILD_LIBTYPE_SHARED
+word USE_LIBTYPE_SHARED,   RL_USE_LIBTYPE_SHARED
+
 word RL_NOT_REFACTORED, RL_REFACTORED_CPP
 
 namespace rl_,
@@ -21,3 +24,7 @@ not include rlgl.h
 word TRACELOG, RL_TRACELOG
 
 word RLGL, GLOBAL_DATA
+
+word rlGetPixelDataSize,                 internal_get_pixel_data_size
+word rlMatrixIdentity,                   internal_matrix_identity
+word rlMatrixMultiply,                   internal_matrix_multiply

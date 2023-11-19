@@ -93,8 +93,10 @@
         #if defined(__TINYC__)
             #define __declspec(x) __attribute__((x))
         #endif
+        #pragma message("RLAPI: _declspec(dllexport)")
         #define RLAPI __declspec(dllexport)     // We are building the library as a Win32 shared library (.dll)
     #elif defined(USE_LIBTYPE_SHARED)
+        #pragma message("RLAPI: _declspec(dllimport)")
         #define RLAPI __declspec(dllimport)     // We are using the library as a Win32 shared library (.dll)
     #endif
 #endif

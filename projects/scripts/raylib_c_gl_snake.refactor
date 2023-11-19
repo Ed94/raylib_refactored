@@ -1,6 +1,9 @@
 // rlgl.h
 not include rlgl.h
 
+word BUILD_LIBTYPE_SHARED, RL_BUILD_LIBTYPE_SHARED
+word USE_LIBTYPE_SHARED,   RL_USE_LIBTYPE_SHARED
+
 word RL_NOT_REFACTORED, RL_REFACTORED_C
 
     namespace rl, rlgl
@@ -174,9 +177,9 @@ word rlLoadDrawCube,                     rlgl_load_draw_cube
 word rlLoadDrawQuad,                     rlgl_load_draw_quad
 word rlLoadShaderDefault,                rlgl_load_shader_default
 word rlUnloadShaderDefault,              rlgl_unload_shader_default
-word rlGetPixelDataSize,                 rl_get_pixel_data_size
-word rlMatrixIdentity,                   rl_matrix_identity
-word rlMatrixMultiply,                   rl_matrix_multiply
+word rlGetPixelDataSize,                 rlgl_get_pixel_data_size
+word rlMatrixIdentity,                   rlgl_matrix_identity
+word rlMatrixMultiply,                   rlgl_matrix_multiply
 word rlCheckRenderBatchLimit,            rlgl_check_render_batch_limit
 word rlLoadShaderDefault,                rlgl_load_shader_default
 word rlSetMatrixProjection,              rlgl_set_matrix_projection

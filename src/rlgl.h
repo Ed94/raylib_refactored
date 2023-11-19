@@ -1111,9 +1111,11 @@ static const char *rlGetCompressedFormatName(int format); // Get compressed form
 
 static int rlGetPixelDataSize(int width, int height, int format);   // Get pixel data size in bytes (image or texture)
 
+#if !defined(RAYMATH_H)
 // Auxiliar matrix math functions
 static Matrix rlMatrixIdentity(void);                       // Get identity matrix
 static Matrix rlMatrixMultiply(Matrix left, Matrix right);  // Multiply two matrices
+#endif
 
 //----------------------------------------------------------------------------------
 // Module Functions Definition - Matrix operations
@@ -4857,7 +4859,7 @@ static int rlGetPixelDataSize(int width, int height, int format)
 
 // Auxiliar math functions
 
-#if !defined(RAYMATH_H) && !defined(RL_REFACTORED_C) && !defined(RL_REFACTORED_CPP)
+// #if !defined(RAYMATH_H) && !defined(RL_REFACTORED_C) && !defined(RL_REFACTORED_CPP)
 
 // Get identity matrix
 static Matrix rlMatrixIdentity(void)
@@ -4897,7 +4899,7 @@ static Matrix rlMatrixMultiply(Matrix left, Matrix right)
 
     return result;
 }
-#endif
+// #endif
 
 RLGL_EXTERN_C_END
 

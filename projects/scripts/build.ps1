@@ -66,7 +66,8 @@ foreach ($include in $includes) {
 
 $compiler_args = @(
 	($flag_define + 'PLATFORM_DESKTOP'),
-	($flag_define + 'BUILD_LIBTYPE_SHARED')
+	($flag_define + 'BUILD_LIBTYPE_SHARED'),
+	($flag_define + 'RL_BUILD_LIBTYPE_SHARED')
 )
 $linker_args   = @(
 	$flag_link_dll,
