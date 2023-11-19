@@ -27,8 +27,8 @@ word RLGL, RLGL_GLOBAL_DATA
 
 word Matrix, rl_matrix
 
-word rlglInit,                           rlgl_Init
-word rlglClose,                          rlgl_Close
+word rlglInit,                           rlgl_init
+word rlglClose,                          rlgl_close
 word rlMatrixMode,                       rlgl_matrix_mode
 word rlPushMatrix,                       rlgl_push_matrix
 word rlPopMatrix,                        rlgl_pop_matrix
@@ -186,4 +186,5 @@ word rlUnloadFramebuffer,                rlgl_unload_framebuffer
 word rlReadScreenPixels,                 rlgl_read_screen_pixels
 word rlReadTexturePixels,                rlgl_read_texture_pixels
 word rlGetShaderLocsDefault,             rlgl_get_shader_locs_default
+word rlGetPixelFormatName,               rlgl_get_pixel_format_name
 word TRACELOG,                           TRACELOG
