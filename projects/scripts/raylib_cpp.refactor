@@ -53,19 +53,6 @@ word RAYWHITE, RL_RAYWHITE
 word CAMERA_CULL_DISTANCE_NEAR, RL_CAMERA_CULL_DISTANCE_NEAR
 word CAMERA_CULL_DISTANCE_FAR,  RL_CAMERA_CULL_DISTANCE_FAR
 
-word GetCameraForward,          rlGetCameraForward
-word GetCameraUp,               rlGetCameraUp
-word GetCameraRight,            rlGetCameraRight
-word CameraMoveForward,         rlCameraMoveForward
-word CameraMoveUp,              rlCameraMoveUp
-word CameraMoveRight,           rlCameraMoveRight
-word CameraMoveToTarget,        rlCameraMoveToTarget
-word CameraYaw,                 rlCameraYaw
-word CameraPitch,               rlCameraPitch
-word CameraRoll,                rlCameraRoll
-word GetCameraViewMatrix,       rlGetCameraViewMatrix
-word GetCameraProjectionMatrix, rlGetCameraProjectionMatrix
-
 word CAMERA_MOVE_SPEED,                              RL_CAMERA_MOVE_SPEED
 word CAMERA_ROTATION_SPEED,                          RL_CAMERA_ROTATION_SPEED
 word CAMERA_PAN_SPEED,                               RL_CAMERA_PAN_SPEED
@@ -117,9 +104,9 @@ word DOUBLETAP_RANGE, RL_DOUBLETAP_RANGE
 // rlgl.h
 // This file has badly defined definitions, so I have to do a separate pass for it later.
 
-    namespace rl_, 
-    namespace rl, 
-    namespace rlgl, 
+    namespace rl_,
+    namespace rl,
+    namespace rlgl,
 not word      rl
 not word      rlgl
 
