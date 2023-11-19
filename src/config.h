@@ -258,7 +258,7 @@
 #define RL_NOT_REFACTORED
 #endif
 
-#define RL_USE_CPP_NAMESPACE 0
+#define RL_USE_CPP_NAMESPACE 1
 #define RL_USE_CPP_MANGLING  1
 
 #if RL_USE_CPP_NAMESPACE && defined(__cplusplus)

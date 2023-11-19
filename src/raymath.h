@@ -167,7 +167,11 @@ typedef struct float16 {
     float v[16];
 } float16;
 
+RL_NS_END
+
 #include <math.h>       // Required for: sinf(), cosf(), tan(), atan2f(), sqrtf(), floor(), fminf(), fmaxf(), fabs()
+
+RL_NS_BEGIN
 
 //----------------------------------------------------------------------------------
 // Module Functions Definition - Utils math

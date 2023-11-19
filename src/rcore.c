@@ -494,6 +494,8 @@ static void RecordAutomationEvent(void); // Record frame events (to internal eve
 const char *TextFormat(const char *text, ...);              // Formatting of text with variables to 'embed'
 #endif // !SUPPORT_MODULE_RTEXT
 
+RL_NS_END
+
 // Include platform-specific submodules
 #if defined(PLATFORM_DESKTOP)
     #include "platforms/rcore_desktop.c"
@@ -509,6 +511,8 @@ const char *TextFormat(const char *text, ...);              // Formatting of tex
     // TODO: Include your custom platform backend!
     // i.e software rendering backend or console backend!
 #endif
+
+RL_NS_BEGIN
 
 //----------------------------------------------------------------------------------
 // Module Functions Definition: Window and Graphics Device

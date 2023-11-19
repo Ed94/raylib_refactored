@@ -6015,6 +6015,6 @@ static ModelAnimation *LoadModelAnimationsM3D(const char *fileName, int *animCou
 }
 #endif
 
-RL_NS_END
-
 #endif      // SUPPORT_MODULE_RMODELS
+
+RL_NS_END

@@ -131,12 +131,12 @@
 #define RL_NOT_REFACTORED
 #endif
 
-#define RLGL_USE_CPP_NAMESPACE 0
+#define RLGL_USE_CPP_NAMESPACE 1
 #define RLGL_USE_CPP_MANGLING  1
 
 #if RLGL_USE_CPP_NAMESPACE && defined(__cplusplus)
-    #pragma message("USING CPP ")
-    #define RLGL_NS_BEGIN namespace rlgl {
+    #pragma message("USING CPP MANGLING")
+    #define RLGL_NS_BEGIN namespace rl {
     #define RLGL_NS_END }
 #else
     #define RLGL_NS_BEGIN
@@ -798,6 +798,8 @@ RLAPI void rlLoadDrawCube(void);     // Load and draw a cube
 RLAPI void rlLoadDrawQuad(void);     // Load and draw a quad
 
 RLGL_EXTERN_C_END
+
+RLGL_NS_END
 
 #endif // RLGL_H
 
@@ -4902,5 +4904,7 @@ static Matrix rlMatrixMultiply(Matrix left, Matrix right)
 // #endif
 
 RLGL_EXTERN_C_END
+
+RLGL_NS_END
 
 #endif  // RLGL_IMPLEMENTATION
