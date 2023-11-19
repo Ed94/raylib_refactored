@@ -893,7 +893,7 @@ word DOUBLETAP_RANGE, RL_DOUBLETAP_RANGE
 
 word GesturesData, rlGesturesData
 
-word GESTURES, RL_GESTURES
+word GESTURES, RL_GESTURESrlglGetPixelDataSizerlglGetPixelDataSize
 
 // word rgVector2Angle,    rlVector2Angle
 // word rgVector2Distance, rlVector2Distance
@@ -919,6 +919,8 @@ word TRACELOG, rlTRACELOG
 
 // word rlglInit,  RLGL_Init
 // word rlglClose, RLGL_Close
+
+not word rlGetPixelDataSize
 
 // utils.h
 

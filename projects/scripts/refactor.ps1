@@ -25,7 +25,7 @@ write-host "Use cpp  : " $use_cpp
 
 if ($use_cpp) {
 	if ($use_snake) {
-		$path_refactor      = join-path $PSScriptRoot 'raylib_cpp_snake.refactor' 
+		$path_refactor      = join-path $PSScriptRoot 'raylib_cpp_snake.refactor'
 		$path_refactor_rlgl = join-path $PSScriptRoot 'raylib_cpp_gl_snake.refactor'
 	}
 	else {

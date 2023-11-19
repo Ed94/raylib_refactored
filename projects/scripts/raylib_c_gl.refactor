@@ -6,6 +6,7 @@ word RL_NOT_REFACTORED, RL_REFACTORED_C
     namespace rl, rlgl
 not namespace rlgl
 
+not word rlGetPixelDataSize
 not word rlMatrixIdentity
 not word rlMatrixMultiply
 

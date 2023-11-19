@@ -117,14 +117,14 @@ word RL_TEXTURE_MAG_FILTER,    TEXTURE_MAG_FILTER
 word RL_TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR
 
 namespace RL_ATTACHMENT_, ATTACHMENT_
-namespace RL_TEXTURE_, TEXTURE_
+namespace RL_TEXTURE_,    TEXTURE_
 
 
 not include rlgl.h
 
 word TRACELOG, RL_TRACELOG
 
-//word rlglInit, RLGL_Init
+//word rlglInit,  RLGL_Init
 //word rlglClose, RLGL_Close
 
 // utils.h

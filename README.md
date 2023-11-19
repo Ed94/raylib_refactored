@@ -4,13 +4,15 @@
 
 # Refactor Fork
 
-This uses this simple program: [refactor](https://github.com/Ed94/refactor) to change all public identifiers to symbols defined within projects/scripts/*.refactor scripts. It uses refactor.ps1
-
-Goal is to offer a C refactor and a C++ refactor. The C++ will wrap the library in just the `raylib` namespace and remove any prefixed namespaces provided.
-
+This uses this simple program: [refactor](https://github.com/Ed94/refactor) to change all public identifiers to symbols defined within projects/scripts/*.refactor scripts. It uses refactor.ps1  
+Goal is to offer a C refactor and a C++ refactor. The C++ will wrap the library in just the `rl` namespace and remove any prefixed namespaces provided.  
 The repo will also soon provide refactor scripts for alternative naming conventions from pascal case to lower snake case for functions.
 
-Run the refactor_c.ps1 or refactor_cpp.ps1 (make sure a refactor binary is defined in your env path). Then just attempt to build for your target platform.
+Run the refactor.ps1 (make sure a refactor binary is defined in your env path). Then just attempt to build for your target platform.  
+Arguments:
+
+* snake : Use snake case scripts variants
+* cpp   : Use cpp scripts variants
 
 ---
 

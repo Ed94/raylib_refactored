@@ -8,13 +8,13 @@ namespace rlgl,
 not word  rl
 not word  rlgl
 
-namespace RL_LOG_, LOG_
+namespace RL_LOG_,         LOG_
 namespace RL_PIXELFORMAT_, PIXELFORMAT_
-namespace RL_TEXTURE_, TEXTURE_
-namespace RL_SHADER_, SHADER_
-namespace RL_BLEND_, BLEND_
-namespace RL_ATTACHMENT_, ATTACHMENT_
-namespace RL_CULL_, CULL_
+namespace RL_TEXTURE_,     TEXTURE_
+namespace RL_SHADER_,      SHADER_
+namespace RL_BLEND_,       BLEND_
+namespace RL_ATTACHMENT_,  ATTACHMENT_
+namespace RL_CULL_,        CULL_
 
 not include rlgl.h
 

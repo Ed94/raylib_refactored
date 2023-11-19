@@ -23,12 +23,10 @@ not word rl_save_ktx_to_memory
 namespace LOG_, RL_LOG
 
 word TRACELOG, RL_TRACELOG
-word RLGL, RLGL_GLOBAL_DATA
+word RLGL,     RLGL_GLOBAL_DATA
 
 word Matrix, rl_matrix
 
-word rlglInit,                           rlgl_init
-word rlglClose,                          rlgl_close
 word rlMatrixMode,                       rlgl_matrix_mode
 word rlPushMatrix,                       rlgl_push_matrix
 word rlPopMatrix,                        rlgl_pop_matrix
@@ -101,8 +99,8 @@ word rlCheckErrors,                      rlgl_check_errors
 word rlSetBlendMode,                     rlgl_set_blend_mode
 word rlSetBlendFactors,                  rlgl_set_blend_factors
 word rlSetBlendFactorsSeparate,          rlgl_set_blend_factors_separate
-word rlglInit,                           rlglgl_init
-word rlglClose,                          rlglgl_close
+word rlglInit,                           rlgl_init
+word rlglClose,                          rlgl_close
 word rlLoadExtensions,                   rlgl_load_extensions
 word rlGetVersion,                       rlgl_get_version
 word rlSetFramebufferWidth,              rlgl_set_framebuffer_width
@@ -176,7 +174,7 @@ word rlLoadDrawCube,                     rlgl_load_draw_cube
 word rlLoadDrawQuad,                     rlgl_load_draw_quad
 word rlLoadShaderDefault,                rlgl_load_shader_default
 word rlUnloadShaderDefault,              rlgl_unload_shader_default
-word rlGetPixelDataSize,                 rlgl_get_pixel_data_size
+word rlGetPixelDataSize,                 rl_get_pixel_data_size
 word rlMatrixIdentity,                   rl_matrix_identity
 word rlMatrixMultiply,                   rl_matrix_multiply
 word rlCheckRenderBatchLimit,            rlgl_check_render_batch_limit
@@ -187,4 +185,3 @@ word rlReadScreenPixels,                 rlgl_read_screen_pixels
 word rlReadTexturePixels,                rlgl_read_texture_pixels
 word rlGetShaderLocsDefault,             rlgl_get_shader_locs_default
 word rlGetPixelFormatName,               rlgl_get_pixel_format_name
-word TRACELOG,                           TRACELOG

@@ -237,7 +237,7 @@ typedef struct {
 //----------------------------------------------------------------------------------
 static GesturesData GESTURES = {
 #ifdef __cplusplus
-    -1,
+    (unsigned int)-1,
     GESTURE_NONE,
     0b0000001111111111
 #else

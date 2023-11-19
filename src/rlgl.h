@@ -4858,6 +4858,7 @@ static int rlGetPixelDataSize(int width, int height, int format)
 // Auxiliar math functions
 
 #if !defined(RAYMATH_H) && !defined(RL_REFACTORED_C) && !defined(RL_REFACTORED_CPP)
+
 // Get identity matrix
 static Matrix rlMatrixIdentity(void)
 {
